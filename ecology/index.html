@@ -91,6 +91,8 @@
     #eco-orbit {
       position: absolute;
       inset: 0;
+      width: 100%;
+      height: 100%; /* 确保容器有尺寸 */
     }
 
     /* 漂浮信息卡片 */
@@ -213,9 +215,8 @@
   </div>
 
   <div class="scene">
-    <!-- 中心星环图 -->
+    <!-- 中心图表 -->
     <div id="eco-orbit"></div>
-
 
     <!-- 文案面板：整体说明 -->
     <aside class="panel panel-main">
@@ -225,7 +226,7 @@
         从收入角度看，乌干达四达可以被拆成三条主轨道：
         <strong>收视费 Subscription</strong>、<strong>太阳能 Solar</strong>、
         以及 <strong>其他收入（广告 / 传输 / 终端）</strong>。
-        轨道的半径代表覆盖广度，角度代表营收权重，亮度则暗示技术门槛与不可替代性。
+        本页用一个极简的环形图展示 63 · 30 · 7 的收入结构。
       </p>
       <div class="pill-row">
         <span class="pill">Subscription · 63%</span>
@@ -274,197 +275,81 @@
     </aside>
   </div>
 
-<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
-<script>
-  var chart = echarts.init(document.getElementById('eco-orbit'));
-
-  // 三条收入轨道：覆盖度 cov、营收 rev、技术门槛 tech
-  var products = [
-    {
-      name: '收视费 · Subscription',
-      cov: 88,
-      rev: 63,
-      tech: 0.88,
-      colors: {
-        edge:   'rgba(96,165,250,0.10)',
-        mid:    'rgba(96,165,250,0.85)',
-        tail:   'rgba(56,189,248,0.05)',
-        shadow: 'rgba(96,165,250,0.70)'
-      }
-    },
-    {
-      name: '太阳能 · Solar',
-      cov: 52,
-      rev: 30,
-      tech: 0.75,
-      colors: {
-        edge:   'rgba(34,197,94,0.10)',
-        mid:    'rgba(34,197,94,0.80)',
-        tail:   'rgba(22,163,74,0.05)',
-        shadow: 'rgba(34,197,94,0.70)'
-      }
-    },
-    {
-      name: '其他 · Ads & Devices',
-      cov: 40,
-      rev: 7,
-      tech: 0.65,
-      colors: {
-        edge:   'rgba(250,204,21,0.10)',
-        mid:    'rgba(250,204,21,0.80)',
-        tail:   'rgba(250,204,21,0.05)',
-        shadow: 'rgba(250,204,21,0.65)'
-      }
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+  <script>
+    var dom = document.getElementById('eco-orbit');
+    // 双保险：确保容器有尺寸
+    if (!dom.style.height) {
+      dom.style.width = '100%';
+      dom.style.height = '100%';
     }
-  ];
 
-  var totalRev = products.reduce(function (sum, p) { return sum + p.rev; }, 0);
+    var chart = echarts.init(dom);
 
-  // 在 360° 中取出约 280° 来画三条光束
-  var usedArcDeg = 280;
-  var startDeg = -usedArcDeg / 2; // 让整体居中
-  var cursorDeg = startDeg;
-
-  var sectorData = products.map(function (p, idx) {
-    var sweepDeg = usedArcDeg * (p.rev / totalRev); // 角度 = 营收占比
-    var s = cursorDeg;
-    var e = cursorDeg + sweepDeg;
-    cursorDeg += sweepDeg;
-
-    return {
-      value: [p.cov, p.rev, p.tech, s, e, idx],
-      name: p.name
-    };
-  });
-
-  var option = {
-    backgroundColor: 'transparent',
-    tooltip: {
-      formatter: function (params) {
-        var v = params.data.value;
-        var cov  = v[0];
-        var rev  = v[1];
-        var tech = v[2];
-        return [
-          params.data.name,
-          '覆盖 Coverage：' + cov + ' / 100',
-          '营收 Revenue：' + rev + ' / ' + totalRev,
-          '技术门槛 Tech barrier：' + (tech * 100).toFixed(0) + '%'
-        ].join('<br/>');
-      }
-    },
-    series: [
-      // 背景同心圆 + 中心光点
-      {
-        type: 'custom',
-        name: 'rings',
-        renderItem: function (params, api) {
-          var cx = api.getWidth() / 2;
-          var cy = api.getHeight() * 0.58;
-          var maxR = Math.min(api.getWidth(), api.getHeight()) * 0.46;
-          var levels = 6;
-          var children = [];
-
-          for (var i = 1; i <= levels; i++) {
-            children.push({
-              type: 'circle',
-              shape: { cx: cx, cy: cy, r: (maxR / levels) * i },
-              style: {
-                stroke: 'rgba(15,23,42,' + (0.35 + i * 0.08) + ')',
-                fill: 'transparent',
-                lineWidth: 1
-              }
-            });
-          }
-
-          children.push({
-            type: 'circle',
-            shape: { cx: cx, cy: cy, r: maxR * 0.04 },
-            style: {
-              fill: 'rgba(248,250,252,0.96)',
-              shadowBlur: 28,
-              shadowColor: 'rgba(248,250,252,0.9)'
-            }
-          });
-
-          return { type: 'group', children: children };
-        },
-        data: [0],
-        silent: true,
-        z: 0
+    var option = {
+      backgroundColor: 'transparent',
+      tooltip: {
+        trigger: 'item',
+        formatter: function (p) {
+          return p.name + '<br/>Revenue share：' + p.value + '%';
+        }
       },
-
-      // 三条收入轨道光束
-      {
-        type: 'custom',
-        name: 'revenue-orbits',
-        renderItem: function (params, api) {
-          var cov   = api.value(0); // 覆盖度
-          var tech  = api.value(2); // 技术（这里暂时只用来做 tooltip）
-          var sDeg  = api.value(3);
-          var eDeg  = api.value(4);
-          var idx   = api.value(5);
-
-          var cx = api.getWidth() / 2;
-          var cy = api.getHeight() * 0.58;
-          var maxR = Math.min(api.getWidth(), api.getHeight()) * 0.46;
-
-          var rInner = maxR * 0.18;
-          var rOuter = rInner + (cov / 100) * (maxR - rInner);
-
-          var startAngle = sDeg * Math.PI / 180;
-          var endAngle   = eDeg * Math.PI / 180;
-
-          var c = products[idx].colors;
-
-          var gradient = new echarts.graphic.LinearGradient(
-            0, 0, 0, 1,
-            [
-              { offset: 0,   color: c.edge },
-              { offset: 0.35, color: c.mid },
-              { offset: 1,   color: c.tail }
-            ],
-            false
-          );
-
-          return {
-            type: 'sector',
-            shape: {
-              cx: cx,
-              cy: cy,
-              r0: rInner,
-              r: rOuter,
-              startAngle: startAngle,
-              endAngle:   endAngle
+      series: [
+        {
+          type: 'pie',
+          radius: ['22%', '68%'],
+          center: ['50%', '60%'],
+          startAngle: 220,
+          avoidLabelOverlap: true,
+          itemStyle: {
+            borderColor: 'rgba(15,23,42,0.95)',
+            borderWidth: 2,
+            shadowBlur: 32,
+            shadowOffsetX: 0,
+            shadowOffsetY: 0
+          },
+          label: { show: false },
+          labelLine: { show: false },
+          data: [
+            {
+              value: 63,
+              name: 'Subscription · 63%',
+              itemStyle: {
+                color: new echarts.graphic.RadialGradient(0.2, 0.2, 1, [
+                  { offset: 0, color: 'rgba(96,165,250,0.95)' },
+                  { offset: 1, color: 'rgba(37,99,235,0.4)' }
+                ])
+              }
             },
-            style: {
-              fill: gradient,
-              stroke: 'rgba(15,23,42,0.5)',
-              lineWidth: 1.2,
-              shadowBlur: 26,
-              shadowColor: c.shadow
+            {
+              value: 30,
+              name: 'Solar · 30%',
+              itemStyle: {
+                color: new echarts.graphic.RadialGradient(0.8, 0.2, 1, [
+                  { offset: 0, color: 'rgba(34,197,94,0.95)' },
+                  { offset: 1, color: 'rgba(22,163,74,0.4)' }
+                ])
+              }
             },
-            emphasis: {
-              style: {
-                shadowBlur: 40,
-                shadowColor: c.mid,
-                lineWidth: 1.6
+            {
+              value: 7,
+              name: 'Ads & Devices · 7%',
+              itemStyle: {
+                color: new echarts.graphic.RadialGradient(0.5, 0.8, 1, [
+                  { offset: 0, color: 'rgba(250,204,21,0.95)' },
+                  { offset: 1, color: 'rgba(161,98,7,0.4)' }
+                ])
               }
             }
-          };
-        },
-        data: sectorData,
-        z: 2
-      }
-    ]
-  };
+          ]
+        }
+      ]
+    };
 
-  chart.setOption(option);
-  window.addEventListener('resize', function () {
-    chart.resize();
-  });
-</script>
-
-
+    chart.setOption(option);
+    window.addEventListener('resize', function () {
+      chart.resize();
+    });
+  </script>
 </body>
 </html>
