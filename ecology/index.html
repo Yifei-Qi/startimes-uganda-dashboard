@@ -241,13 +241,13 @@
 
     // === 63 / 30 / 7 三条收入光带 ===
     var macroDefs = [
-      { id: 'Subscription', label: 'Subscription 63%', value: 63, color: '#22d3ee' }, // 青蓝
-      { id: 'Solar',        label: 'Solar 30%',        value: 30, color: '#4ade80' }, // 青绿
-      { id: 'AdsDevices',   label: 'Ads & Devices 7%', value: 7,  color: '#fb7185' }  // 洋红偏金
+      { id: 'Subscription', label: 'Subscription 63%', value: 63, color: '#22d3ee' },
+      { id: 'Solar',        label: 'Solar 30%',        value: 30, color: '#4ade80' },
+      { id: 'AdsDevices',   label: 'Ads & Devices 7%', value: 7,  color: '#fb7185' }
     ];
     var totalMacro = macroDefs.reduce(function (s, m) { return s + m.value; }, 0);
 
-    // 业务线配色
+    // 业务线配色（区分业务，而不是收入块）
     var businessDefs = [
       { id: 'Solar', label: 'Solar', tone: 'green' },
       { id: 'DTV',  label: 'DTV',  tone: 'blue'  },
@@ -324,6 +324,7 @@
       ]
     };
 
+    // 根据业务线 + 指标名称，映射到收入块
     function classifyMacro(bizId, metricName) {
       if (bizId === 'Solar') return 'Solar';
       if (/广告|DSP/.test(metricName)) return 'AdsDevices';
@@ -333,8 +334,9 @@
       return 'Subscription';
     }
 
-    var usedArcDeg = 280;
-    var startDeg = -usedArcDeg / 2;
+    // 360° 全圆分配给三条光带
+    var usedArcDeg = 360;
+    var startDeg = -usedArcDeg / 2; // -180° ~ +180°
     var cursorDeg = startDeg;
     macroDefs.forEach(function (m) {
       var sweep = usedArcDeg * (m.value / totalMacro);
@@ -355,7 +357,7 @@
 
     var maxRadius = 105;
 
-    // === KPI 主星（每个指标一颗） ===
+    // === KPI 主星 ===
     var clusterPoints = [];
     businessDefs.forEach(function (biz) {
       var metrics = kpiRaw[biz.id] || [];
@@ -370,18 +372,19 @@
         var macro = getMacroDef(macroId);
         if (!macro) return;
 
+        // 在该收入扇区内部随机分布角度
         var angle =
           macro.startDeg +
           (macro.endDeg - macro.startDeg) *
-            (0.18 + 0.64 * Math.random()); // 在该扇区内随机分布
+            (0.18 + 0.64 * Math.random());
 
-        var bandIndex = getMacroIndex(macroId); // 0,1,2
-        var baseBandRadius = 50 + bandIndex * 18;   // 三条大环带
-        var jitter = (Math.random() - 0.5) * 16;    // 半径扰动
+        var bandIndex = getMacroIndex(macroId);     // 0 / 1 / 2
+        var baseBandRadius = 52 + bandIndex * 18;   // 三条大环带
+        var jitter = (Math.random() - 0.5) * 16;
         var radius = baseBandRadius + jitter;
 
         var valueRatio = m.value / maxVal;
-        var baseSize = 14 + 14 * Math.sqrt(valueRatio); // 主星更大
+        var baseSize = 14 + 14 * Math.sqrt(valueRatio);
         var size     = baseSize * (0.9 + Math.random() * 0.2);
 
         var trend = m.trend || 'flat';
@@ -390,9 +393,9 @@
 
         var color;
         if (trend === 'up') {
-          color = 'rgba(249,115,22,' + alphaBase + ')'; // 橙色（上升）
+          color = 'rgba(249,115,22,' + alphaBase + ')'; // 橙色上升
         } else if (trend === 'down') {
-          color = 'rgba(59,130,246,' + alphaBase + ')'; // 蓝色（下降）
+          color = 'rgba(59,130,246,' + alphaBase + ')'; // 蓝色下降
         } else {
           color = toneColor(biz.tone, alphaBase);
         }
@@ -489,7 +492,7 @@
       },
 
       series: [
-        // 背景同心圆 + 中央发光恒星
+        // 1) 背景同心圆（最底层）
         {
           type: 'custom',
           coordinateSystem: 'none',
@@ -509,16 +512,6 @@
                 }
               });
             }
-            // 中央白色恒星
-            rings.push({
-              type: 'circle',
-              shape: { cx: cx, cy: cy, r: maxR * 0.16 },
-              style: {
-                fill: 'rgba(248,250,252,0.98)',
-                shadowBlur: 90,
-                shadowColor: 'rgba(248,250,252,0.98)'
-              }
-            });
             return { type: 'group', children: rings };
           },
           data: [0],
@@ -526,12 +519,12 @@
           zlevel: 0
         },
 
-        // 三束“极光”收入光带（带入场动画）
+        // 2) 三束“极光”收入光带（在恒星下方）
         {
           id: 'aurora',
           type: 'custom',
           coordinateSystem: 'none',
-          data: [0],          // 这里的数值 = progress 0~1，由 JS 外部动画驱动
+          data: [0], // 数值 = progress 0~1，由外部动画驱动
           renderItem: function (params, api) {
             var progress = api.value(0);
             if (progress == null) progress = 1;
@@ -546,15 +539,13 @@
             var cy = api.getHeight() * 0.52;
             var maxR = Math.min(api.getWidth(), api.getHeight()) * 0.40;
 
-            // 从中心向外生长
-            var rInner = maxR * 0.22 * progress;
-            var rOuter = maxR * (0.28 + 0.44 * progress);
+            var rInner = maxR * 0.18 * progress;
+            var rOuter = maxR * (0.26 + 0.44 * progress);
 
             macroDefs.forEach(function (m) {
               var startAngle = (m.startDeg * Math.PI) / 180;
               var endAngle   = (m.endDeg   * Math.PI) / 180;
 
-              // 为了边缘柔和一点，在同一扇区叠加几层不同透明度的极光
               for (var layer = 0; layer < 3; layer++) {
                 var inner = rInner + layer * (maxR * 0.01);
                 var outer = rOuter + layer * (maxR * 0.015);
@@ -603,7 +594,7 @@
                   style: {
                     fill: auroraColor,
                     stroke: 'none',
-                    shadowBlur: 90 * progress,
+                    shadowBlur: 80 * progress,
                     shadowColor: m.color
                   }
                 });
@@ -616,7 +607,54 @@
           zlevel: 1
         },
 
-        // 装饰的小白星
+        // 3) 中央白色恒星（在光带之上）
+        {
+          type: 'custom',
+          coordinateSystem: 'none',
+          renderItem: function (params, api) {
+            var cx = api.getWidth() / 2;
+            var cy = api.getHeight() * 0.52;
+            var maxR = Math.min(api.getWidth(), api.getHeight()) * 0.40;
+
+            var haloR = maxR * 0.18;
+            var starR = maxR * 0.10;
+
+            return {
+              type: 'group',
+              children: [
+                {
+                  // 柔和光晕
+                  type: 'circle',
+                  shape: { cx: cx, cy: cy, r: haloR },
+                  style: {
+                    fill: new echarts.graphic.RadialGradient(0.5, 0.5, 1, [
+                      { offset: 0,   color: 'rgba(248,250,252,0.75)' },
+                      { offset: 0.35,color: 'rgba(248,250,252,0.28)' },
+                      { offset: 1,   color: 'rgba(15,23,42,0)' }
+                    ]),
+                    shadowBlur: 65,
+                    shadowColor: 'rgba(248,250,252,0.85)'
+                  }
+                },
+                {
+                  // 中心恒星本体（更小、更干净）
+                  type: 'circle',
+                  shape: { cx: cx, cy: cy, r: starR },
+                  style: {
+                    fill: 'rgba(248,250,252,0.98)',
+                    shadowBlur: 30,
+                    shadowColor: 'rgba(248,250,252,0.95)'
+                  }
+                }
+              ]
+            };
+          },
+          data: [0],
+          silent: true,
+          zlevel: 3
+        },
+
+        // 4) 装饰的小白星
         {
           type: 'scatter',
           coordinateSystem: 'polar',
@@ -632,7 +670,7 @@
           silent: true
         },
 
-        // KPI 主星
+        // 5) KPI 主星
         {
           type: 'effectScatter',
           coordinateSystem: 'polar',
@@ -647,17 +685,17 @@
             scale: 2.6,
             period: 10
           },
-          zlevel: 3
+          zlevel: 4
         }
       ]
     };
 
     chart.setOption(option);
 
-    // === 极光从中心向外“生长”的入场动画 ===
+    // 极光从中心向外“生长”的入场动画
     (function animateAurora() {
       var start = Date.now();
-      var duration = 1200; // 1.2s
+      var duration = 1200;
 
       function frame() {
         var now = Date.now();
@@ -667,7 +705,7 @@
         chart.setOption({
           series: [{
             id: 'aurora',
-            data: [t]   // progress 0 ~ 1
+            data: [t]
           }]
         });
 
