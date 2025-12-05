@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>生态 · Ecology · StarTimes Uganda</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont,"Segoe UI",Roboto,
+        "Helvetica Neue",Arial,"Noto Sans SC",sans-serif;
+      background: radial-gradient(circle at top, #020617 0, #000000 55%, #020617 100%);
+      color: #e5e7eb;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(148,163,184,0.35);
+      backdrop-filter: blur(10px);
+      background: linear-gradient(to bottom, rgba(15,23,42,0.95), rgba(15,23,42,0.7));
+    }
+    .title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .subtitle {
+      font-size: 12px;
+      color: #9ca3af;
+      margin-top: 3px;
+    }
+    .back-link {
+      font-size: 12px;
+      color: #93c5fd;
+      text-decoration: none;
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(59,130,246,0.7);
+      background: rgba(15,23,42,0.9);
+    }
+    main {
+      flex: 1;
+      padding: 18px 22px 22px;
+      display: grid;
+      grid-template-columns: minmax(0, 2.2fr) minmax(0, 1.4fr);
+      gap: 18px;
+    }
+    .card {
+      border-radius: 22px;
+      border: 1px solid rgba(148,163,184,0.35);
+      background: linear-gradient(145deg, rgba(15,23,42,0.96), rgba(15,23,42,0.78));
+      padding: 16px 18px;
+    }
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .card-text {
+      font-size: 12px;
+      color: #9ca3af;
+      line-height: 1.6;
+    }
+    #chart-ecology {
+      width: 100%;
+      height: 360px;
+      margin-top: 8px;
+    }
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .pill-link {
+      font-size: 12px;
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.6);
+      color: #e5e7eb;
+      background: rgba(15,23,42,0.9);
+    }
+    .pill-link:hover {
+      border-color: rgba(248,250,252,0.9);
+      background: rgba(15,23,42,1);
+    }
+    footer {
+      padding: 8px 22px 14px;
+      font-size: 11px;
+      color: #6b7280;
+      border-top: 1px solid rgba(31,41,55,0.9);
+    }
+    @media (max-width: 900px) {
+      main { grid-template-columns: minmax(0,1fr); }
+      #chart-ecology { height: 280px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <div class="title">生态 · Ecology</div>
+      <div class="subtitle">
+        从产业视角梳理 StarTimes 在乌干达的产品布局：DVB（DTT / DTH）· SOLAR · CONTENT
+      </div>
+    </div>
+    <a class="back-link" href="../index.html">返回首页 · Back to Data Space</a>
+  </header>
+
+  <main>
+    <section class="card">
+      <div class="card-title">生态总览 · Ecology Overview</div>
+      <div class="card-text">
+        本模块聚焦于四达在乌干达的整体产业生态：
+        <br>1）<strong>横向（Horizontal）</strong>：从产品线角度梳理 DVB / SOLAR / CONTENT 的产业与产品组合；
+        <br>2）<strong>纵向（Vertical）</strong>：分析各产品线的特点、门槛与不可替代性，以及与上下游关系。
+      </div>
+      <div id="chart-ecology"></div>
+    </section>
+
+    <aside class="card">
+      <div class="card-title">模块导航 · Module Navigation</div>
+      <div class="card-text">
+        后续数据可视化将按“横向 / 纵向”两条主线展开：
+      </div>
+      <div class="btn-row">
+        <a class="pill-link" href="horizontal.html">横向 · 产业产品布局 Horizontal</a>
+        <a class="pill-link" href="vertical.html">纵向 · 特点 / 门槛 / 不可替代性 Vertical</a>
+      </div>
+      <div class="card-text" style="margin-top:12px;">
+        当前页面仅为结构示意。后续将接入：
+        <br>· 各产品线在用户规模 / 收入 / 付费率上的结构对比；
+        <br>· DVB / SOLAR / CONTENT 之间的协同关系与资源流向图。
+      </div>
+    </aside>
+  </main>
+
+  <footer>
+    StarTimes Uganda · Ecology Module · Horizontal &amp; Vertical Industrial Layout
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+  <script>
+    var chart = echarts.init(document.getElementById('chart-ecology'));
+    var option = {
+      backgroundColor: 'transparent',
+      tooltip: { trigger: 'item' },
+      legend: {
+        bottom: 0,
+        textStyle: { color: '#9ca3af', fontSize: 10 }
+      },
+      radar: {
+        radius: '60%',
+        splitNumber: 4,
+        axisName: { color: '#e5e7eb', fontSize: 11 },
+        splitLine: { lineStyle: { color: 'rgba(148,163,184,0.4)' } },
+        splitArea: { areaStyle: { color: ['rgba(15,23,42,0.8)','rgba(15,23,42,0.9)'] } },
+        indicator: [
+          { name: 'DVB · 覆盖度', max: 100 },
+          { name: 'SOLAR · 收入增长', max: 100 },
+          { name: 'CONTENT · 粘性', max: 100 },
+          { name: '技术门槛', max: 100 },
+          { name: '不可替代性', max: 100 }
+        ]
+      },
+      series: [
+        {
+          type: 'radar',
+          name: '示意 · Horizontal',
+          areaStyle: { opacity: 0.3 },
+          lineStyle: { width: 1.5 },
+          data: [
+            { value: [90, 70, 80, 85, 80], name: 'DVB' },
+            { value: [40, 90, 50, 60, 55], name: 'SOLAR' },
+            { value: [65, 60, 95, 75, 88], name: 'CONTENT' }
+          ]
+        }
+      ]
+    };
+    chart.setOption(option);
+    window.addEventListener('resize', function(){ chart.resize(); });
+  </script>
+</body>
+</html>
