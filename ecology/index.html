@@ -275,81 +275,207 @@
     </aside>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
-  <script>
-    var dom = document.getElementById('eco-orbit');
-    // 双保险：确保容器有尺寸
-    if (!dom.style.height) {
-      dom.style.width = '100%';
-      dom.style.height = '100%';
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<script>
+  var dom = document.getElementById('eco-orbit');
+  if (!dom.style.height) {
+    dom.style.width = '100%';
+    dom.style.height = '100%';
+  }
+
+  var chart = echarts.init(dom);
+
+  // 三条收入轨道：覆盖度 cov、营收 rev、技术门槛 tech
+  var products = [
+    {
+      name: '收视费 · Subscription',
+      cov: 88,   // 覆盖度（示意）
+      rev: 63,   // 收入占比
+      tech: 0.88,
+      color: '#60a5fa'
+    },
+    {
+      name: '太阳能 · Solar',
+      cov: 52,
+      rev: 30,
+      tech: 0.75,
+      color: '#22c55e'
+    },
+    {
+      name: '其他 · Ads & Devices',
+      cov: 40,
+      rev: 7,
+      tech: 0.65,
+      color: '#facc15'
     }
+  ];
 
-    var chart = echarts.init(dom);
+  var totalRev = products.reduce(function (s, p) { return s + p.rev; }, 0);
 
-    var option = {
-      backgroundColor: 'transparent',
-      tooltip: {
-        trigger: 'item',
-        formatter: function (p) {
+  // —— 1. 先算每个扇区的“中线角度”，用来放行星点 —— //
+  var startAngle = 220; // 与 pie 的 startAngle 保持一致（度数）
+  var cursor = startAngle;
+  var planetData = [];
+
+  products.forEach(function (p) {
+    var sweep = 360 * (p.rev / totalRev); // 这一块占多少度
+    var mid = cursor - sweep / 2;         // 中线角度（pie 是顺时针画）
+    cursor -= sweep;
+
+    // 半径用 30~90 之间映射覆盖度，越大越靠外
+    var radius = 30 + (p.cov / 100) * 60;
+
+    planetData.push({
+      value: [mid, radius],   // [角度, 半径]
+      name: p.name,
+      cov: p.cov,
+      rev: p.rev,
+      tech: p.tech,
+      itemStyle: {
+        color: p.color
+      },
+      symbolSize: 10 + p.tech * 10 // 技术门槛越高，行星越大
+    });
+  });
+
+  var option = {
+    backgroundColor: 'transparent',
+    tooltip: {
+      trigger: 'item',
+      formatter: function (p) {
+        // pie 和 planet 共用 tooltip，这里分开处理
+        if (p.seriesType === 'pie') {
           return p.name + '<br/>Revenue share：' + p.value + '%';
         }
-      },
-      series: [
-        {
-          type: 'pie',
-          radius: ['22%', '68%'],
-          center: ['50%', '60%'],
-          startAngle: 220,
-          avoidLabelOverlap: true,
-          itemStyle: {
-            borderColor: 'rgba(15,23,42,0.95)',
-            borderWidth: 2,
-            shadowBlur: 32,
-            shadowOffsetX: 0,
-            shadowOffsetY: 0
-          },
-          label: { show: false },
-          labelLine: { show: false },
-          data: [
-            {
-              value: 63,
-              name: 'Subscription · 63%',
-              itemStyle: {
-                color: new echarts.graphic.RadialGradient(0.2, 0.2, 1, [
-                  { offset: 0, color: 'rgba(96,165,250,0.95)' },
-                  { offset: 1, color: 'rgba(37,99,235,0.4)' }
-                ])
-              }
-            },
-            {
-              value: 30,
-              name: 'Solar · 30%',
-              itemStyle: {
-                color: new echarts.graphic.RadialGradient(0.8, 0.2, 1, [
-                  { offset: 0, color: 'rgba(34,197,94,0.95)' },
-                  { offset: 1, color: 'rgba(22,163,74,0.4)' }
-                ])
-              }
-            },
-            {
-              value: 7,
-              name: 'Ads & Devices · 7%',
-              itemStyle: {
-                color: new echarts.graphic.RadialGradient(0.5, 0.8, 1, [
-                  { offset: 0, color: 'rgba(250,204,21,0.95)' },
-                  { offset: 1, color: 'rgba(161,98,7,0.4)' }
-                ])
-              }
-            }
-          ]
+        if (p.seriesType === 'effectScatter') {
+          return [
+            p.data.name,
+            'Revenue：' + p.data.rev + '%',
+            'Coverage：' + p.data.cov + ' / 100',
+            'Tech barrier：' + (p.data.tech * 100).toFixed(0) + '%'
+          ].join('<br/>');
         }
-      ]
-    };
+        return '';
+      }
+    },
 
-    chart.setOption(option);
-    window.addEventListener('resize', function () {
-      chart.resize();
-    });
-  </script>
+    // 极坐标系，用于行星点（angle = 0~360，radius = 0~100）
+    angleAxis: {
+      type: 'value',
+      min: 0,
+      max: 360,
+      startAngle: startAngle,  // 与 pie 对齐
+      show: false
+    },
+    radiusAxis: {
+      type: 'value',
+      min: 0,
+      max: 100,
+      show: false
+    },
+    polar: {
+      center: ['50%', '60%'],
+      radius: '70%'
+    },
+
+    series: [
+      // —— 2. 背景环形图：收入占比 —— //
+      {
+        type: 'pie',
+        radius: ['22%', '68%'],
+        center: ['50%', '60%'],
+        startAngle: startAngle,
+        avoidLabelOverlap: true,
+        itemStyle: {
+          borderColor: 'rgba(15,23,42,0.95)',
+          borderWidth: 2,
+          shadowBlur: 32,
+          shadowOffsetX: 0,
+          shadowOffsetY: 0
+        },
+        label: { show: false },
+        labelLine: { show: false },
+        data: [
+          {
+            value: 63,
+            name: 'Subscription · 63%',
+            itemStyle: {
+              color: new echarts.graphic.RadialGradient(0.2, 0.2, 1, [
+                { offset: 0, color: 'rgba(96,165,250,0.95)' },
+                { offset: 1, color: 'rgba(37,99,235,0.35)' }
+              ])
+            }
+          },
+          {
+            value: 30,
+            name: 'Solar · 30%',
+            itemStyle: {
+              color: new echarts.graphic.RadialGradient(0.8, 0.2, 1, [
+                { offset: 0, color: 'rgba(34,197,94,0.95)' },
+                { offset: 1, color: 'rgba(22,163,74,0.35)' }
+              ])
+            }
+          },
+          {
+            value: 7,
+            name: 'Ads & Devices · 7%',
+            itemStyle: {
+              color: new echarts.graphic.RadialGradient(0.5, 0.8, 1, [
+                { offset: 0, color: 'rgba(250,204,21,0.95)' },
+                { offset: 1, color: 'rgba(161,98,7,0.35)' }
+              ])
+            }
+          }
+        ]
+      },
+
+      // —— 3. 中央“恒星” —— //
+      {
+        type: 'effectScatter',
+        coordinateSystem: 'polar',
+        symbol: 'circle',
+        data: [{ value: [0, 5] }],
+        symbolSize: 16,
+        itemStyle: {
+          color: 'rgba(248,250,252,0.96)',
+          shadowBlur: 40,
+          shadowColor: 'rgba(248,250,252,0.9)'
+        },
+        rippleEffect: {
+          period: 6,
+          scale: 6,
+          brushType: 'stroke'
+        },
+        zlevel: 2,
+        silent: true
+      },
+
+      // —— 4. 三个“行星” —— //
+      {
+        type: 'effectScatter',
+        name: 'Revenue Planets',
+        coordinateSystem: 'polar',
+        data: planetData,
+        symbol: 'circle',
+        rippleEffect: {
+          period: 5,
+          scale: 4,
+          brushType: 'stroke'
+        },
+        itemStyle: {
+          shadowBlur: 28,
+          shadowColor: 'rgba(148,163,184,0.9)'
+        },
+        zlevel: 3
+      }
+    ]
+  };
+
+  chart.setOption(option);
+  window.addEventListener('resize', function () {
+    chart.resize();
+  });
+</script>
+
 </body>
 </html>
