@@ -684,7 +684,6 @@
         {
           type: 'custom',
           coordinateSystem: 'none',
-          silent: true, 
           renderItem: function(params, api) {
             const cx = api.getWidth() / 2;
             const cy = api.getHeight() * 0.52;
@@ -701,20 +700,6 @@
                     shadowColor: 'rgba(226,232,240,0.9)'
                   }
                 },
-                {
-                  type: 'circle',
-                  shape: { cx, cy, r: maxR * 0.3 },
-                  style: {
-                    fill: 'radial-gradient',
-                    radialGradient: {
-                      colorStops: [
-                        { offset: 0, color: 'rgba(248,250,252,0.35)' },
-                        { offset: 0.7, color: 'rgba(59,130,246,0.08)' },
-                        { offset: 1, color: 'rgba(15,23,42,0)' }
-                      ]
-                    }
-                  }
-                }
               ]
             };
           },
