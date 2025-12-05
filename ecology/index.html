@@ -92,7 +92,7 @@
       position: absolute;
       inset: 0;
       width: 100%;
-      height: 100%; /* 确保容器有尺寸 */
+      height: 100%;
     }
 
     /* 漂浮信息卡片 */
@@ -215,10 +215,8 @@
   </div>
 
   <div class="scene">
-    <!-- 中心图表 -->
     <div id="eco-orbit"></div>
 
-    <!-- 文案面板：整体说明 -->
     <aside class="panel panel-main">
       <small>OVERVIEW</small>
       <h2>乌干达四达的三条收入轨道</h2>
@@ -226,7 +224,7 @@
         从收入角度看，乌干达四达可以被拆成三条主轨道：
         <strong>收视费 Subscription</strong>、<strong>太阳能 Solar</strong>、
         以及 <strong>其他收入（广告 / 传输 / 终端）</strong>。
-        本页用一个极简的环形图展示 63 · 30 · 7 的收入结构。
+        星环上的点密度与角度共同呈现 63 · 30 · 7 的收入结构。
       </p>
       <div class="pill-row">
         <span class="pill">Subscription · 63%</span>
@@ -235,7 +233,6 @@
       </div>
     </aside>
 
-    <!-- 收视费面板 -->
     <aside class="panel panel-subscription">
       <small>SUBSCRIPTION ORBIT</small>
       <h2>收视费 · 节目包 Subscription</h2>
@@ -246,7 +243,6 @@
       </p>
     </aside>
 
-    <!-- SOLAR 面板 -->
     <aside class="panel panel-solar">
       <small>SOLAR ORBIT</small>
       <h2>太阳能 · 30% 的增长引擎</h2>
@@ -257,7 +253,6 @@
       </p>
     </aside>
 
-    <!-- OTHER 面板 -->
     <aside class="panel panel-other">
       <small>OTHER ORBIT</small>
       <h2>广告 / 传输 / 终端 · 长尾 7%</h2>
@@ -267,7 +262,6 @@
       </p>
     </aside>
 
-    <!-- 中心 KPI 小卡片 -->
     <aside class="panel panel-kpi">
       <small>CURRENT SPLIT</small>
       <h2>63<span class="unit">% Subscription</span></h2>
@@ -275,207 +269,209 @@
     </aside>
   </div>
 
-<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
-<script>
-  var dom = document.getElementById('eco-orbit');
-  if (!dom.style.height) {
-    dom.style.width = '100%';
-    dom.style.height = '100%';
-  }
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+  <script>
+    var dom = document.getElementById('eco-orbit');
+    var chart = echarts.init(dom);
 
-  var chart = echarts.init(dom);
-
-  // 三条收入轨道：覆盖度 cov、营收 rev、技术门槛 tech
-  var products = [
-    {
-      name: '收视费 · Subscription',
-      cov: 88,   // 覆盖度（示意）
-      rev: 63,   // 收入占比
-      tech: 0.88,
-      color: '#60a5fa'
-    },
-    {
-      name: '太阳能 · Solar',
-      cov: 52,
-      rev: 30,
-      tech: 0.75,
-      color: '#22c55e'
-    },
-    {
-      name: '其他 · Ads & Devices',
-      cov: 40,
-      rev: 7,
-      tech: 0.65,
-      color: '#facc15'
-    }
-  ];
-
-  var totalRev = products.reduce(function (s, p) { return s + p.rev; }, 0);
-
-  // —— 1. 先算每个扇区的“中线角度”，用来放行星点 —— //
-  var startAngle = 220; // 与 pie 的 startAngle 保持一致（度数）
-  var cursor = startAngle;
-  var planetData = [];
-
-  products.forEach(function (p) {
-    var sweep = 360 * (p.rev / totalRev); // 这一块占多少度
-    var mid = cursor - sweep / 2;         // 中线角度（pie 是顺时针画）
-    cursor -= sweep;
-
-    // 半径用 30~90 之间映射覆盖度，越大越靠外
-    var radius = 30 + (p.cov / 100) * 60;
-
-    planetData.push({
-      value: [mid, radius],   // [角度, 半径]
-      name: p.name,
-      cov: p.cov,
-      rev: p.rev,
-      tech: p.tech,
-      itemStyle: {
-        color: p.color
+    // 三条收入轨道基础数据
+    var products = [
+      {
+        name: '收视费 · Subscription',
+        rev: 63,
+        cov: 88,
+        tech: 0.88,
+        color: 'rgba(96,165,250,',
       },
-      symbolSize: 10 + p.tech * 10 // 技术门槛越高，行星越大
-    });
-  });
+      {
+        name: '太阳能 · Solar',
+        rev: 30,
+        cov: 52,
+        tech: 0.75,
+        color: 'rgba(34,197,94,',
+      },
+      {
+        name: '其他 · Ads & Devices',
+        rev: 7,
+        cov: 40,
+        tech: 0.65,
+        color: 'rgba(250,204,21,',
+      }
+    ];
 
-  var option = {
-    backgroundColor: 'transparent',
-    tooltip: {
-      trigger: 'item',
-      formatter: function (p) {
-        // pie 和 planet 共用 tooltip，这里分开处理
-        if (p.seriesType === 'pie') {
-          return p.name + '<br/>Revenue share：' + p.value + '%';
-        }
-        if (p.seriesType === 'effectScatter') {
+    var totalRev = products.reduce(function (s, p) { return s + p.rev; }, 0);
+
+    // 角度分配：在 320° 范围内分配 63 / 30 / 7
+    var usedArc = 320;
+    var angleOffset = -usedArc / 2; // 让环大致水平居中
+    var cursor = angleOffset;
+
+    var particleData = [];
+    var planetData = [];
+
+    products.forEach(function (p) {
+      var sweep = usedArc * (p.rev / totalRev);    // 这一段对应多少角度
+      var start = cursor;
+      var end   = cursor + sweep;
+      var mid   = (start + end) / 2;
+      cursor = end;
+
+      // 星环半径设定：用覆盖度 cov 映射
+      var baseRadius = 60 + (p.cov / 100) * 20; // 60~80
+      var band = 6; // 环的厚度
+
+      // 生成这一段上的点（粒子）
+      var count = 260; // 粒子数量，越多越密
+      for (var i = 0; i < count; i++) {
+        var ang = start + Math.random() * (end - start);
+        var rad = baseRadius + (Math.random() - 0.5) * band;
+
+        particleData.push({
+          value: [ang, rad],
+          name: p.name,
+          rev: p.rev,
+          cov: p.cov,
+          tech: p.tech,
+          itemStyle: {
+            color: p.color + (0.22 + Math.random() * 0.4) + ')'
+          },
+          symbolSize: 1.5 + Math.random() * 2.2
+        });
+      }
+
+      // 行星点：在对应轨道上的一个更亮的点
+      planetData.push({
+        value: [mid, baseRadius + band * 0.4],
+        name: p.name,
+        rev: p.rev,
+        cov: p.cov,
+        tech: p.tech,
+        itemStyle: {
+          color: p.color + '0.95)'
+        },
+        symbolSize: 10 + p.tech * 10
+      });
+    });
+
+    var option = {
+      backgroundColor: 'transparent',
+      tooltip: {
+        trigger: 'item',
+        formatter: function (p) {
+          var d = p.data;
+          if (!d) return '';
           return [
-            p.data.name,
-            'Revenue：' + p.data.rev + '%',
-            'Coverage：' + p.data.cov + ' / 100',
-            'Tech barrier：' + (p.data.tech * 100).toFixed(0) + '%'
+            d.name,
+            'Revenue：' + d.rev + '%',
+            'Coverage：' + d.cov + ' / 100',
+            'Tech barrier：' + (d.tech * 100).toFixed(0) + '%'
           ].join('<br/>');
         }
-        return '';
-      }
-    },
-
-    // 极坐标系，用于行星点（angle = 0~360，radius = 0~100）
-    angleAxis: {
-      type: 'value',
-      min: 0,
-      max: 360,
-      startAngle: startAngle,  // 与 pie 对齐
-      show: false
-    },
-    radiusAxis: {
-      type: 'value',
-      min: 0,
-      max: 100,
-      show: false
-    },
-    polar: {
-      center: ['50%', '60%'],
-      radius: '70%'
-    },
-
-    series: [
-      // —— 2. 背景环形图：收入占比 —— //
-      {
-        type: 'pie',
-        radius: ['22%', '68%'],
+      },
+      angleAxis: {
+        type: 'value',
+        min: -180,
+        max: 180,
+        startAngle: 90,
+        show: false
+      },
+      radiusAxis: {
+        type: 'value',
+        min: 0,
+        max: 100,
+        show: false
+      },
+      polar: {
         center: ['50%', '60%'],
-        startAngle: startAngle,
-        avoidLabelOverlap: true,
-        itemStyle: {
-          borderColor: 'rgba(15,23,42,0.95)',
-          borderWidth: 2,
-          shadowBlur: 32,
-          shadowOffsetX: 0,
-          shadowOffsetY: 0
-        },
-        label: { show: false },
-        labelLine: { show: false },
-        data: [
-          {
-            value: 63,
-            name: 'Subscription · 63%',
-            itemStyle: {
-              color: new echarts.graphic.RadialGradient(0.2, 0.2, 1, [
-                { offset: 0, color: 'rgba(96,165,250,0.95)' },
-                { offset: 1, color: 'rgba(37,99,235,0.35)' }
-              ])
-            }
-          },
-          {
-            value: 30,
-            name: 'Solar · 30%',
-            itemStyle: {
-              color: new echarts.graphic.RadialGradient(0.8, 0.2, 1, [
-                { offset: 0, color: 'rgba(34,197,94,0.95)' },
-                { offset: 1, color: 'rgba(22,163,74,0.35)' }
-              ])
-            }
-          },
-          {
-            value: 7,
-            name: 'Ads & Devices · 7%',
-            itemStyle: {
-              color: new echarts.graphic.RadialGradient(0.5, 0.8, 1, [
-                { offset: 0, color: 'rgba(250,204,21,0.95)' },
-                { offset: 1, color: 'rgba(161,98,7,0.35)' }
-              ])
-            }
-          }
-        ]
+        radius: '80%'
       },
-
-      // —— 3. 中央“恒星” —— //
-      {
-        type: 'effectScatter',
-        coordinateSystem: 'polar',
-        symbol: 'circle',
-        data: [{ value: [0, 5] }],
-        symbolSize: 16,
-        itemStyle: {
-          color: 'rgba(248,250,252,0.96)',
-          shadowBlur: 40,
-          shadowColor: 'rgba(248,250,252,0.9)'
+      series: [
+        // 背景细刻度环
+        {
+          type: 'custom',
+          coordinateSystem: 'polar',
+          renderItem: function (params, api) {
+            var cx = api.getWidth() / 2;
+            var cy = api.getHeight() * 0.6;
+            var maxR = Math.min(api.getWidth(), api.getHeight()) * 0.4;
+            var levels = 10;
+            var children = [];
+            for (var i = 1; i <= levels; i++) {
+              children.push({
+                type: 'circle',
+                shape: { cx: cx, cy: cy, r: (maxR / levels) * i },
+                style: {
+                  stroke: 'rgba(15,23,42,' + (0.25 + i * 0.04) + ')',
+                  fill: 'transparent',
+                  lineWidth: 0.6
+                }
+              });
+            }
+            // 中心黑洞
+            children.push({
+              type: 'circle',
+              shape: { cx: cx, cy: cy, r: maxR * 0.18 },
+              style: {
+                fill: 'rgba(15,23,42,0.98)',
+                shadowBlur: 40,
+                shadowColor: 'rgba(0,0,0,0.9)'
+              }
+            });
+            // 中心光点
+            children.push({
+              type: 'circle',
+              shape: { cx: cx, cy: cy, r: maxR * 0.03 },
+              style: {
+                fill: 'rgba(248,250,252,0.96)',
+                shadowBlur: 32,
+                shadowColor: 'rgba(248,250,252,0.9)'
+              }
+            });
+            return { type: 'group', children: children };
+          },
+          data: [0],
+          silent: true,
+          z: 0
         },
-        rippleEffect: {
-          period: 6,
-          scale: 6,
-          brushType: 'stroke'
-        },
-        zlevel: 2,
-        silent: true
-      },
 
-      // —— 4. 三个“行星” —— //
-      {
-        type: 'effectScatter',
-        name: 'Revenue Planets',
-        coordinateSystem: 'polar',
-        data: planetData,
-        symbol: 'circle',
-        rippleEffect: {
-          period: 5,
-          scale: 4,
-          brushType: 'stroke'
+        // 星环上的粒子
+        {
+          type: 'scatter',
+          coordinateSystem: 'polar',
+          symbol: 'circle',
+          data: particleData,
+          large: true,
+          itemStyle: {
+            shadowBlur: 22,
+            shadowColor: 'rgba(15,23,42,0.9)'
+          },
+          z: 2
         },
-        itemStyle: {
-          shadowBlur: 28,
-          shadowColor: 'rgba(148,163,184,0.9)'
-        },
-        zlevel: 3
-      }
-    ]
-  };
 
-  chart.setOption(option);
-  window.addEventListener('resize', function () {
-    chart.resize();
-  });
-</script>
+        // 三个行星点（稍大）
+        {
+          type: 'effectScatter',
+          coordinateSystem: 'polar',
+          data: planetData,
+          symbol: 'circle',
+          rippleEffect: {
+            period: 6,
+            scale: 3.8,
+            brushType: 'stroke'
+          },
+          itemStyle: {
+            shadowBlur: 32,
+            shadowColor: 'rgba(255,255,255,0.85)'
+          },
+          z: 3
+        }
+      ]
+    };
 
+    chart.setOption(option);
+    window.addEventListener('resize', function () {
+      chart.resize();
+    });
+  </script>
 </body>
 </html>
