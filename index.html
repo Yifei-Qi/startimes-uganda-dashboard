@@ -173,266 +173,247 @@
   </div>
 
   <!-- ECharts -->
-  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
-  <script>
-    var chart = echarts.init(document.getElementById('galaxy'));
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<script>
+  var chart = echarts.init(document.getElementById('galaxy'));
 
-    // ===== 构造节点与连线 =====
-    var nodes = [];
-    var links = [];
+  // 使用固定坐标布局：layout: 'none'
+  var nodes = [];
+  var links = [];
+  var idCounter = 0;
 
-    var idCounter = 0;
-    function addNode(options) {
-      var node = Object.assign({ id: String(idCounter) }, options);
-      nodes.push(node);
-      idCounter++;
-      return node.id;
+  function addNode(options) {
+    var node = Object.assign(
+      {
+        id: 'n' + idCounter,
+        label: { show: true, color: '#e5e7eb', fontSize: 12 }
+      },
+      options
+    );
+    idCounter++;
+    nodes.push(node);
+    return node.id;
+  }
+
+  function link(a, b) {
+    links.push({ source: a, target: b });
+  }
+
+  // 以 1000x600 为画布坐标系，保证初始视角一次看全
+  // 中心区域：x≈500，y≈300
+
+  // 一级：生态位居中，生态在右侧
+  var nicheId = addNode({
+    id: 'niche',
+    name: '生态位 · Niche',
+    x: 480,
+    y: 260,
+    symbolSize: 90,
+    itemStyle: {
+      color: '#38bdf8'
+    },
+    label: { fontSize: 22, fontWeight: 600 },
+    link: 'niche/index.html'
+  });
+
+  var ecologyId = addNode({
+    id: 'ecology',
+    name: '生态 · Ecology',
+    x: 720,
+    y: 300,
+    symbolSize: 90,
+    itemStyle: {
+      color: '#fbbf24'
+    },
+    label: { fontSize: 22, fontWeight: 600 },
+    link: 'ecology/index.html'
+  });
+
+  link(ecologyId, nicheId);
+
+  // 二级：空间生态位 / 市场生态位，挂在 Niche 下，放在下方左右
+  var spatialId = addNode({
+    id: 'spatial',
+    name: '空间生态位 · Spatial niche',
+    x: 380,
+    y: 420,
+    symbolSize: 60,
+    itemStyle: { color: '#22c55e' },
+    label: { fontSize: 16, fontWeight: 500 },
+    link: 'niche/spatial/index.html'
+  });
+
+  var marketId = addNode({
+    id: 'market',
+    name: '市场生态位 · Market niche',
+    x: 580,
+    y: 420,
+    symbolSize: 60,
+    itemStyle: { color: '#f97316' },
+    label: { fontSize: 16, fontWeight: 500 },
+    link: 'niche/market/index.html'
+  });
+
+  link(nicheId, spatialId);
+  link(nicheId, marketId);
+
+  // 生态下的数据主题：人口 / 媒体
+  var populationId = addNode({
+    id: 'population',
+    name: '人口 · Population',
+    x: 830,
+    y: 380,
+    symbolSize: 46,
+    itemStyle: { color: '#a855f7' },
+    link: 'ecology/population.html'
+  });
+
+  var mediaId = addNode({
+    id: 'media',
+    name: '媒体环境 · Media landscape',
+    x: 830,
+    y: 230,
+    symbolSize: 46,
+    itemStyle: { color: '#0ea5e9' },
+    link: 'ecology/media.html'
+  });
+
+  link(ecologyId, populationId);
+  link(ecologyId, mediaId);
+
+  // 空间生态位下：户外 / EPG / 路演
+  var oohId = addNode({
+    id: 'ooh',
+    name: '户外资源 · OOH',
+    x: 280,
+    y: 420,
+    symbolSize: 40,
+    itemStyle: { color: '#22c55e' },
+    link: 'niche/spatial/offline-visual.html'
+  });
+  var epgId = addNode({
+    id: 'epg',
+    name: 'EPG / DTT / DTH',
+    x: 380,
+    y: 520,
+    symbolSize: 36,
+    itemStyle: { color: '#4ade80' },
+    link: 'niche/spatial/online-visual.html'
+  });
+  var eventId = addNode({
+    id: 'event',
+    name: '路演 / 发布会',
+    x: 480,
+    y: 520,
+    symbolSize: 34,
+    itemStyle: { color: '#16a34a' },
+    link: 'niche/spatial/offline-av.html'
+  });
+
+  [oohId, epgId, eventId].forEach(function (id) {
+    link(spatialId, id);
+  });
+
+  // 市场生态位下：社媒 / 竞品
+  var socialId = addNode({
+    id: 'social',
+    name: '社交媒体 · Social',
+    x: 680,
+    y: 520,
+    symbolSize: 40,
+    itemStyle: { color: '#ec4899' },
+    link: 'niche/market/channel-design.html'
+  });
+  var competitorsId = addNode({
+    id: 'competitors',
+    name: '竞品 · DSTV / GoTV / AzamTV',
+    x: 780,
+    y: 460,
+    symbolSize: 40,
+    itemStyle: { color: '#f97316' },
+    link: 'niche/market/index.html'
+  });
+
+  [socialId, competitorsId].forEach(function (id) {
+    link(marketId, id);
+  });
+
+  // 为每个主簇加一圈小点，增加设计感但不影响导航
+  function addOrbit(centerId, cx, cy, radius, count, color) {
+    for (var i = 0; i < count; i++) {
+      var angle = (2 * Math.PI * i) / count;
+      var x = cx + radius * Math.cos(angle) + (Math.random() - 0.5) * 10;
+      var y = cy + radius * Math.sin(angle) + (Math.random() - 0.5) * 10;
+      var nid = addNode({
+        name: '',
+        x: x,
+        y: y,
+        symbolSize: 4 + Math.random() * 3,
+        itemStyle: {
+          color: color,
+          opacity: 0.8
+        },
+        label: { show: false }
+      });
+      link(centerId, nid);
     }
-    function link(a, b) {
-      links.push({ source: a, target: b });
-    }
+  }
 
-    // 一级核心：生态 / 生态位
-    var ecologyId = addNode({
-      name: '生态 · Ecology',
-      value: 10,
-      symbolSize: 90,
-      category: 0,
-      itemStyle: {
-        color: '#fbbf24',
-        shadowBlur: 40,
-        shadowColor: 'rgba(250, 204, 21, 0.65)'
-      },
-      label: { fontSize: 20, fontWeight: 600 },
-      link: 'ecology/index.html'
-    });
+  addOrbit(nicheId,   480, 260, 80, 26, 'rgba(56,189,248,0.7)');
+  addOrbit(ecologyId, 720, 300, 80, 26, 'rgba(250,204,21,0.7)');
+  addOrbit(spatialId, 380, 420, 60, 18, 'rgba(74,222,128,0.7)');
+  addOrbit(marketId,  580, 420, 60, 18, 'rgba(249,115,22,0.7)');
 
-    var nicheId = addNode({
-      name: '生态位 · Niche',
-      value: 10,
-      symbolSize: 90,
-      category: 1,
-      itemStyle: {
-        color: '#38bdf8',
-        shadowBlur: 40,
-        shadowColor: 'rgba(56, 189, 248, 0.7)'
-      },
-      label: { fontSize: 20, fontWeight: 600 },
-      link: 'niche/index.html'
-    });
-
-    link(ecologyId, nicheId);
-
-    // 二级：空间生态位 / 市场生态位（挂在 Niche 下）
-    var spatialId = addNode({
-      name: '空间生态位 · Spatial niche',
-      value: 6,
-      symbolSize: 60,
-      category: 2,
-      itemStyle: {
-        color: '#22c55e',
-        shadowBlur: 28,
-        shadowColor: 'rgba(34, 197, 94, 0.7)'
-      },
-      link: 'niche/spatial/index.html'
-    });
-
-    var marketId = addNode({
-      name: '市场生态位 · Market niche',
-      value: 6,
-      symbolSize: 60,
-      category: 3,
-      itemStyle: {
-        color: '#f97316',
-        shadowBlur: 28,
-        shadowColor: 'rgba(249, 115, 22, 0.7)'
-      },
-      link: 'niche/market/index.html'
-    });
-
-    link(nicheId, spatialId);
-    link(nicheId, marketId);
-
-    // 生态下的数据主题卫星：人口 / 媒体
-    var populationId = addNode({
-      name: '人口 · Population',
-      value: 4,
-      symbolSize: 44,
-      category: 4,
-      itemStyle: {
-        color: '#a855f7',
-        shadowBlur: 20,
-        shadowColor: 'rgba(168, 85, 247, 0.7)'
-      },
-      link: 'ecology/population.html'
-    });
-    var mediaId = addNode({
-      name: '媒体环境 · Media landscape',
-      value: 4,
-      symbolSize: 44,
-      category: 4,
-      itemStyle: {
-        color: '#0ea5e9',
-        shadowBlur: 20,
-        shadowColor: 'rgba(14,165,233,0.7)'
-      },
-      link: 'ecology/media.html'
-    });
-    link(ecologyId, populationId);
-    link(ecologyId, mediaId);
-
-    // 空间生态位下：户外 / EPG / OTT 等示意卫星
-    var oohId = addNode({
-      name: '户外资源 · OOH',
-      value: 4,
-      symbolSize: 42,
-      category: 5,
-      itemStyle: {
-        color: '#22c55e',
-        shadowBlur: 18,
-        shadowColor: 'rgba(34, 197, 94, 0.6)'
-      },
-      link: 'niche/spatial/offline-visual.html'
-    });
-    var epgId = addNode({
-      name: 'EPG / DTT / DTH',
-      value: 4,
-      symbolSize: 40,
-      category: 5,
-      itemStyle: {
-        color: '#4ade80',
-        shadowBlur: 18,
-        shadowColor: 'rgba(74, 222, 128, 0.6)'
-      },
-      link: 'niche/spatial/online-visual.html'
-    });
-    var eventId = addNode({
-      name: '路演 / 发布会',
-      value: 3,
-      symbolSize: 36,
-      category: 5,
-      itemStyle: {
-        color: '#16a34a',
-        shadowBlur: 18,
-        shadowColor: 'rgba(22,163,74,0.6)'
-      },
-      link: 'niche/spatial/offline-av.html'
-    });
-    [oohId, epgId, eventId].forEach(function (id) {
-      link(spatialId, id);
-    });
-
-    // 市场生态位下：社媒 / 竞品
-    var socialId = addNode({
-      name: '社交媒体 · Social',
-      value: 4,
-      symbolSize: 42,
-      category: 6,
-      itemStyle: {
-        color: '#ec4899',
-        shadowBlur: 22,
-        shadowColor: 'rgba(236,72,153,0.7)'
-      },
-      link: 'niche/market/channel-design.html'
-    });
-    var competitorsId = addNode({
-      name: '竞品 · DSTV / GoTV / AzamTV',
-      value: 4,
-      symbolSize: 44,
-      category: 6,
-      itemStyle: {
-        color: '#f97316',
-        shadowBlur: 22,
-        shadowColor: 'rgba(249,115,22,0.7)'
-      },
-      link: 'niche/market/index.html'
-    });
-    link(marketId, socialId);
-    link(marketId, competitorsId);
-
-    // 为了更接近你发的那种“密网效果”，给每个簇加一圈小节点
-    function addCluster(centerId, count, radius, color, cat) {
-      for (var i = 0; i < count; i++) {
-        var nId = addNode({
-          name: '',
-          value: 1,
-          symbolSize: 6 + Math.random() * 4,
-          category: cat,
-          itemStyle: {
-            color: color,
-            opacity: 0.75
-          },
-          label: { show: false }
-        });
-        link(centerId, nId);
+  var option = {
+    backgroundColor: 'transparent',
+    tooltip: {
+      formatter: function (params) {
+        return params.data.name || '';
       }
-    }
-
-    addCluster(ecologyId, 50, 120, 'rgba(250,204,21,0.85)', 0);
-    addCluster(nicheId,   50, 120, 'rgba(56,189,248,0.85)', 1);
-    addCluster(spatialId, 35, 90,  'rgba(74,222,128,0.85)', 2);
-    addCluster(marketId,  35, 90,  'rgba(248,171,94,0.9)',  3);
-
-    var option = {
-      backgroundColor: 'transparent',
-      tooltip: {
-        formatter: function (params) {
-          return params.data.name || '';
-        }
-      },
-      animationDuration: 1500,
-      animationEasingUpdate: 'quinticInOut',
-      series: [
-        {
-          type: 'graph',
-          layout: 'force',
-          data: nodes,
-          links: links,
-          roam: true,
-          draggable: false,
-          focusNodeAdjacency: true,
-          label: {
-            show: true,
-            color: '#e5e7eb',
-            fontSize: 11
-          },
+    },
+    series: [
+      {
+        type: 'graph',
+        layout: 'none',     // 使用我们给的 x, y 固定位置
+        data: nodes,
+        links: links,
+        roam: true,         // 仍然可以拖拽缩放
+        focusNodeAdjacency: true,
+        edgeSymbol: ['none', 'circle'],
+        edgeSymbolSize: 3,
+        lineStyle: {
+          color: 'rgba(148,163,184,0.38)',
+          width: 0.8,
+          curveness: 0.25
+        },
+        emphasis: {
+          scale: 1.08,
           lineStyle: {
-            color: 'rgba(148,163,184,0.38)',
-            width: 0.8,
-            curveness: 0.25
+            width: 1.5,
+            color: 'rgba(248,250,252,0.9)'
           },
-          force: {
-            repulsion: 260,
-            edgeLength: 120,
-            gravity: 0.02
-          },
-          emphasis: {
-            scale: 1.08,
-            lineStyle: {
-              width: 1.6,
-              color: 'rgba(248,250,252,0.9)'
-            },
-            label: {
-              fontSize: 13,
-              fontWeight: 600
-            }
+          label: {
+            fontSize: 13,
+            fontWeight: 600
           }
         }
-      ]
-    };
-
-    chart.setOption(option);
-
-    // 点击节点跳转
-    chart.on('click', function (params) {
-      if (params.data && params.data.link) {
-        window.location.href = params.data.link;
       }
-    });
+    ]
+  };
 
-    window.addEventListener('resize', function () {
-      chart.resize();
-    });
-  </script>
+  chart.setOption(option);
+
+  // 点击节点跳转
+  chart.on('click', function (params) {
+    if (params.data && params.data.link) {
+      window.location.href = params.data.link;
+    }
+  });
+
+  window.addEventListener('resize', function () {
+    chart.resize();
+  });
+</script>
+
 </body>
 </html>
