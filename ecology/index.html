@@ -18,10 +18,12 @@
       --glass-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.7);
       --text-main: #f1f5f9;
       --text-muted: #94a3b8;
-      --c-sub: #06b6d4;   /* Content Blue */
+
+      --c-sub:   #06b6d4; /* Content Blue */
       --c-solar: #10b981; /* Solar Green */
-      --c-dev: #f97316;   /* Devices / Ads Amber */
-      --font-din: 'Barlow', sans-serif;
+      --c-dev:   #f97316; /* Devices / Ads Amber */
+
+      --font-din:  'Barlow', sans-serif;
       --font-cond: 'Barlow Condensed', sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
     }
@@ -41,7 +43,7 @@
         radial-gradient(circle at 15% 80%, rgba(16, 185, 129, 0.05) 0%, transparent 20%);
     }
 
-    /* 顶部：品牌 + 面包屑 + 二级导航 */
+    /* 顶部：品牌 + 面包屑 + 扇区导航 + 返回 */
     .top-bar {
       position: fixed; top: 0; left: 0; right: 0; height: 72px;
       display: flex; align-items: center; justify-content: space-between;
@@ -78,7 +80,6 @@
     .crumb-sep { opacity:0.6; }
     .crumb-active { color:#e5e7eb; }
 
-    /* 二级扇区导航按钮 */
     .sector-nav {
       position:absolute;
       top:38px;
@@ -138,9 +139,12 @@
 
     .panel-layer { position: absolute; inset: 0; pointer-events: none; z-index: 10; padding: 40px; }
 
+    /* 左上主说明（不抢占鼠标事件） */
     .hero-text {
-      position: absolute; top: 96px; left: 50px; max-width: 420px; pointer-events: auto;
+      position: absolute; top: 96px; left: 50px; max-width: 420px;
       text-shadow: 0 4px 30px rgba(0,0,0,0.8);
+      pointer-events: none;
+      user-select: none;
     }
     .hero-label {
       font-family: var(--font-cond); font-size: 12px; font-weight: 700;
@@ -161,7 +165,6 @@
       content: ''; position: absolute; left: 0; top: 4px; bottom: 4px; width: 4px;
       background: rgba(255,255,255,0.2); border-radius: 4px;
     }
-
     .struct-legend { display: flex; flex-direction: column; gap: 16px; }
     .struct-item { display: flex; align-items: center; gap: 14px; color: rgba(255,255,255,0.9); }
     .struct-bar { width: 6px; height: 32px; border-radius: 6px; box-shadow: 0 0 12px currentColor; }
@@ -195,45 +198,6 @@
 
     .pos-bottom-right { bottom: 50px; right: 50px; }
 
-    /* 右上 / 左下 / 右下 说明文本框 */
-    .info-card {
-      position:absolute;
-      width:280px;
-      padding:18px 20px;
-      border-radius:22px;
-      background:rgba(15,23,42,0.9);
-      border:1px solid rgba(148,163,184,0.45);
-      backdrop-filter:blur(18px);
-      box-shadow:0 16px 40px rgba(15,23,42,0.85);
-      font-size:12px;
-      line-height:1.6;
-      color:var(--text-muted);
-      pointer-events:auto;
-    }
-    .info-card small {
-      font-family:var(--font-cond);
-      letter-spacing:1.4px;
-      font-size:11px;
-      text-transform:uppercase;
-      color:rgba(148,163,184,0.9);
-    }
-    .info-card h3 {
-      margin-top:4px;
-      margin-bottom:8px;
-      font-family:var(--font-cond);
-      font-size:16px;
-      color:#e5e7eb;
-      text-transform:uppercase;
-      letter-spacing:.6px;
-    }
-    .info-how   { top:96px;  right:40px; }
-    .info-dvb   { bottom:46px;left:40px; }
-    .info-solar-ott { bottom:46px;right:40px; }
-
-    @media (max-width: 1024px) {
-      .info-card { display:none; }
-    }
-
     @media (max-width: 768px) {
       .top-bar { padding: 0 20px; height: 60px; }
       .hero-text { top: 80px; left: 24px; right: 24px; max-width: none; }
@@ -254,14 +218,12 @@
       <a class="back-btn" href="../index.html">Back to Universe</a>
     </div>
 
-    <!-- 顶部面包屑 -->
     <div class="breadcrumb">
       <span>Data Space</span><span class="crumb-sep">/</span>
       <span>Ecology</span><span class="crumb-sep">/</span>
       <span class="crumb-active">Business Constellation</span>
     </div>
 
-    <!-- 三个扇区的下一级入口按钮（DVB / SOLAR / CONTENT） -->
     <div class="sector-nav">
       <a class="sector-chip sub" href="./ecology-dvb.html">
         <span class="sector-chip-dot"></span><span>DVB · TV Ecosystem</span>
@@ -278,16 +240,17 @@
   <div id="chart-container"></div>
 
   <div class="panel-layer">
-    <!-- 左上：总领与结构说明 -->
+    <!-- 左上：总览说明 -->
     <div class="hero-text">
       <div class="hero-label">ECOSYSTEM OVERVIEW</div>
       <h1 class="hero-title">Business<br>Planetary System</h1>
       <div class="hero-desc">
-        中央恒星代表乌干达四达整体业务重心；三条极光扇区分别为 Subscription
-        <strong>63%</strong>、Solar <strong>30%</strong>、Ads &amp; Devices <strong>7%</strong> 的收入组成。
-        五颗业务行星（Solar / DTV / DTH / DTT / OTT）围绕恒星运行，KPI 星点则按照
-        指标属性，分布在各自收入扇区中；部分终端与广告指标跃迁至
-        <em>Ads &amp; Devices</em> 扇区。
+        中央恒星代表乌干达四达整体业务重心；三条极光扇区分别为
+        Subscription <strong>63%</strong>、Solar <strong>30%</strong>、
+        Ads &amp; Devices <strong>7%</strong> 的收入组成。五颗业务行星
+        （Solar / DTV / DTH / DTT / OTT）围绕恒星运行，KPI 星点按照指
+        标属性分布在各自收入扇区中，部分“终端 / 设备 / 广告”类指标
+        被跃迁到 <em>Ads &amp; Devices</em> 扇区。
       </div>
 
       <div class="struct-legend">
@@ -315,45 +278,7 @@
       </div>
     </div>
 
-    <!-- 右上：HOW TO READ 文本框 -->
-    <aside class="info-card info-how">
-      <small>HOW TO READ</small>
-      <h3>点的含义</h3>
-      <p>
-        位置：靠近某颗行星的点属于该业务线；分布在不同光带则对应不同收入扇区。<br>
-        颜色：区分业务线 Solar / DTV / DTH / DTT / OTT。<br>
-        大小：在本业务线内部的相对指标体量。<br>
-        边缘颜色：橙色 = 上升趋势，蓝色 = 下降趋势。<br>
-        悬停：右下信息卡展示业务线、指标名称与当前数值。
-      </p>
-    </aside>
-
-    <!-- 左下：Legacy DVB Cluster 文本框 -->
-    <aside class="info-card info-dvb">
-      <small>LEGACY DVB CLUSTER</small>
-      <h3>DTV · DTH · DTT 电视业务星团</h3>
-      <p>
-        传统付费电视业务的充值、扣费、ARPPU 等指标绝大部分归入
-        <strong>Subscription</strong> 扇区；其中涉及“销量 / 终端 / 机顶盒 / 设备”的
-        指标则被迁移至 <strong>Ads &amp; Devices</strong> 扇区。通过点云的密度与体量，
-        可以快速比较收视费与终端收入在整个生态中的相对贡献与变化速度。
-      </p>
-    </aside>
-
-    <!-- 右下：Solar & OTT Cluster 文本框 -->
-    <aside class="info-card info-solar-ott">
-      <small>SOLAR &amp; OTT CLUSTER</small>
-      <h3>Solar 与 OTT 的新增长空间</h3>
-      <p>
-        Solar 星团聚集在绿色扇区，代表约 <strong>30%</strong> 的离网增量收入；KPI 以销量、
-        应收分期与分期用户等指标为主。<br>
-        OTT 星团主要落在 <strong>Subscription</strong> 扇区，但其广告相关 KPI
-        （如 DSP 广告收入）会被归入 <strong>Ads &amp; Devices</strong>。绿色与品红色点云的散布
-        程度，暗示了未来可重点挖掘的增长星域与创新空间。
-      </p>
-    </aside>
-
-    <!-- 右下：悬浮明细卡片 -->
+    <!-- 右下：指标详情卡 -->
     <div class="glass-card pos-bottom-right" id="detail-panel">
       <div class="card-header">
         <span id="p-biz">BUSINESS</span>
@@ -373,7 +298,13 @@
 
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
   <script>
-    // ===================== 配置与数据 =====================
+    // 视角状态：旋转 + 缩放 + 极光进度
+    var viewState = {
+      rotationDeg: 0,
+      zoom: 1,
+      auroraProgress: 1
+    };
+
     var macroDefs = [
       { id: 'Subscription', label: 'Subscription', value: 63, color: '#06b6d4' },
       { id: 'Solar',        label: 'Solar',        value: 30, color: '#10b981' },
@@ -540,7 +471,7 @@
 
         var fillColor = toneColor(planet.tone, 0.9);
         var borderColor = 'rgba(226,232,240,0.8)';
-        if (m.trend === 'up') borderColor = '#f97316';
+        if (m.trend === 'up')   borderColor = '#f97316';
         else if (m.trend === 'down') borderColor = '#3b82f6';
 
         clusterPoints.push({
@@ -565,7 +496,7 @@
       });
     });
 
-    // 星场装饰
+    // 星场
     var starfield = [];
     (function(){
       var count = 260;
@@ -610,24 +541,21 @@
           id: 'aurora',
           type: 'custom',
           coordinateSystem: 'none',
-          data: [0],
+          data: [1],
           renderItem: function(params, api){
-            var progress = api.value(0);
-            if (progress == null) progress = 1;
-            if (progress < 0) progress = 0; if (progress>1) progress=1;
-            if (progress <= 0.01) return {type:'group',children:[]};
-
+            var progress = viewState.auroraProgress;
             var cx = api.getWidth()/2;
             var cy = api.getHeight()*0.52;
-            var maxR = Math.min(api.getWidth(), api.getHeight())*0.50;
+            var maxR = Math.min(api.getWidth(), api.getHeight())*0.50*viewState.zoom;
             var rInner = maxR*0.18*progress;
             var rOuter = maxR*(0.30 + 0.42*progress);
+            var rot = viewState.rotationDeg * Math.PI/180;
 
             var children = [];
             ['Subscription','Solar','AdsDevices'].forEach(function(id){
               var lay = macroLayout[id];
-              var startRad = (lay.start/100)*Math.PI*2 - Math.PI/2;
-              var endRad   = (lay.end/100)*Math.PI*2   - Math.PI/2;
+              var startRad = (lay.start/100)*Math.PI*2 - Math.PI/2 + rot;
+              var endRad   = (lay.end/100)*Math.PI*2   - Math.PI/2 + rot;
               for (var layer=0; layer<3; layer++){
                 var inner = rInner + layer*maxR*0.01;
                 var outer = rOuter + layer*maxR*0.015;
@@ -672,13 +600,14 @@
 
         // 轨道圈
         {
+          id:'rings',
           type:'custom',
           coordinateSystem:'none',
           data:[0],
           renderItem:function(params, api){
             var cx = api.getWidth()/2;
             var cy = api.getHeight()*0.52;
-            var maxR = Math.min(api.getWidth(), api.getHeight())*0.50;
+            var maxR = Math.min(api.getWidth(), api.getHeight())*0.50*viewState.zoom;
             var rings=[];
             [0.32,0.46,0.60,0.74,0.88].forEach(function(rp){
               rings.push({
@@ -695,13 +624,14 @@
 
         // 中央恒星
         {
+          id:'star',
           type:'custom',
           coordinateSystem:'none',
           data:[0],
           renderItem:function(params, api){
             var cx = api.getWidth()/2;
             var cy = api.getHeight()*0.52;
-            var maxR = Math.min(api.getWidth(), api.getHeight())*0.50;
+            var maxR = Math.min(api.getWidth(), api.getHeight())*0.50*viewState.zoom;
             var haloR = maxR*0.16;
             var starR = maxR*0.09;
             return {
@@ -794,13 +724,16 @@
         var now = Date.now();
         var t = (now-start)/duration;
         if (t>1) t=1;
-        chart.setOption({series:[{id:'aurora',data:[t]}]});
+        viewState.auroraProgress = t;
+        chart.setOption({
+          series:[{id:'aurora', data:[t]}]
+        }, false);
         if (t<1) requestAnimationFrame(frame);
       }
       requestAnimationFrame(frame);
     })();
 
-    // 悬停交互：使用 seriesType 检测，避免 Solar 区域无响应
+    // 悬停详情（包括 Solar 区域）
     var panel = document.getElementById('detail-panel');
     chart.on('mousemove', function(params){
       if (params.seriesType !== 'effectScatter') return;
@@ -814,26 +747,71 @@
       var elBiz   = document.getElementById('p-biz');
       var elType  = document.getElementById('p-type');
 
-      elName.innerText = d.name;
-      elVal.innerText  = d.value.toLocaleString();
+      elName.textContent = d.name;
+      elVal.textContent  = d.value.toLocaleString();
 
       var color = '#e5e7eb';
       if (d.trend === 'up')   color = '#f97316';
       else if (d.trend === 'down') color = '#3b82f6';
       elVal.style.color = color;
 
-      elTrend.innerText = d.trend ? d.trend.toUpperCase() : '--';
+      elTrend.textContent = d.trend ? d.trend.toUpperCase() : '--';
       elTrend.style.color = color;
       elTrend.style.background =
         d.trend === 'up'   ? 'rgba(249,115,22,0.12)' :
         d.trend === 'down' ? 'rgba(59,130,246,0.12)' :
                              'rgba(148,163,184,0.15)';
 
-      elBiz.innerText  = d.biz;
-      elType.innerText = d.type;
+      elBiz.textContent  = d.biz;
+      elType.textContent = d.type;
 
       panel.classList.add('active');
     });
+
+    // 2.5D 旋转（拖动）与缩放（滚轮）
+    var zr = chart.getZr();
+    var isDragging = false;
+    var lastX = 0;
+
+    zr.on('mousedown', function(e){
+      isDragging = true;
+      lastX = e.offsetX;
+    });
+    zr.on('mouseup', function(){ isDragging = false; });
+    zr.on('globalout', function(){ isDragging = false; });
+
+    zr.on('mousemove', function(e){
+      if (!isDragging) return;
+      var dx = e.offsetX - lastX;
+      lastX = e.offsetX;
+      viewState.rotationDeg = (viewState.rotationDeg + dx * 0.25) % 360;
+      chart.setOption({
+        angleAxis:{ startAngle: 90 + viewState.rotationDeg },
+        series:[
+          {id:'aurora', data:[viewState.auroraProgress]},
+          {id:'rings',  data:[0]},
+          {id:'star',   data:[0]}
+        ]
+      }, false);
+    });
+
+    var dom = chart.getDom();
+    dom.addEventListener('wheel', function(e){
+      e.preventDefault();
+      var delta = e.deltaY > 0 ? -0.08 : 0.08;
+      var z = viewState.zoom + delta;
+      if (z < 0.75) z = 0.75;
+      if (z > 1.35) z = 1.35;
+      viewState.zoom = z;
+      chart.setOption({
+        polar:{ radius: (120 * viewState.zoom) + '%' },
+        series:[
+          {id:'aurora', data:[viewState.auroraProgress]},
+          {id:'rings',  data:[0]},
+          {id:'star',   data:[0]}
+        ]
+      }, false);
+    }, { passive:false });
 
     window.addEventListener('resize', function(){ chart.resize(); });
   </script>
