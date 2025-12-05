@@ -2,362 +2,439 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <title>生态 · Ecology · StarTimes Uganda</title>
+  <title>Ecology · StarTimes Uganda · Orbit View</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont,"SF Pro Text",
-        "Segoe UI", Roboto,"Helvetica Neue", Arial,"Noto Sans SC",sans-serif;
-      background:
-        radial-gradient(circle at top left, rgba(37,99,235,0.25), transparent 55%),
-        radial-gradient(circle at bottom right, rgba(234,179,8,0.32), transparent 55%),
-        #020617;
+        "Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans SC",sans-serif;
+      background: #050816;
       color: #e5e7eb;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+      overflow: hidden;
     }
 
-    header {
-      padding: 18px 32px 12px;
+    .top-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 52px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid rgba(30,64,175,0.5);
-      backdrop-filter: blur(20px);
+      justify-content: space-between;
+      padding: 0 26px;
+      z-index: 20;
+      backdrop-filter: blur(18px);
       background: linear-gradient(
         to bottom,
-        rgba(15,23,42,0.96),
-        rgba(15,23,42,0.82),
-        rgba(15,23,42,0.65)
+        rgba(5,7,24,0.96),
+        rgba(5,7,24,0.75),
+        transparent
       );
+      border-bottom: 1px solid rgba(148,163,184,0.35);
     }
+
     .brand {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 3px;
     }
-    .brand-label {
+
+    .brand-path {
       font-size: 11px;
-      letter-spacing: 0.18em;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: #64748b;
+      color: #6b7280;
     }
+
     .brand-title {
-      font-size: 22px;
+      font-size: 16px;
       font-weight: 600;
     }
-    .brand-tagline {
-      font-size: 12px;
-      color: #9ca3af;
-      max-width: 420px;
-    }
-    .back-link {
-      font-size: 12px;
-      color: #e5e7eb;
-      text-decoration: none;
-      padding: 7px 16px;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.55);
-      background: radial-gradient(circle at top left, rgba(30,64,175,0.75), rgba(15,23,42,0.96));
-      box-shadow: 0 0 18px rgba(15,23,42,0.9);
-    }
-    .back-link:hover {
-      border-color: rgba(248,250,252,0.9);
-    }
 
-    main {
-      flex: 1;
-      padding: 20px 28px 24px;
-      display: grid;
-      grid-template-columns: minmax(0, 2.3fr) minmax(0, 1.5fr);
-      gap: 20px;
-    }
-
-    .hero-card {
-      border-radius: 26px;
-      padding: 22px 24px;
-      border: 1px solid rgba(148,163,184,0.45);
-      background:
-        radial-gradient(circle at top left, rgba(37,99,235,0.32), transparent 60%),
-        linear-gradient(135deg, rgba(15,23,42,0.96), rgba(15,23,42,0.86));
-      box-shadow:
-        0 28px 80px rgba(15,23,42,0.95),
-        0 0 0 1px rgba(15,23,42,0.9) inset;
+    .top-actions {
       display: flex;
-      flex-direction: column;
-      gap: 16px;
-      position: relative;
-      overflow: hidden;
-    }
-    .hero-tag {
-      font-size: 11px;
-      color: #93c5fd;
-      text-transform: uppercase;
-      letter-spacing: 0.18em;
-    }
-    .hero-title {
-      font-size: 24px;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-    }
-    .hero-desc {
-      font-size: 13px;
-      color: #cbd5f5;
-      max-width: 520px;
-      line-height: 1.7;
-    }
-    .hero-metadata {
-      display: flex;
-      flex-wrap: wrap;
+      align-items: center;
       gap: 10px;
       font-size: 11px;
+    }
+
+    .chip {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.8);
       color: #9ca3af;
     }
-    .meta-pill {
-      padding: 5px 10px;
+
+    .back {
+      padding: 6px 14px;
       border-radius: 999px;
       border: 1px solid rgba(148,163,184,0.7);
-      background: rgba(15,23,42,0.86);
-    }
-
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 6px;
-    }
-    .hero-btn {
-      font-size: 12px;
-      padding: 7px 14px;
-      border-radius: 999px;
-      text-decoration: none;
-      border: 1px solid rgba(252,211,77,0.9);
-      color: #0f172a;
-      background: radial-gradient(circle at top left, #facc15, #f97316);
-      box-shadow: 0 10px 35px rgba(248,250,252,0.12);
-    }
-    .hero-btn.secondary {
-      border-color: rgba(148,163,184,0.7);
-      background: rgba(15,23,42,0.9);
+      background: radial-gradient(circle at top left,rgba(96,165,250,0.9),rgba(15,23,42,0.98));
       color: #e5e7eb;
-      box-shadow: none;
+      text-decoration: none;
     }
 
-    #chart-ecology {
-      width: 100%;
-      height: 260px;
-      margin-top: 8px;
-      border-radius: 20px;
-      border: 1px solid rgba(30,64,175,0.6);
-      background: radial-gradient(circle at top, rgba(15,23,42,0.2), rgba(15,23,42,0.95));
+    .scene {
+      position: absolute;
+      top: 52px; bottom: 0; left: 0; right: 0;
       overflow: hidden;
+      background:
+        radial-gradient(circle at 15% 10%, rgba(56,189,248,0.24), transparent 55%),
+        radial-gradient(circle at 80% 90%, rgba(234,179,8,0.28), transparent 60%),
+        radial-gradient(circle at 70% 10%, rgba(244,63,94,0.18), transparent 55%),
+        #020617;
     }
 
-    .side-card {
-      border-radius: 26px;
-      padding: 18px 20px;
-      border: 1px solid rgba(148,163,184,0.45);
-      background:
-        radial-gradient(circle at bottom right, rgba(250,204,21,0.26), transparent 60%),
-        linear-gradient(145deg, rgba(15,23,42,0.96), rgba(15,23,42,0.86));
-      box-shadow: 0 22px 70px rgba(15,23,42,0.96);
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+    #eco-orbit {
+      position: absolute;
+      inset: 0;
     }
-    .side-title {
+
+    /* 漂浮信息卡片 */
+    .panel {
+      position: absolute;
+      border-radius: 20px;
+      padding: 14px 16px;
+      border: 1px solid rgba(148,163,184,0.55);
+      background: radial-gradient(circle at top left, rgba(15,23,42,0.95), rgba(15,23,42,0.9));
+      box-shadow:
+        0 18px 55px rgba(15,23,42,0.9),
+        0 0 0 1px rgba(15,23,42,0.9) inset;
+      backdrop-filter: blur(18px);
+      max-width: 260px;
+      font-size: 12px;
+      line-height: 1.6;
+      color: #9ca3af;
+    }
+
+    .panel h2 {
       font-size: 13px;
       font-weight: 600;
       margin-bottom: 4px;
+      color: #e5e7eb;
     }
-    .side-section-title {
-      font-size: 12px;
-      font-weight: 600;
+
+    .panel small {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: #64748b;
+    }
+
+    .panel-main {
+      left: 42px;
+      top: 82px;
+    }
+
+    .panel-dvb {
+      top: 80px;
+      right: 40px;
+      max-width: 220px;
+    }
+
+    .panel-solar {
+      bottom: 42px;
+      left: 40px;
+      max-width: 220px;
+    }
+
+    .panel-content {
+      bottom: 46px;
+      right: 44px;
+      max-width: 240px;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
       margin-top: 8px;
-      margin-bottom: 4px;
-      color: #fef9c3;
     }
-    .side-text {
+
+    .pill {
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.55);
+      font-size: 11px;
+      color: #cbd5f5;
+    }
+
+    .panel-kpi {
+      top: 50%;
+      right: 50%;
+      transform: translate(140%, -120%);
+      max-width: 180px;
+      text-align: right;
+    }
+
+    .panel-kpi h2 {
+      font-size: 26px;
+      margin-bottom: 0;
+      color: #e5e7eb;
+    }
+
+    .panel-kpi span.unit {
       font-size: 12px;
       color: #9ca3af;
-      line-height: 1.6;
+      margin-left: 4px;
     }
-    .side-list {
-      font-size: 12px;
-      color: #cbd5f5;
-      list-style: none;
+
+    .panel-kpi p {
       margin-top: 4px;
-    }
-    .side-list li::before {
-      content: '';
-      display: inline-block;
-      width: 5px;
-      height: 5px;
-      border-radius: 999px;
-      margin-right: 6px;
-      background: rgba(250,204,21,0.9);
-    }
-
-    footer {
-      padding: 10px 28px 14px;
       font-size: 11px;
-      color: #6b7280;
-      border-top: 1px solid rgba(15,23,42,0.95);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
     }
 
-    @media (max-width: 960px) {
-      main { grid-template-columns: minmax(0,1fr); padding: 16px 16px 22px; }
-      header { padding: 14px 16px 10px; flex-direction: column; align-items: flex-start; gap: 6px; }
-      .brand-tagline { max-width: none; }
-      #chart-ecology { height: 220px; }
+    @media (max-width: 900px) {
+      .panel-main {
+        left: 16px;
+        top: 76px;
+        right: 16px;
+        max-width: none;
+      }
+      .panel-dvb, .panel-solar, .panel-content, .panel-kpi {
+        display: none; /* 手机上就只留一块主说明，避免过挤 */
+      }
     }
   </style>
 </head>
 <body>
-  <header>
+  <div class="top-bar">
     <div class="brand">
-      <div class="brand-label">MODULE · ECOLOGY</div>
-      <div class="brand-title">生态 · Ecology</div>
-      <div class="brand-tagline">
-        从横向产业布局与纵向产品特征，理解 StarTimes 在乌干达的 DVB / SOLAR / CONTENT 生态位置。
-      </div>
+      <div class="brand-path">STARTIMES UGANDA · DATA SPACE</div>
+      <div class="brand-title">Ecology · 生态星环视图</div>
     </div>
-    <a class="back-link" href="../index.html">返回首页 · DATA SPACE</a>
-  </header>
+    <div class="top-actions">
+      <div class="chip">DVB · SOLAR · CONTENT</div>
+      <a class="back" href="../index.html">Back to Universe</a>
+    </div>
+  </div>
 
-  <main>
-    <section class="hero-card">
-      <div class="hero-tag">HORIZONTAL & VERTICAL VIEW</div>
-      <div class="hero-title">产业产品生态剪影</div>
-      <p class="hero-desc">
-        这里不是简单的产品罗列，而是把 DVB（DTT / DTH）、SOLAR 与 CONTENT
-        放在同一坐标系下：一边观察覆盖度与营收贡献，一边评估技术门槛与不可替代性。
-        你可以把这张图当作乌干达四达“产业画像”的缩略图。
+  <div class="scene">
+    <!-- 中心星环图 -->
+    <div id="eco-orbit"></div>
+
+    <!-- 文案面板：整体说明 -->
+    <aside class="panel panel-main">
+      <small>OVERVIEW</small>
+      <h2>乌干达四达的产业轨道</h2>
+      <p>
+        把 DVB、SOLAR 与 CONTENT 想像成三颗绕着同一颗“乌干达用户”旋转的卫星：
+        轨道的半径代表覆盖广度，角度代表营收权重，亮度则暗示技术门槛与不可替代性。
+        这一页只做一件事——帮你用一眼记住这张星图。
       </p>
-
-      <div class="hero-metadata">
-        <span class="meta-pill">DVB：地面 / 卫星 · DTT / DTH</span>
-        <span class="meta-pill">SOLAR：离网供电 &amp; 能源解决方案</span>
-        <span class="meta-pill">CONTENT：频道 / 节目 / 自制内容</span>
+      <div class="pill-row">
+        <span class="pill">DVB · 地面 / 卫星</span>
+        <span class="pill">SOLAR · 能源入口</span>
+        <span class="pill">CONTENT · 体验入口</span>
       </div>
+    </aside>
 
-      <div class="hero-actions">
-        <a class="hero-btn" href="horizontal.html">横向 · 产业产品布局</a>
-        <a class="hero-btn secondary" href="vertical.html">纵向 · 特点 & 门槛 & 不可替代性</a>
-      </div>
-
-      <div id="chart-ecology"></div>
-    </section>
-
-    <aside class="side-card">
-      <div class="side-title">阅读提示 · How to read</div>
-      <p class="side-text">
-        雷达图并不是最终结论，而是一张“工作草图”：你在后续可以用真实数据替换示意数值，
-        形成内部对齐的指标体系，用来支撑产品决策与资源分配。
-      </p>
-
-      <div class="side-section-title">横向（Horizontal）</div>
-      <p class="side-text">
-        从“产品族群”的角度，把 DVB / SOLAR / CONTENT 放在同一平面上，
-        比较它们在覆盖、收入、用户粘性等维度的权重。
-      </p>
-
-      <ul class="side-list">
-        <li>DVB：覆盖度高，技术门槛与基础设施依赖度高</li>
-        <li>SOLAR：收入增长弹性大，但受政策与资本约束</li>
-        <li>CONTENT：直接驱动用户粘性与品牌认知</li>
-      </ul>
-
-      <div class="side-section-title">纵向（Vertical）</div>
-      <p class="side-text">
-        纵向分析关注的是每一条产品线的“深度”：技术栈、供应链、合作伙伴、
-        以及难以被复制的壁垒——这些才是真正构成生态护城河的部分。
+    <!-- DVB 面板 -->
+    <aside class="panel panel-dvb">
+      <small>DVB ORBIT</small>
+      <h2>DTT / DTH · 广覆盖高门槛</h2>
+      <p>
+        发射塔、机顶盒、频谱资源决定了 DVB 轨道半径几乎覆盖全国，
+        也是生态中技术门槛最高的一环。
       </p>
     </aside>
-  </main>
 
-  <footer>
-    <span>StarTimes Uganda · Ecology Module</span>
-    <span>Horizontal &amp; Vertical Industrial Layout · DVB / SOLAR / CONTENT</span>
-  </footer>
+    <!-- SOLAR 面板 -->
+    <aside class="panel panel-solar">
+      <small>SOLAR ORBIT</small>
+      <h2>离网能源 · 增长卫星</h2>
+      <p>
+        SOLAR 的轨道暂时更“局部”，但增长斜率陡峭，
+        与 DVB 在农村区域形成互补。
+      </p>
+    </aside>
+
+    <!-- CONTENT 面板 -->
+    <aside class="panel panel-content">
+      <small>CONTENT ORBIT</small>
+      <h2>内容 · 把轨道变成记忆</h2>
+      <p>
+        体育、剧集、自办频道让用户形成“情感锚点”，
+        CONTENT 的存在让整个星系有了品牌故事和文化氛围。
+      </p>
+    </aside>
+
+    <!-- 中心 KPI 小卡片（示意） -->
+    <aside class="panel panel-kpi">
+      <small>SIMULATED KPI</small>
+      <h2>68<span class="unit">% DVB</span></h2>
+      <p>当前生态中，约 68% 的收入与 DVB 相关，CONTENT 负责放大其边际价值。</p>
+    </aside>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
   <script>
-    var chart = echarts.init(document.getElementById('chart-ecology'));
+    var chart = echarts.init(document.getElementById('eco-orbit'));
+
+    // 采用极坐标星环图，营造“轨道”感
     var option = {
       backgroundColor: 'transparent',
+      angleAxis: {
+        type: 'value',
+        startAngle: 90,
+        min: 0,
+        max: 360,
+        axisLabel: { show: false },
+        axisLine: { show: false },
+        axisTick: { show: false },
+        splitLine: { show: false }
+      },
+      radiusAxis: {
+        type: 'value',
+        min: 0,
+        max: 100,
+        axisLabel: { show: false },
+        axisLine: { show: false },
+        axisTick: { show: false },
+        splitLine: {
+          show: true,
+          lineStyle: { color: 'rgba(15,23,42,0.9)' }
+        }
+      },
+      polar: {
+        center: ['50%', '54%'],
+        radius: '70%'
+      },
       tooltip: {
-        trigger: 'item'
-      },
-      legend: {
-        bottom: 4,
-        textStyle: { color: '#9ca3af', fontSize: 10 }
-      },
-      radar: {
-        radius: '65%',
-        splitNumber: 4,
-        axisName: { color: '#e5e7eb', fontSize: 11 },
-        axisLine: { lineStyle: { color: 'rgba(148,163,184,0.5)' } },
-        splitLine: { lineStyle: { color: ['rgba(148,163,184,0.5)'] } },
-        splitArea: {
-          areaStyle: {
-            color: ['rgba(15,23,42,0.9)','rgba(15,23,42,0.8)']
-          }
-        },
-        indicator: [
-          { name: '覆盖度 Coverage', max: 100 },
-          { name: '收入贡献 Revenue', max: 100 },
-          { name: '用户粘性 Stickiness', max: 100 },
-          { name: '技术门槛 Tech barrier', max: 100 },
-          { name: '不可替代性 Uniqueness', max: 100 }
-        ]
+        formatter: function (p) {
+          if (!p.data || !p.data.label) return '';
+          return p.data.label + '<br/>Coverage: ' + p.data.cov +
+            '<br/>Revenue: ' + p.data.rev +
+            '<br/>Stickiness: ' + p.data.stick;
+        }
       },
       series: [
+        // 模糊底圈，增加空间感
         {
-          type: 'radar',
-          areaStyle: { opacity: 0.18 },
-          lineStyle: { width: 1.6 },
-          symbolSize: 3,
+          type: 'bar',
+          coordinateSystem: 'polar',
+          roundCap: true,
           data: [
-            {
-              value: [92, 80, 75, 88, 82],
-              name: 'DVB',
-              itemStyle: { color: '#facc15' },
-              lineStyle: { color: '#facc15' },
-              areaStyle: {
-                color: 'rgba(250,204,21,0.28)'
-              }
-            },
-            {
-              value: [55, 88, 60, 72, 65],
-              name: 'SOLAR',
-              itemStyle: { color: '#34d399' },
-              lineStyle: { color: '#34d399' },
-              areaStyle: {
-                color: 'rgba(52,211,153,0.24)'
-              }
-            },
-            {
-              value: [70, 68, 95, 78, 90],
-              name: 'CONTENT',
-              itemStyle: { color: '#60a5fa' },
-              lineStyle: { color: '#60a5fa' },
-              areaStyle: {
-                color: 'rgba(96,165,250,0.26)'
-              }
+            { value: 360, radius: 28 },
+            { value: 360, radius: 50 },
+            { value: 360, radius: 72 }
+          ],
+          barWidth: 18,
+          itemStyle: {
+            color: function (params) {
+              var idx = params.dataIndex;
+              if (idx === 0) return 'rgba(15,23,42,0.9)';
+              if (idx === 1) return 'rgba(15,23,42,0.8)';
+              return 'rgba(15,23,42,0.7)';
             }
-          ]
+          },
+          silent: true
+        },
+
+        // DVB 轨道
+        {
+          type: 'bar',
+          coordinateSystem: 'polar',
+          roundCap: true,
+          name: 'DVB',
+          data: [{
+            value: 260, // 在 360° 中占比（营收权重示意）
+            radius: 72,
+            label: 'DVB · DTT / DTH',
+            cov: '92',
+            rev: '80',
+            stick: '75'
+          }],
+          barWidth: 12,
+          itemStyle: {
+            color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+              { offset: 0, color: 'rgba(250,204,21,0.15)' },
+              { offset: 0.3, color: 'rgba(250,204,21,0.9)' },
+              { offset: 1, color: 'rgba(251,191,36,0.1)' }
+            ]),
+            shadowBlur: 24,
+            shadowColor: 'rgba(250,204,21,0.8)'
+          }
+        },
+
+        // SOLAR 轨道
+        {
+          type: 'bar',
+          coordinateSystem: 'polar',
+          roundCap: true,
+          name: 'SOLAR',
+          data: [{
+            value: 140,
+            radius: 52,
+            label: 'SOLAR',
+            cov: '45',
+            rev: '65',
+            stick: '55'
+          }],
+          barWidth: 10,
+          itemStyle: {
+            color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+              { offset: 0, color: 'rgba(52,211,153,0.1)' },
+              { offset: 0.4, color: 'rgba(52,211,153,0.95)' },
+              { offset: 1, color: 'rgba(22,163,74,0.1)' }
+            ]),
+            shadowBlur: 20,
+            shadowColor: 'rgba(34,197,94,0.8)'
+          }
+        },
+
+        // CONTENT 轨道
+        {
+          type: 'bar',
+          coordinateSystem: 'polar',
+          roundCap: true,
+          name: 'CONTENT',
+          data: [{
+            value: 220,
+            radius: 32,
+            label: 'CONTENT',
+            cov: '68',
+            rev: '55',
+            stick: '95'
+          }],
+          barWidth: 8,
+          itemStyle: {
+            color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+              { offset: 0, color: 'rgba(96,165,250,0.1)' },
+              { offset: 0.5, color: 'rgba(96,165,250,0.95)' },
+              { offset: 1, color: 'rgba(56,189,248,0.1)' }
+            ]),
+            shadowBlur: 18,
+            shadowColor: 'rgba(59,130,246,0.9)'
+          }
+        },
+
+        // 中心光晕
+        {
+          type: 'effectScatter',
+          coordinateSystem: 'polar',
+          symbol: 'circle',
+          symbolSize: 16,
+          data: [{ value: [0, 0] }],
+          itemStyle: {
+            color: 'rgba(248,250,252,0.95)',
+            shadowBlur: 35,
+            shadowColor: 'rgba(248,250,252,0.9)'
+          },
+          rippleEffect: {
+            scale: 6,
+            brushType: 'stroke'
+          },
+          silent: true
         }
       ]
     };
+
     chart.setOption(option);
-    window.addEventListener('resize', function(){ chart.resize(); });
+    window.addEventListener('resize', function () { chart.resize(); });
   </script>
 </body>
 </html>
