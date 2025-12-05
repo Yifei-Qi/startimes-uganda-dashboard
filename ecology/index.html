@@ -188,8 +188,8 @@
         （Solar、DTV、DTH、DTT、OTT）的 KPI。
       </p>
       <p style="margin-top:6px;">
-        点靠近某个光带扇区，代表属于该收入块；点的颜色代表业务线；
-        大小代表该指标在本业务内部的大致体量。
+        每个指标是一颗主星，靠近哪条光带就属于哪块收入；
+        颜色区分业务线；大小近似代表该指标在本业务内部的体量。
       </p>
       <div class="pill-row">
         <span class="pill">青蓝光带 · Subscription · 63%</span>
@@ -205,7 +205,7 @@
         传统付费电视业务的充值、扣费、ARPPU 等指标被归入
         <strong>Subscription</strong> 光带；其中带“销量 / 终端 / 设备”
         的指标则归入 <strong>Ads &amp; Devices</strong> 光带。
-        点云的密度与体量对应收视费与终端收入在整个生态中的相对贡献。
+        通过星点的密度与大小，很直观地看到收视费与终端收入在整体生态中的相对贡献。
       </p>
     </aside>
 
@@ -215,7 +215,7 @@
       <p>
         Solar 星团聚集于青绿光带，代表 30% 的离网增量收入；
         OTT 星团主要落在 Subscription 光带，但广告相关 KPI
-        归入 Ads &amp; Devices。橙色上升点与蓝色下降点的分布，
+        归入 Ads &amp; Devices。橙色上升点与蓝色下降点，
         暗示了未来可以重点挖掘或修复的增长星域。
       </p>
     </aside>
@@ -239,7 +239,7 @@
     var dom = document.getElementById('eco-orbit');
     var chart = echarts.init(dom);
 
-    // === 宏观 63 / 30 / 7 三条收入光带 ===
+    // === 63 / 30 / 7 三条收入光带 ===
     var macroDefs = [
       { id: 'Subscription', label: 'Subscription 63%', value: 63, color: '#22d3ee' }, // 青蓝
       { id: 'Solar',        label: 'Solar 30%',        value: 30, color: '#4ade80' }, // 青绿
@@ -247,7 +247,7 @@
     ];
     var totalMacro = macroDefs.reduce(function (s, m) { return s + m.value; }, 0);
 
-    // 业务线配色（仅在不上升 / 不下降时使用作基底）
+    // 业务线配色
     var businessDefs = [
       { id: 'Solar', label: 'Solar', tone: 'green' },
       { id: 'DTV',  label: 'DTV',  tone: 'blue'  },
@@ -355,7 +355,7 @@
 
     var maxRadius = 105;
 
-    // 生成更分散、更大的 KPI 星团
+    // === KPI 主星（每个指标一颗） ===
     var clusterPoints = [];
     businessDefs.forEach(function (biz) {
       var metrics = kpiRaw[biz.id] || [];
@@ -370,61 +370,75 @@
         var macro = getMacroDef(macroId);
         if (!macro) return;
 
-        // 每个指标复制 4~7 个点，拉开角度和半径
-        var copies = 4 + Math.round((m.value / maxVal) * 3); // 4-7
+        var angle =
+          macro.startDeg +
+          (macro.endDeg - macro.startDeg) *
+            (0.18 + 0.64 * Math.random()); // 在该扇区内随机分布
+
+        var bandIndex = getMacroIndex(macroId); // 0,1,2
+        var baseBandRadius = 50 + bandIndex * 18;   // 三条大环带
+        var jitter = (Math.random() - 0.5) * 16;    // 半径扰动
+        var radius = baseBandRadius + jitter;
+
         var valueRatio = m.value / maxVal;
+        var baseSize = 14 + 14 * Math.sqrt(valueRatio); // 主星更大
+        var size     = baseSize * (0.9 + Math.random() * 0.2);
 
-        for (var i = 0; i < copies; i++) {
-          var angle =
-            macro.startDeg +
-            (macro.endDeg - macro.startDeg) *
-              (0.06 + 0.88 * Math.random()); // 几乎整个扇区都可占据
+        var trend = m.trend || 'flat';
+        var depth = radius / maxRadius;
+        var alphaBase = 0.55 + 0.3 * depth;
 
-          var bandIndex = getMacroIndex(macroId); // 0,1,2
-          var baseBandRadius = 42 + bandIndex * 18;          // 三个大圈
-          var extraRingShift = (Math.random() - 0.5) * 10;   // 向内向外轻微漂移
-          var jitter = 10 + 15 * Math.random();              // 更大随机带
-
-          var radius = baseBandRadius + extraRingShift + jitter;
-
-          var baseSize = 8 + 10 * Math.sqrt(valueRatio);
-          var size     = baseSize * (0.9 + Math.random() * 0.4);
-
-          var trend = m.trend || 'flat';
-          var depth = radius / maxRadius;
-          var alphaBase = 0.5 + 0.35 * depth;
-
-          var color;
-          if (trend === 'up') {
-            // 橙色上升
-            color = 'rgba(249,115,22,' + alphaBase + ')';
-          } else if (trend === 'down') {
-            // 蓝色下降
-            color = 'rgba(59,130,246,' + alphaBase + ')';
-          } else {
-            color = toneColor(biz.tone, alphaBase);
-          }
-
-          clusterPoints.push({
-            value: [radius, angle],
-            bizId: biz.id,
-            bizLabel: biz.label,
-            macroId: macroId,
-            macroLabel: macro.label,
-            metric: m.name,
-            rawValue: m.value,
-            trend: trend,
-            symbolSize: size,
-            itemStyle: {
-              color: color,
-              opacity: 0.96,
-              shadowBlur: 20 + 12 * depth,
-              shadowColor: color
-            }
-          });
+        var color;
+        if (trend === 'up') {
+          color = 'rgba(249,115,22,' + alphaBase + ')'; // 橙色（上升）
+        } else if (trend === 'down') {
+          color = 'rgba(59,130,246,' + alphaBase + ')'; // 蓝色（下降）
+        } else {
+          color = toneColor(biz.tone, alphaBase);
         }
+
+        clusterPoints.push({
+          value: [radius, angle],
+          bizId: biz.id,
+          bizLabel: biz.label,
+          macroId: macroId,
+          macroLabel: macro.label,
+          metric: m.name,
+          rawValue: m.value,
+          trend: trend,
+          symbolSize: size,
+          itemStyle: {
+            color: color,
+            opacity: 0.98,
+            shadowBlur: 26 + 14 * depth,
+            shadowColor: color
+          }
+        });
       });
     });
+
+    // === 装饰用的小白星星 ===
+    var starfield = [];
+    var starCount = 220;
+    for (var i = 0; i < starCount; i++) {
+      var macro = macroDefs[i % macroDefs.length];
+      var angle =
+        macro.startDeg +
+        (macro.endDeg - macro.startDeg) * Math.random();
+
+      var radius = 30 + Math.random() * (maxRadius - 32);
+      var depth = radius / maxRadius;
+      var alpha = 0.18 + 0.45 * Math.random();
+
+      starfield.push({
+        value: [radius, angle],
+        symbolSize: 1.5 + 2.5 * Math.random(),
+        itemStyle: {
+          color: 'rgba(248,250,252,' + (alpha * (0.5 + 0.5 * depth)) + ')',
+          opacity: 1
+        }
+      });
+    }
 
     // === ECharts 配置 ===
     var option = {
@@ -433,7 +447,7 @@
         trigger: 'item',
         formatter: function (params) {
           var d = params.data || {};
-          if (!d.metric) return d.name || d.macroLabel || '';
+          if (!d.metric) return d.macroLabel || '';
           var trendText =
             d.trend === 'up'   ? '趋势：上升'
           : d.trend === 'down' ? '趋势：下降'
@@ -476,7 +490,7 @@
       },
 
       series: [
-        // 背景同心圆 + 中央白色恒星
+        // 背景同心圆 + 中央发光恒星
         {
           type: 'custom',
           coordinateSystem: 'none',
@@ -496,24 +510,14 @@
                 }
               });
             }
-            // 中央白光恒星
+            // 中央白色恒星
             rings.push({
               type: 'circle',
-              shape: { cx: cx, cy: cy, r: maxR * 0.12 },
+              shape: { cx: cx, cy: cy, r: maxR * 0.16 },
               style: {
                 fill: 'rgba(248,250,252,0.98)',
-                shadowBlur: 70,
-                shadowColor: 'rgba(248,250,252,0.95)'
-              }
-            });
-            // 外面再叠一层暗晕，形成深度
-            rings.push({
-              type: 'circle',
-              shape: { cx: cx, cy: cy, r: maxR * 0.24 },
-              style: {
-                fill: 'rgba(15,23,42,0.9)',
-                shadowBlur: 55,
-                shadowColor: 'rgba(15,23,42,0.95)'
+                shadowBlur: 90,
+                shadowColor: 'rgba(248,250,252,0.98)'
               }
             });
             return { type: 'group', children: rings };
@@ -523,7 +527,7 @@
           zlevel: 0
         },
 
-        // 自定义三束“极光”收入光带
+        // 三束“极光”收入光带
         {
           type: 'custom',
           coordinateSystem: 'none',
@@ -532,38 +536,38 @@
             var cx = api.getWidth() / 2;
             var cy = api.getHeight() * 0.52;
             var maxR = Math.min(api.getWidth(), api.getHeight()) * 0.40;
-            var rInner = maxR * 0.28;
-            var rOuter = maxR * 0.64;
+            var rInner = maxR * 0.22;
+            var rOuter = maxR * 0.72;
 
-            macroDefs.forEach(function (m, idx) {
+            macroDefs.forEach(function (m) {
               var startAngle = (m.startDeg * Math.PI) / 180;
               var endAngle   = (m.endDeg   * Math.PI) / 180;
 
               var auroraColor;
               if (m.id === 'Subscription') {
                 auroraColor = new echarts.graphic.LinearGradient(
-                  0.5, 0.2, 0.5, 1,
+                  0.5, 0.1, 0.5, 1,
                   [
-                    { offset: 0,   color: 'rgba(34,211,238,0.95)' },
-                    { offset: 0.45,color: 'rgba(59,130,246,0.4)' },
+                    { offset: 0,   color: 'rgba(34,211,238,0.96)' },
+                    { offset: 0.45,color: 'rgba(59,130,246,0.45)' },
                     { offset: 1,   color: 'rgba(15,23,42,0)' }
                   ]
                 );
               } else if (m.id === 'Solar') {
                 auroraColor = new echarts.graphic.LinearGradient(
-                  0.5, 0.1, 0.5, 1,
+                  0.5, 0.05, 0.5, 1,
                   [
-                    { offset: 0,   color: 'rgba(190,242,100,0.95)' },
-                    { offset: 0.5, color: 'rgba(45,212,191,0.4)' },
+                    { offset: 0,   color: 'rgba(190,242,100,0.96)' },
+                    { offset: 0.5, color: 'rgba(45,212,191,0.45)' },
                     { offset: 1,   color: 'rgba(15,23,42,0)' }
                   ]
                 );
               } else { // Ads & Devices
                 auroraColor = new echarts.graphic.LinearGradient(
-                  0.5, 0.2, 0.5, 1,
+                  0.5, 0.12, 0.5, 1,
                   [
-                    { offset: 0,   color: 'rgba(244,114,182,0.96)' },
-                    { offset: 0.5, color: 'rgba(251,191,36,0.45)' },
+                    { offset: 0,   color: 'rgba(244,114,182,0.97)' },
+                    { offset: 0.5, color: 'rgba(251,191,36,0.48)' },
                     { offset: 1,   color: 'rgba(15,23,42,0)' }
                   ]
                 );
@@ -582,7 +586,7 @@
                 style: {
                   fill: auroraColor,
                   stroke: 'none',
-                  shadowBlur: 60,
+                  shadowBlur: 70,
                   shadowColor: m.color
                 }
               });
@@ -595,7 +599,23 @@
           zlevel: 1
         },
 
-        // KPI 星团：发光散点 + 景深
+        // 装饰的小白星
+        {
+          type: 'scatter',
+          coordinateSystem: 'polar',
+          name: 'Starfield',
+          data: starfield,
+          symbolSize: function (val, params) {
+            return params.data.symbolSize || 2;
+          },
+          itemStyle: {
+            color: 'rgba(248,250,252,0.8)'
+          },
+          zlevel: 2,
+          silent: true
+        },
+
+        // KPI 主星（发光散点）
         {
           type: 'effectScatter',
           coordinateSystem: 'polar',
@@ -603,12 +623,12 @@
           encode: { radius: 0, angle: 1 },
           data: clusterPoints,
           symbolSize: function (val, params) {
-            return params.data.symbolSize || 8;
+            return params.data.symbolSize || 10;
           },
           rippleEffect: {
             brushType: 'stroke',
-            scale: 2.8,
-            period: 12
+            scale: 2.6,
+            period: 10
           },
           zlevel: 3
         }
