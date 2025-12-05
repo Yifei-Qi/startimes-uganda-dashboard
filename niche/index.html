@@ -4,121 +4,255 @@
   <meta charset="UTF-8" />
   <title>生态位 · Niche · StarTimes Uganda</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont,"Segoe UI",Roboto,
-        "Helvetica Neue",Arial,"Noto Sans SC",sans-serif;
-      background: radial-gradient(circle at top, #020617 0, #000000 55%, #020617 100%);
+      font-family: -apple-system, BlinkMacSystemFont,"SF Pro Text",
+        "Segoe UI", Roboto,"Helvetica Neue", Arial,"Noto Sans SC",sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(56,189,248,0.26), transparent 55%),
+        radial-gradient(circle at bottom right, rgba(236,72,153,0.32), transparent 55%),
+        #020617;
       color: #e5e7eb;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
+
     header {
-      padding: 14px 24px;
+      padding: 18px 32px 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid rgba(148,163,184,0.35);
-      backdrop-filter: blur(10px);
-      background: linear-gradient(to bottom, rgba(15,23,42,0.95), rgba(15,23,42,0.7));
+      border-bottom: 1px solid rgba(30,64,175,0.5);
+      backdrop-filter: blur(20px);
+      background: linear-gradient(
+        to bottom,
+        rgba(15,23,42,0.96),
+        rgba(15,23,42,0.82),
+        rgba(15,23,42,0.65)
+      );
     }
-    .title { font-size: 18px; font-weight: 600; }
-    .subtitle { font-size: 12px; color: #9ca3af; margin-top: 3px; }
+    .brand { display: flex; flex-direction: column; gap: 4px; }
+    .brand-label {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #64748b;
+    }
+    .brand-title {
+      font-size: 22px;
+      font-weight: 600;
+    }
+    .brand-tagline {
+      font-size: 12px;
+      color: #9ca3af;
+      max-width: 480px;
+    }
     .back-link {
       font-size: 12px;
-      color: #93c5fd;
+      color: #e5e7eb;
       text-decoration: none;
-      padding: 6px 14px;
+      padding: 7px 16px;
       border-radius: 999px;
-      border: 1px solid rgba(59,130,246,0.7);
-      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(148,163,184,0.55);
+      background: radial-gradient(circle at top left, rgba(56,189,248,0.85), rgba(15,23,42,0.96));
+      box-shadow: 0 0 18px rgba(15,23,42,0.9);
     }
+
     main {
       flex: 1;
-      padding: 18px 22px 22px;
+      padding: 20px 28px 24px;
       display: grid;
-      grid-template-columns: minmax(0, 2.1fr) minmax(0, 1.5fr);
-      gap: 18px;
+      grid-template-columns: minmax(0, 2.2fr) minmax(0, 1.5fr);
+      gap: 20px;
     }
-    .card {
-      border-radius: 22px;
-      border: 1px solid rgba(148,163,184,0.35);
-      background: linear-gradient(145deg, rgba(15,23,42,0.96), rgba(15,23,42,0.78));
-      padding: 16px 18px;
+
+    .hero-card {
+      border-radius: 26px;
+      padding: 22px 24px;
+      border: 1px solid rgba(148,163,184,0.45);
+      background:
+        radial-gradient(circle at top right, rgba(56,189,248,0.35), transparent 60%),
+        linear-gradient(135deg, rgba(15,23,42,0.96), rgba(15,23,42,0.86));
+      box-shadow:
+        0 28px 80px rgba(15,23,42,0.95),
+        0 0 0 1px rgba(15,23,42,0.9) inset;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+      overflow: hidden;
     }
-    .card-title { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
-    .card-text { font-size: 12px; color: #9ca3af; line-height: 1.6; }
-    #chart-niche { width: 100%; height: 360px; margin-top: 8px; }
-    .btn-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-    .pill-link {
+    .hero-tag {
+      font-size: 11px;
+      color: #7dd3fc;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+    }
+    .hero-title {
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+    .hero-desc {
+      font-size: 13px;
+      color: #cbd5f5;
+      max-width: 540px;
+      line-height: 1.7;
+    }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 4px;
+    }
+    .hero-btn {
       font-size: 12px;
-      text-decoration: none;
-      padding: 6px 12px;
+      padding: 7px 14px;
       border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.6);
-      color: #e5e7eb;
+      text-decoration: none;
+      border: 1px solid rgba(56,189,248,0.95);
+      color: #0f172a;
+      background: radial-gradient(circle at top left, #38bdf8, #0ea5e9);
+      box-shadow: 0 10px 35px rgba(56,189,248,0.22);
+    }
+    .hero-btn.secondary {
+      border-color: rgba(148,163,184,0.75);
       background: rgba(15,23,42,0.9);
+      color: #e5e7eb;
+      box-shadow: none;
     }
-    .pill-link:hover {
-      border-color: rgba(248,250,252,0.9);
-      background: rgba(15,23,42,1);
+
+    #chart-niche {
+      width: 100%;
+      height: 260px;
+      margin-top: 10px;
+      border-radius: 20px;
+      border: 1px solid rgba(30,64,175,0.6);
+      background: radial-gradient(circle at top, rgba(15,23,42,0.2), rgba(15,23,42,0.95));
+      overflow: hidden;
     }
+
+    .side-card {
+      border-radius: 26px;
+      padding: 18px 20px;
+      border: 1px solid rgba(148,163,184,0.45);
+      background:
+        radial-gradient(circle at bottom right, rgba(236,72,153,0.26), transparent 60%),
+        linear-gradient(145deg, rgba(15,23,42,0.96), rgba(15,23,42,0.86));
+      box-shadow: 0 22px 70px rgba(15,23,42,0.96);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .side-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .side-section-title {
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 8px;
+      margin-bottom: 4px;
+      color: #e0f2fe;
+    }
+    .side-text {
+      font-size: 12px;
+      color: #9ca3af;
+      line-height: 1.6;
+    }
+    .side-list {
+      font-size: 12px;
+      color: #cbd5f5;
+      list-style: none;
+      margin-top: 4px;
+    }
+    .side-list li::before {
+      content: '';
+      display: inline-block;
+      width: 5px;
+      height: 5px;
+      border-radius: 999px;
+      margin-right: 6px;
+      background: rgba(56,189,248,0.9);
+    }
+
     footer {
-      padding: 8px 22px 14px;
+      padding: 10px 28px 14px;
       font-size: 11px;
       color: #6b7280;
-      border-top: 1px solid rgba(31,41,55,0.9);
+      border-top: 1px solid rgba(15,23,42,0.95);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-    @media (max-width: 900px) {
-      main { grid-template-columns: minmax(0,1fr); }
-      #chart-niche { height: 280px; }
+
+    @media (max-width: 960px) {
+      main { grid-template-columns: minmax(0,1fr); padding: 16px 16px 22px; }
+      header { padding: 14px 16px 10px; flex-direction: column; align-items: flex-start; gap: 6px; }
+      .brand-tagline { max-width: none; }
+      #chart-niche { height: 240px; }
     }
   </style>
 </head>
 <body>
   <header>
-    <div>
-      <div class="title">生态位 · Niche</div>
-      <div class="subtitle">
-        在既有生态之下，划分 StarTimes 在乌干达的空间生态位（渠道）与市场生态位（竞品关系）。
+    <div class="brand">
+      <div class="brand-label">MODULE · NICHE</div>
+      <div class="brand-title">生态位 · Niche</div>
+      <div class="brand-tagline">
+        在既有生态之下，定位 StarTimes 在乌干达的空间生态位（渠道触点）与市场生态位（竞品关系）。
       </div>
     </div>
-    <a class="back-link" href="../index.html">返回首页 · Back to Data Space</a>
+    <a class="back-link" href="../index.html">返回首页 · DATA SPACE</a>
   </header>
 
   <main>
-    <section class="card">
-      <div class="card-title">生态位结构 · Niche Structure</div>
-      <div class="card-text">
-        本模块从两个维度理解四达在乌干达的“位置”：
-        <br>1）<strong>空间生态位（Spatial niche）</strong>：以渠道为坐标系，按照“线上 / 线下 × 视觉 / 听觉”
-        建立四象限，细分线下大牌、灯杆、营业厅、EPG、OTT 开屏、广播、TVC、社媒等触点；
-        <br>2）<strong>市场生态位（Market niche）</strong>：围绕 DSTV / GoTV / AzamTV / ZukuTV 等竞品，
-        分析市场占有率、产品 / 频道 / 价格对比以及渠道设计。
+    <section class="hero-card">
+      <div class="hero-tag">SPATIAL & MARKET NICHES</div>
+      <div class="hero-title">从“触点”到“位置”的两层解析</div>
+      <p class="hero-desc">
+        空间生态位（Spatial niche）用一张简单的平面把所有渠道放到
+        “线上 / 线下 × 视觉 / 听觉”的坐标系中；市场生态位（Market niche）
+        则把 DSTV、GoTV、AzamTV、ZukuTV 与 StarTimes 关联在同一竞争空间里。
+        两者叠加，你就能看到四达在乌干达真实占据的“位置”。
+      </p>
+
+      <div class="hero-actions">
+        <a class="hero-btn" href="spatial/index.html">空间生态位 · Spatial niche</a>
+        <a class="hero-btn secondary" href="market/index.html">市场生态位 · Market niche</a>
       </div>
+
       <div id="chart-niche"></div>
     </section>
 
-    <aside class="card">
-      <div class="card-title">子模块入口 · Sub-modules</div>
-      <div class="card-text">
-        点击进入不同维度的生态位分析：
-      </div>
-      <div class="btn-row">
-        <a class="pill-link" href="spatial/index.html">空间生态位 · Spatial niche</a>
-        <a class="pill-link" href="market/index.html">市场生态位 · Market niche</a>
-      </div>
-      <div class="card-text" style="margin-top:12px;">
-        后续空间生态位模块将以一张 4 维坐标图呈现“线上 / 线下 × 视觉 / 听觉”，
-        市场生态位模块则将接入 DSTV / GoTV / AzamTV / ZukuTV 等详细对比图表。
-      </div>
+    <aside class="side-card">
+      <div class="side-title">空间生态位 · Spatial niche</div>
+      <p class="side-text">
+        用“线上 / 线下 × 视觉 / 听觉”做成一个四象限：
+      </p>
+      <ul class="side-list">
+        <li>线下视觉：户外大牌、灯杆、营业厅代理商、纸媒网媒</li>
+        <li>线上视觉：EPG 开机 / 切台 / 音量条、OTT 开屏、mini banner</li>
+        <li>线上听觉：广播、呼叫中心</li>
+        <li>线上视+听：TVC、社媒、WhatsApp</li>
+        <li>线下视+听：路演、发布会</li>
+      </ul>
+
+      <div class="side-section-title">市场生态位 · Market niche</div>
+      <p class="side-text">
+        这里关注 StarTimes 相对于 DSTV / GoTV / AzamTV / ZukuTV 的竞争位置：
+        市场占有率、产品属性、频道与价格结构，以及各自的渠道设计与社媒声量。
+      </p>
     </aside>
   </main>
 
   <footer>
-    StarTimes Uganda · Niche Module · Spatial &amp; Market Niches
+    <span>StarTimes Uganda · Niche Module</span>
+    <span>Spatial &amp; Market Niches · Channels · Competitors</span>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
@@ -131,14 +265,15 @@
       xAxis: {
         type: 'category',
         data: ['线下视觉','线上视觉','线上听觉','线上视+听','线下视+听'],
-        axisLabel: { color: '#9ca3af', fontSize: 10 }
+        axisLabel: { color: '#9ca3af', fontSize: 11 },
+        axisLine: { lineStyle: { color: 'rgba(148,163,184,0.6)' } }
       },
       yAxis: {
         type: 'value',
-        name: '示意 · 触点权重',
-        nameTextStyle: { color: '#9ca3af', fontSize: 10 },
-        axisLabel: { color: '#9ca3af', fontSize: 10 },
-        splitLine: { lineStyle: { color: 'rgba(31,41,55,0.8)' } }
+        name: '示意 · 渠道权重',
+        nameTextStyle: { color: '#9ca3af', fontSize: 11 },
+        axisLabel: { color: '#9ca3af', fontSize: 11 },
+        splitLine: { lineStyle: { color: 'rgba(31,41,55,0.9)' } }
       },
       legend: {
         bottom: 0,
@@ -146,11 +281,15 @@
       },
       series: [
         {
-          name: 'StarTimes 触点强度',
+          name: 'StarTimes 触点强度（示意）',
           type: 'bar',
-          data: [85, 90, 60, 80, 70],
+          data: [88, 92, 60, 80, 72],
           itemStyle: {
-            borderRadius: [6, 6, 0, 0]
+            borderRadius: [7,7,0,0],
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: 'rgba(56,189,248,0.95)' },
+              { offset: 1, color: 'rgba(56,189,248,0.25)' }
+            ])
           }
         }
       ]
