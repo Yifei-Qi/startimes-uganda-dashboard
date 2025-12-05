@@ -95,7 +95,6 @@
       height: 100%;
     }
 
-    /* 信息卡片 */
     .panel {
       position: absolute;
       border-radius: 20px;
@@ -126,28 +125,10 @@
       color: #64748b;
     }
 
-    .panel-main {
-      left: 42px;
-      top: 82px;
-    }
-
-    .panel-legacy {
-      bottom: 42px;
-      left: 40px;
-      max-width: 230px;
-    }
-
-    .panel-new {
-      bottom: 46px;
-      right: 44px;
-      max-width: 230px;
-    }
-
-    .panel-kpi {
-      top: 80px;
-      right: 40px;
-      max-width: 230px;
-    }
+    .panel-main { left: 42px; top: 82px; }
+    .panel-legacy { bottom: 42px; left: 40px; max-width: 230px; }
+    .panel-new { bottom: 46px; right: 44px; max-width: 230px; }
+    .panel-kpi { top: 80px; right: 40px; max-width: 230px; }
 
     .pill-row {
       display: flex;
@@ -186,7 +167,7 @@
       <div class="brand-title">Ecology · 业务星团图 Business Constellation</div>
     </div>
     <div class="top-actions">
-      <div class="chip">每个业务 = 一颗行星 · KPI = 周围星团</div>
+      <div class="chip">中心 63·30·7 收入环 · 外圈 KPI 星团</div>
       <a class="back" href="../index.html">Back to Universe</a>
     </div>
   </div>
@@ -196,18 +177,23 @@
 
     <aside class="panel panel-main">
       <small>OVERVIEW</small>
-      <h2>五条业务线的 KPI 星团</h2>
+      <h2>收入结构 + 五条业务线的 KPI 星团</h2>
       <p>
-        本图把五条核心业务线视作五颗行星：
-        <strong>Solar</strong>、<strong>DTV</strong>、<strong>DTH</strong>、
-        <strong>DTT</strong>、<strong>OTT</strong>。
-        行星周围的小点代表该业务下的关键指标（销量、收入、ARPPU 等）。
-        点越大代表数值越高，绿色表示环比/同比上升，红色表示下降，灰色则相对稳定。
+        中心环形图展示乌干达四达三条主收入轨道：
+        <strong>Subscription 63%</strong>、
+        <strong>Solar 30%</strong>、
+        <strong>Ads &amp; Devices 7%</strong>。
+        外圈的点云则把这三大块拆开成具体业务线
+        （Solar、DTV、DTH、DTT、OTT）的 KPI 星团。
+      </p>
+      <p style="margin-top:6px;">
+        点靠近某个扇区，代表属于该收入块；点的颜色代表业务线；
+        大小代表该指标在本业务内部的大致体量。
       </p>
       <div class="pill-row">
-        <span class="pill">Solar · 线下太阳能</span>
-        <span class="pill">DTV / DTH / DTT · 传统 DVB</span>
-        <span class="pill">OTT · 互联网视频</span>
+        <span class="pill">蓝色扇区 · Subscription · 63%</span>
+        <span class="pill">绿色扇区 · Solar · 30%</span>
+        <span class="pill">金色扇区 · Ads &amp; Devices · 7%</span>
       </div>
     </aside>
 
@@ -215,9 +201,10 @@
       <small>LEGACY DVB CLUSTER</small>
       <h2>DTV · DTH · DTT 电视业务星团</h2>
       <p>
-        这三个星团代表传统付费电视业务：新增用户、在线用户、扣费金额、
-        充值金额、ARPPU 等指标整体呈下行趋势，点云颜色偏暖红。
-        通过点的密度与大小，可以快速比较不同业务线的体量与衰减速度。
+        传统付费电视业务的充值、扣费、ARPPU 等指标被归入
+        <strong>Subscription</strong> 扇区；其中带“销量 / 终端 / 设备”
+        的指标则归入 <strong>Ads &amp; Devices</strong> 扇区。
+        通过点云的密度与体量，可以看出收视费与终端收入在整个生态中的相对贡献。
       </p>
     </aside>
 
@@ -225,9 +212,10 @@
       <small>SOLAR &amp; OTT CLUSTER</small>
       <h2>Solar 与 OTT 的新增长空间</h2>
       <p>
-        Solar 星团体现离网增量市场，销量与分期款相关指标围绕其轨道分布；
-        OTT 星团则聚焦新增用户、DAU/MAU、会员充值与 DSP 广告收入等，
-        点云中更多绿色高亮点暗示其增长潜力与创新空间。
+        Solar 星团聚集于绿色扇区，代表 30% 的离网增量收入；
+        OTT 星团主要落在 Subscription 扇区，但其中广告相关 KPI
+        会被归入 Ads &amp; Devices。绿色与品红色点云的扩散程度，
+        暗示了未来可以重点挖掘的增长星域。
       </p>
     </aside>
 
@@ -235,246 +223,287 @@
       <small>HOW TO READ</small>
       <h2>点的含义</h2>
       <p>
-        位置：靠近某颗行星的点属于该业务线；<br/>
-        大小：当前 KPI 数值在本业务内部的相对大小；<br/>
-        颜色：绿色 = 上升，红色 = 下降，灰色 = 稳定。
-        鼠标悬停可以查看具体指标名称与数值。
+        位置：中心环外，对应所属收入扇区；<br/>
+        颜色：区分业务线 Solar / DTV / DTH / DTT / OTT；<br/>
+        大小：在本业务内的相对指标体量；<br/>
+        悬停：查看业务线 + 指标名称 + 当前值。
       </p>
     </aside>
   </div>
 
-<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
-<script>
-  var dom = document.getElementById('eco-orbit');
-  if (!dom) {
-    console.error('eco-orbit element not found');
-  }
-  var chart = echarts.init(dom);
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+  <script>
+    var dom = document.getElementById('eco-orbit');
+    var chart = echarts.init(dom);
 
-  // 五条业务线的基础定义：角度、半径层级
-  var businessDefs = [
-    { id: 'Solar', label: 'Solar', angle: -120, radius: 22, tone: 'green' },
-    { id: 'DTV',  label: 'DTV',  angle: -40,  radius: 36, tone: 'blue'  },
-    { id: 'DTH',  label: 'DTH',  angle: 40,   radius: 50, tone: 'cyan'  },
-    { id: 'DTT',  label: 'DTT',  angle: 120,  radius: 64, tone: 'indigo'},
-    { id: 'OTT',  label: 'OTT',  angle: 200,  radius: 78, tone: 'violet'}
-  ];
+    // 三大收入块：63 / 30 / 7
+    var macroDefs = [
+      { id: 'Subscription', label: 'Subscription 63%', value: 63,
+        color: '#60a5fa' }, // 蓝
+      { id: 'Solar',        label: 'Solar 30%',        value: 30,
+        color: '#22c55e' }, // 绿
+      { id: 'AdsDevices',   label: 'Ads & Devices 7%', value: 7,
+        color: '#eab308' }  // 金
+    ];
+    var totalMacro = macroDefs.reduce(function (s, m) { return s + m.value; }, 0);
 
-  function toneColor(tone, alpha) {
-    switch (tone) {
-      case 'green':  return 'rgba(34,197,94,'  + alpha + ')';
-      case 'blue':   return 'rgba(59,130,246,' + alpha + ')';
-      case 'cyan':   return 'rgba(45,212,191,' + alpha + ')';
-      case 'indigo': return 'rgba(129,140,248,'+ alpha + ')';
-      case 'violet': return 'rgba(236,72,153,' + alpha + ')';
-      default:       return 'rgba(148,163,184,'+ alpha + ')';
+    // 五条业务线：用颜色区分
+    var businessDefs = [
+      { id: 'Solar', label: 'Solar', tone: 'green' },
+      { id: 'DTV',  label: 'DTV',  tone: 'blue'  },
+      { id: 'DTH',  label: 'DTH',  tone: 'cyan'  },
+      { id: 'DTT',  label: 'DTT',  tone: 'indigo'},
+      { id: 'OTT',  label: 'OTT',  tone: 'violet'}
+    ];
+
+    function toneColor(tone, alpha) {
+      switch (tone) {
+        case 'green':  return 'rgba(34,197,94,'  + alpha + ')';
+        case 'blue':   return 'rgba(59,130,246,' + alpha + ')';
+        case 'cyan':   return 'rgba(45,212,191,' + alpha + ')';
+        case 'indigo': return 'rgba(129,140,248,'+ alpha + ')';
+        case 'violet': return 'rgba(236,72,153,' + alpha + ')';
+        default:       return 'rgba(148,163,184,'+ alpha + ')';
+      }
     }
-  }
 
-  // 根据你发的截图整理的 KPI（数值只是示意，用来拉开量级）
-  var kpiRaw = {
-    Solar: [
-      { name: '销量 每月累计',          value: 1481,    trend: 'down' },
-      { name: '销售收入(应收) 每月累计', value: 168973,  trend: 'down' },
-      { name: '全款收款 每月累计',      value: 1148,    trend: 'down' },
-      { name: '首付款收款 每月累计',    value: 10171,   trend: 'down' },
-      { name: '分期款收款 每月累计',    value: 80729,   trend: 'down' },
-      { name: '累计应收分期款',         value: 23072112,trend: 'up'   },
-      { name: '当月应收分期款',         value: 224472,  trend: 'down' },
-      { name: '分期中用户数',           value: 234390,  trend: 'up'   }
-    ],
-    DTV: [
-      { name: '新增用户数 每月累计',    value: 110,   trend: 'down' },
-      { name: '在线用户数 每月去重',    value: 8112, trend: 'down' },
-      { name: '注册用户数 月末最后一天',value: 39510,trend: 'down' },
-      { name: '扣费金额 每月累计',      value: 4353, trend: 'down' },
-      { name: '充值金额 每月累计',      value: 6408, trend: 'down' },
-      { name: '扣费用户数 每月去重',    value: 7501, trend: 'down' },
-      { name: '充值用户数 每月去重',    value: 1949, trend: 'down' },
-      { name: '月扣费ARPPU',           value: 0.58, trend: 'down' },
-      { name: '月充值ARPPU',           value: 3.288,trend: 'down' },
-      { name: '销量 每月累计',          value: 50,   trend: 'down' }
-    ],
-    DTH: [
-      { name: '新增用户数 每月累计',    value: 425,    trend: 'down' },
-      { name: '在线用户数 每月去重',    value: 349860, trend: 'down' },
-      { name: '注册用户数 月末最后一天',value: 1101568,trend: 'down' },
-      { name: '扣费金额 每月累计',      value: 190787, trend: 'down' },
-      { name: '充值金额 每月累计',      value: 289402, trend: 'down' },
-      { name: '扣费用户数 每月去重',    value: 339611, trend: 'down' },
-      { name: '充值用户数 每月去重',    value: 85237,  trend: 'down' },
-      { name: '月扣费ARPPU',           value: 0.562,  trend: 'down' },
-      { name: '月充值ARPPU',           value: 3.395,  trend: 'down' }
-    ],
-    DTT: [
-      { name: '新增用户数 每月累计',    value: 249,    trend: 'down' },
-      { name: '在线用户数 每月去重',    value: 344459, trend: 'down' },
-      { name: '注册用户数 月末最后一天',value: 1848112,trend: 'down' },
-      { name: '扣费金额 每月累计',      value: 180694, trend: 'down' },
-      { name: '充值金额 每月累计',      value: 263016, trend: 'down' },
-      { name: '扣费用户数 每月去重',    value: 340802, trend: 'down' },
-      { name: '充值用户数 每月去重',    value: 112640, trend: 'down' },
-      { name: '月扣费ARPPU',           value: 0.53,   trend: 'down' },
-      { name: '月充值ARPPU',           value: 2.335,  trend: 'down' }
-    ],
-    OTT: [
-      { name: '新增用户 本月累计',       value: 13426,  trend: 'up'  },
-      { name: 'App日活 本月日均',       value: 46168,  trend: 'up'  },
-      { name: 'App月活 本月日均',       value: 371110, trend: 'up'  },
-      { name: '会员充值金额 本月累计',   value: 2365.15,trend: 'up'  },
-      { name: 'DVB充值金额 本月累计',    value: 1782.63,trend: 'up'  },
-      { name: '绑卡续费率 本月日均',     value: 31.74,  trend: 'up'  },
-      { name: 'DSP广告收入 本月累计',   value: 9.78,   trend: 'up'  }
-    ]
-  };
+    // KPI 原始数据（你截图里的主要指标，数值用于相对大小）
+    var kpiRaw = {
+      Solar: [
+        { name: '销量 每月累计',          value: 1481,    trend: 'down' },
+        { name: '销售收入(应收) 每月累计', value: 168973,  trend: 'down' },
+        { name: '全款收款 每月累计',      value: 1148,    trend: 'down' },
+        { name: '首付款收款 每月累计',    value: 10171,   trend: 'down' },
+        { name: '分期款收款 每月累计',    value: 80729,   trend: 'down' },
+        { name: '累计应收分期款',         value: 23072112,trend: 'up'   },
+        { name: '当月应收分期款',         value: 224472,  trend: 'down' },
+        { name: '分期中用户数',           value: 234390,  trend: 'up'   }
+      ],
+      DTV: [
+        { name: '新增用户数 每月累计',    value: 110,   trend: 'down' },
+        { name: '在线用户数 每月去重',    value: 8112, trend: 'down' },
+        { name: '注册用户数 月末最后一天',value: 39510,trend: 'down' },
+        { name: '扣费金额 每月累计',      value: 4353, trend: 'down' },
+        { name: '充值金额 每月累计',      value: 6408, trend: 'down' },
+        { name: '扣费用户数 每月去重',    value: 7501, trend: 'down' },
+        { name: '充值用户数 每月去重',    value: 1949, trend: 'down' },
+        { name: '月扣费ARPPU',           value: 0.58, trend: 'down' },
+        { name: '月充值ARPPU',           value: 3.288,trend: 'down' },
+        { name: '销量 每月累计',          value: 50,   trend: 'down' }
+      ],
+      DTH: [
+        { name: '新增用户数 每月累计',    value: 425,    trend: 'down' },
+        { name: '在线用户数 每月去重',    value: 349860, trend: 'down' },
+        { name: '注册用户数 月末最后一天',value: 1101568,trend: 'down' },
+        { name: '扣费金额 每月累计',      value: 190787, trend: 'down' },
+        { name: '充值金额 每月累计',      value: 289402, trend: 'down' },
+        { name: '扣费用户数 每月去重',    value: 339611, trend: 'down' },
+        { name: '充值用户数 每月去重',    value: 85237,  trend: 'down' },
+        { name: '月扣费ARPPU',           value: 0.562,  trend: 'down' },
+        { name: '月充值ARPPU',           value: 3.395,  trend: 'down' }
+      ],
+      DTT: [
+        { name: '新增用户数 每月累计',    value: 249,    trend: 'down' },
+        { name: '在线用户数 每月去重',    value: 344459, trend: 'down' },
+        { name: '注册用户数 月末最后一天',value: 1848112,trend: 'down' },
+        { name: '扣费金额 每月累计',      value: 180694, trend: 'down' },
+        { name: '充值金额 每月累计',      value: 263016, trend: 'down' },
+        { name: '扣费用户数 每月去重',    value: 340802, trend: 'down' },
+        { name: '充值用户数 每月去重',    value: 112640, trend: 'down' },
+        { name: '月扣费ARPPU',           value: 0.53,   trend: 'down' },
+        { name: '月充值ARPPU',           value: 2.335,  trend: 'down' }
+      ],
+      OTT: [
+        { name: '新增用户 本月累计',       value: 13426,  trend: 'up'  },
+        { name: 'App日活 本月日均',       value: 46168,  trend: 'up'  },
+        { name: 'App月活 本月日均',       value: 371110, trend: 'up'  },
+        { name: '会员充值金额 本月累计',   value: 2365.15,trend: 'up'  },
+        { name: 'DVB充值金额 本月累计',    value: 1782.63,trend: 'up'  },
+        { name: '绑卡续费率 本月日均',     value: 31.74,  trend: 'up'  },
+        { name: 'DSP广告收入 本月累计',   value: 9.78,   trend: 'up'  }
+      ]
+    };
 
-  // 星团点 & 行星核心数据
-  var clusterPoints = [];
-  var planetPoints  = [];
+    // 把 KPI 按照 “收视费 / 太阳能 / 终端+广告” 三大块分组
+    function classifyMacro(bizId, metricName) {
+      if (bizId === 'Solar') return 'Solar';
+      if (/广告|DSP/.test(metricName)) return 'AdsDevices';
+      if (/销量|终端|机顶盒|设备/.test(metricName) && bizId !== 'Solar') {
+        return 'AdsDevices';
+      }
+      // 默认都算到收视费 Subscription
+      return 'Subscription';
+    }
 
-  businessDefs.forEach(function (biz) {
-    var metrics = kpiRaw[biz.id] || [];
-    if (!metrics.length) return;
-
-    var maxVal = metrics.reduce(function (m, x) {
-      return Math.max(m, x.value);
-    }, 0.0001);
-
-    // 行星核心
-    planetPoints.push({
-      value: [biz.radius, biz.angle],
-      bizId: biz.id,
-      bizLabel: biz.label,
-      itemStyle: { color: toneColor(biz.tone, 0.95) },
-      symbolSize: 16
+    // 为散点计算扇区角度范围（和 63/30/7 对齐）
+    var usedArcDeg = 280;  // 使用 280° 画三个扇区
+    var startDeg = -usedArcDeg / 2;
+    var cursorDeg = startDeg;
+    macroDefs.forEach(function (m) {
+      var sweep = usedArcDeg * (m.value / totalMacro);
+      m.startDeg = cursorDeg;
+      m.endDeg   = cursorDeg + sweep;
+      cursorDeg += sweep;
     });
 
-    metrics.forEach(function (m) {
-      var copies = 2 + Math.round((m.value / maxVal) * 4); // 2-6 个点，体量感
-      var valueRatio = m.value / maxVal;
+    // 辅助函数：根据 macroId 找扇区定义
+    function getMacroDef(id) {
+      return macroDefs.find(function (m) { return m.id === id; });
+    }
+    function getBizDef(id) {
+      return businessDefs.find(function (b) { return b.id === id; });
+    }
 
-      for (var i = 0; i < copies; i++) {
-        var angleJitter  = (Math.random() - 0.5) * 26;  // ±13°
-        var radiusJitter = (Math.random() - 0.5) * 6;   // 半径抖动
+    // 生成星团点
+    var clusterPoints = [];
+    businessDefs.forEach(function (biz) {
+      var metrics = kpiRaw[biz.id] || [];
+      if (!metrics.length) return;
 
-        var angle  = biz.angle  + angleJitter;
-        var radius = biz.radius + radiusJitter;
+      var maxVal = metrics.reduce(function (m, x) {
+        return Math.max(m, x.value);
+      }, 0.0001);
 
-        var baseSize = 3 + 7 * Math.sqrt(valueRatio);
-        var size     = baseSize * (0.7 + Math.random() * 0.6);
+      metrics.forEach(function (m) {
+        var macroId = classifyMacro(biz.id, m.name);
+        var macro = getMacroDef(macroId);
+        if (!macro) return;
 
-        var trend = m.trend || 'flat';
-        var alpha = 0.45 + Math.random() * 0.4;
-        var color;
-        if (trend === 'up') {
-          color = 'rgba(74,222,128,' + alpha + ')';
-        } else if (trend === 'down') {
-          color = 'rgba(248,113,113,' + alpha + ')';
-        } else {
-          color = toneColor(biz.tone, alpha);
-        }
+        var copies = 3 + Math.round((m.value / maxVal) * 3); // 3-6 个点
+        var valueRatio = m.value / maxVal;
 
-        clusterPoints.push({
-          value: [radius, angle],   // [radius, angle]
-          bizId: biz.id,
-          bizLabel: biz.label,
-          metric: m.name,
-          rawValue: m.value,
-          trend: trend,
-          symbolSize: size,
-          itemStyle: {
-            color: color,
-            opacity: 0.95
+        for (var i = 0; i < copies; i++) {
+          var angle =
+            macro.startDeg + (macro.endDeg - macro.startDeg) * (0.1 + 0.8 * Math.random());
+          var radius = 32 + 8 * Math.random() + 22 * (macroId === 'Subscription' ? 0 : macroId === 'Solar' ? 1 : 2);
+
+          var baseSize = 5 + 8 * Math.sqrt(valueRatio);
+          var size     = baseSize * (0.8 + Math.random() * 0.5);
+
+          var trend = m.trend || 'flat';
+          var alpha = 0.5 + Math.random() * 0.4;
+          var color;
+          if (trend === 'up') {
+            color = 'rgba(74,222,128,' + alpha + ')';
+          } else if (trend === 'down') {
+            color = 'rgba(248,113,113,' + alpha + ')';
+          } else {
+            color = toneColor(biz.tone, alpha);
           }
-        });
-      }
-    });
-  });
 
-  var option = {
-    backgroundColor: 'transparent',
-    tooltip: {
-      trigger: 'item',
-      formatter: function (params) {
-        var d = params.data || {};
-        if (!d.metric) {
-          return d.bizLabel || '';
+          clusterPoints.push({
+            value: [radius, angle],  // polar: [r, θ]
+            bizId: biz.id,
+            bizLabel: biz.label,
+            macroId: macroId,
+            macroLabel: macro.label,
+            metric: m.name,
+            rawValue: m.value,
+            trend: trend,
+            symbolSize: size,
+            itemStyle: {
+              color: color,
+              opacity: 0.96
+            }
+          });
         }
-        var trendText =
-          d.trend === 'up'   ? '趋势：上升'
-        : d.trend === 'down' ? '趋势：下降'
-                             : '趋势：相对平稳';
-        return [
-          d.bizLabel + ' · ' + d.metric,
-          '当前值：' + d.rawValue,
-          trendText
-        ].join('<br/>');
-      }
-    },
-    polar: {
-      center: ['50%', '62%'],
-      radius: '70%'
-    },
-    angleAxis: {
-      type: 'value',
-      min: -180,
-      max: 180,
-      startAngle: 90,
-      boundaryGap: false,
-      axisLine: { show: false },
-      axisTick: { show: false },
-      axisLabel: { show: false },
-      splitLine: { show: false }
-    },
-    radiusAxis: {
-      type: 'value',
-      min: 0,
-      max: 100,
-      axisLine: { show: false },
-      axisTick: { show: false },
-      axisLabel: { show: false },
-      splitLine: {
-        show: true,
-        lineStyle: { color: 'rgba(15,23,42,0.6)' }
-      }
-    },
-    series: [
-      // KPI 星团
-      {
-        type: 'scatter',
-        coordinateSystem: 'polar',
-        name: 'KPI Cluster',
-        encode: { radius: 0, angle: 1 },
-        data: clusterPoints,
-        symbolSize: function (val, params) {
-          return params.data.symbolSize || 4;
-        },
-        zlevel: 2
+      });
+    });
+
+    var option = {
+      backgroundColor: 'transparent',
+      tooltip: {
+        trigger: 'item',
+        formatter: function (params) {
+          var d = params.data || {};
+          if (!d.metric) return d.macroLabel || d.bizLabel || '';
+          var trendText =
+            d.trend === 'up'   ? '趋势：上升'
+          : d.trend === 'down' ? '趋势：下降'
+          : '趋势：相对平稳';
+          return [
+            d.macroLabel + ' · ' + d.bizLabel,
+            d.metric,
+            '当前值：' + d.rawValue,
+            trendText
+          ].join('<br/>');
+        }
       },
-      // 行星核心
-      {
-        type: 'scatter',
-        coordinateSystem: 'polar',
-        name: 'Planets',
-        encode: { radius: 0, angle: 1 },
-        data: planetPoints,
-        label: {
+
+      // 极坐标，用来放 KPI 星团
+      polar: {
+        center: ['50%', '62%'],
+        radius: '78%'
+      },
+      angleAxis: {
+        type: 'value',
+        min: -180,
+        max: 180,
+        startAngle: 90,
+        boundaryGap: false,
+        axisLine: { show: false },
+        axisTick: { show: false },
+        axisLabel: { show: false },
+        splitLine: { show: false }
+      },
+      radiusAxis: {
+        type: 'value',
+        min: 0,
+        max: 120,
+        axisLine: { show: false },
+        axisTick: { show: false },
+        axisLabel: { show: false },
+        splitLine: {
           show: true,
-          formatter: function (p) { return p.data.bizLabel; },
-          color: '#e5e7eb',
-          fontSize: 11,
-          distance: 8
+          lineStyle: { color: 'rgba(15,23,42,0.6)' }
+        }
+      },
+
+      series: [
+        // 中心 63 / 30 / 7 的环形图
+        {
+          type: 'pie',
+          name: 'Revenue Split',
+          radius: ['14%', '26%'],
+          center: ['50%', '62%'],
+          startAngle: 270,
+          data: macroDefs.map(function (m) {
+            return {
+              value: m.value,
+              name: m.label,
+              itemStyle: { color: m.color }
+            };
+          }),
+          label: {
+            color: '#e5e7eb',
+            formatter: '{b}'
+          },
+          labelLine: {
+            length: 8,
+            length2: 6
+          },
+          zlevel: 1
         },
-        zlevel: 3
-      }
-    ]
-  };
 
-  chart.setOption(option);
-  window.addEventListener('resize', function () {
-    chart.resize();
-  });
-</script>
+        // 外圈 KPI 星团
+        {
+          type: 'scatter',
+          coordinateSystem: 'polar',
+          name: 'KPI Cluster',
+          encode: { radius: 0, angle: 1 },
+          data: clusterPoints,
+          symbolSize: function (val, params) {
+            return params.data.symbolSize || 6;
+          },
+          zlevel: 2
+        }
+      ]
+    };
 
+    chart.setOption(option);
+    window.addEventListener('resize', function () {
+      chart.resize();
+    });
+  </script>
 </body>
 </html>
