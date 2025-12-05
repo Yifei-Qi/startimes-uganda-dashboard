@@ -83,8 +83,8 @@
       overflow: hidden;
       background:
         radial-gradient(circle at 15% 10%, rgba(56,189,248,0.24), transparent 55%),
-        radial-gradient(circle at 80% 90%, rgba(234,179,8,0.28), transparent 60%),
-        radial-gradient(circle at 70% 10%, rgba(244,63,94,0.18), transparent 55%),
+        radial-gradient(circle at 85% 90%, rgba(234,179,8,0.26), transparent 60%),
+        radial-gradient(circle at 70% 15%, rgba(236,72,153,0.18), transparent 55%),
         #020617;
     }
 
@@ -109,6 +109,7 @@
       font-size: 12px;
       line-height: 1.6;
       color: #9ca3af;
+      z-index: 5;
     }
 
     .panel h2 {
@@ -125,10 +126,10 @@
       color: #64748b;
     }
 
-    .panel-main { left: 42px; top: 82px; }
-    .panel-legacy { bottom: 42px; left: 40px; max-width: 230px; }
-    .panel-new { bottom: 46px; right: 44px; max-width: 230px; }
-    .panel-kpi { top: 80px; right: 40px; max-width: 230px; }
+    .panel-main { left: 32px; top: 80px; max-width: 280px; }
+    .panel-legacy { bottom: 36px; left: 32px; max-width: 260px; }
+    .panel-new { bottom: 36px; right: 32px; max-width: 260px; }
+    .panel-kpi { top: 80px; right: 32px; max-width: 260px; }
 
     .pill-row {
       display: flex;
@@ -148,7 +149,7 @@
     @media (max-width: 900px) {
       .panel-main {
         left: 16px;
-        top: 76px;
+        top: 70px;
         right: 16px;
         max-width: none;
       }
@@ -167,7 +168,7 @@
       <div class="brand-title">Ecology · 业务星团图 Business Constellation</div>
     </div>
     <div class="top-actions">
-      <div class="chip">中心 63·30·7 收入环 · 外圈 KPI 星团</div>
+      <div class="chip">中心 63·30·7 收入恒星环 · 外圈 KPI 星团</div>
       <a class="back" href="../index.html">Back to Universe</a>
     </div>
   </div>
@@ -179,21 +180,21 @@
       <small>OVERVIEW</small>
       <h2>收入结构 + 五条业务线的 KPI 星团</h2>
       <p>
-        中心环形图展示乌干达四达三条主收入轨道：
+        中心行星环展示乌干达四达三条主收入轨道：
         <strong>Subscription 63%</strong>、
         <strong>Solar 30%</strong>、
         <strong>Ads &amp; Devices 7%</strong>。
-        外圈的点云则把这三大块拆开成具体业务线
-        （Solar、DTV、DTH、DTT、OTT）的 KPI 星团。
+        外圈的星团把这三大块拆开成具体业务线
+        （Solar、DTV、DTH、DTT、OTT）的 KPI。
       </p>
       <p style="margin-top:6px;">
         点靠近某个扇区，代表属于该收入块；点的颜色代表业务线；
         大小代表该指标在本业务内部的大致体量。
       </p>
       <div class="pill-row">
-        <span class="pill">蓝色扇区 · Subscription · 63%</span>
-        <span class="pill">绿色扇区 · Solar · 30%</span>
-        <span class="pill">金色扇区 · Ads &amp; Devices · 7%</span>
+        <span class="pill">蓝色行星环 · Subscription · 63%</span>
+        <span class="pill">绿色行星环 · Solar · 30%</span>
+        <span class="pill">金色行星环 · Ads &amp; Devices · 7%</span>
       </div>
     </aside>
 
@@ -213,9 +214,9 @@
       <h2>Solar 与 OTT 的新增长空间</h2>
       <p>
         Solar 星团聚集于绿色扇区，代表 30% 的离网增量收入；
-        OTT 星团主要落在 Subscription 扇区，但其中广告相关 KPI
-        会被归入 Ads &amp; Devices。绿色与品红色点云的扩散程度，
-        暗示了未来可以重点挖掘的增长星域。
+        OTT 星团主要落在 Subscription 扇区，但广告相关 KPI
+        归入 Ads &amp; Devices。绿色与品红色星团的扩散程度，
+        暗示了未来可重点挖掘的增长星域。
       </p>
     </aside>
 
@@ -223,9 +224,10 @@
       <small>HOW TO READ</small>
       <h2>点的含义</h2>
       <p>
-        位置：中心环外，对应所属收入扇区；<br/>
+        位置：中心行星环外，对应所属收入扇区；<br/>
         颜色：区分业务线 Solar / DTV / DTH / DTT / OTT；<br/>
         大小：在本业务内的相对指标体量；<br/>
+        光晕：亮度越高，说明该指标近期变化越剧烈；<br/>
         悬停：查看业务线 + 指标名称 + 当前值。
       </p>
     </aside>
@@ -236,18 +238,15 @@
     var dom = document.getElementById('eco-orbit');
     var chart = echarts.init(dom);
 
-    // 三大收入块：63 / 30 / 7
+    // === 宏观 63 / 30 / 7 行星环 ===
     var macroDefs = [
-      { id: 'Subscription', label: 'Subscription 63%', value: 63,
-        color: '#60a5fa' }, // 蓝
-      { id: 'Solar',        label: 'Solar 30%',        value: 30,
-        color: '#22c55e' }, // 绿
-      { id: 'AdsDevices',   label: 'Ads & Devices 7%', value: 7,
-        color: '#eab308' }  // 金
+      { id: 'Subscription', label: 'Subscription 63%', value: 63, color: '#60a5fa' }, // 蓝
+      { id: 'Solar',        label: 'Solar 30%',        value: 30, color: '#22c55e' }, // 绿
+      { id: 'AdsDevices',   label: 'Ads & Devices 7%', value: 7,  color: '#eab308' }  // 金
     ];
     var totalMacro = macroDefs.reduce(function (s, m) { return s + m.value; }, 0);
 
-    // 五条业务线：用颜色区分
+    // 五条业务线颜色
     var businessDefs = [
       { id: 'Solar', label: 'Solar', tone: 'green' },
       { id: 'DTV',  label: 'DTV',  tone: 'blue'  },
@@ -267,7 +266,7 @@
       }
     }
 
-    // KPI 原始数据（你截图里的主要指标，数值用于相对大小）
+    // KPI 原始数据（取你截图里的指标）
     var kpiRaw = {
       Solar: [
         { name: '销量 每月累计',          value: 1481,    trend: 'down' },
@@ -324,19 +323,16 @@
       ]
     };
 
-    // 把 KPI 按照 “收视费 / 太阳能 / 终端+广告” 三大块分组
     function classifyMacro(bizId, metricName) {
       if (bizId === 'Solar') return 'Solar';
       if (/广告|DSP/.test(metricName)) return 'AdsDevices';
       if (/销量|终端|机顶盒|设备/.test(metricName) && bizId !== 'Solar') {
         return 'AdsDevices';
       }
-      // 默认都算到收视费 Subscription
       return 'Subscription';
     }
 
-    // 为散点计算扇区角度范围（和 63/30/7 对齐）
-    var usedArcDeg = 280;  // 使用 280° 画三个扇区
+    var usedArcDeg = 280;
     var startDeg = -usedArcDeg / 2;
     var cursorDeg = startDeg;
     macroDefs.forEach(function (m) {
@@ -346,7 +342,6 @@
       cursorDeg += sweep;
     });
 
-    // 辅助函数：根据 macroId 找扇区定义
     function getMacroDef(id) {
       return macroDefs.find(function (m) { return m.id === id; });
     }
@@ -354,8 +349,9 @@
       return businessDefs.find(function (b) { return b.id === id; });
     }
 
-    // 生成星团点
+    // 生成星团点：按收入块分三圈，半径更大，充满中部空间
     var clusterPoints = [];
+    var maxRadius = 95;
     businessDefs.forEach(function (biz) {
       var metrics = kpiRaw[biz.id] || [];
       if (!metrics.length) return;
@@ -374,25 +370,34 @@
 
         for (var i = 0; i < copies; i++) {
           var angle =
-            macro.startDeg + (macro.endDeg - macro.startDeg) * (0.1 + 0.8 * Math.random());
-          var radius = 32 + 8 * Math.random() + 22 * (macroId === 'Subscription' ? 0 : macroId === 'Solar' ? 1 : 2);
+            macro.startDeg + (macro.endDeg - macro.startDeg) * (0.12 + 0.76 * Math.random());
 
-          var baseSize = 5 + 8 * Math.sqrt(valueRatio);
-          var size     = baseSize * (0.8 + Math.random() * 0.5);
+          var bandIndex =
+            macroId === 'Subscription' ? 0 :
+            macroId === 'Solar'        ? 1 : 2;
+
+          var radius =
+            36 + bandIndex * 18 + 6 * Math.random() + 6 * Math.random(); // 36~90 之间
+
+          var baseSize = 6 + 9 * Math.sqrt(valueRatio);
+          var size     = baseSize * (0.9 + Math.random() * 0.4);
 
           var trend = m.trend || 'flat';
-          var alpha = 0.5 + Math.random() * 0.4;
+
+          var depth = radius / maxRadius; // 景深：越外层越亮一点
+          var alphaBase = 0.45 + 0.35 * depth;
+
           var color;
           if (trend === 'up') {
-            color = 'rgba(74,222,128,' + alpha + ')';
+            color = 'rgba(74,222,128,' + alphaBase + ')';
           } else if (trend === 'down') {
-            color = 'rgba(248,113,113,' + alpha + ')';
+            color = 'rgba(248,113,113,' + alphaBase + ')';
           } else {
-            color = toneColor(biz.tone, alpha);
+            color = toneColor(biz.tone, alphaBase);
           }
 
           clusterPoints.push({
-            value: [radius, angle],  // polar: [r, θ]
+            value: [radius, angle],
             bizId: biz.id,
             bizLabel: biz.label,
             macroId: macroId,
@@ -403,11 +408,48 @@
             symbolSize: size,
             itemStyle: {
               color: color,
-              opacity: 0.96
+              opacity: 0.95,
+              shadowBlur: 18 + 10 * depth,
+              shadowColor: color
             }
           });
         }
       });
+    });
+
+    // 行星环的渐变配色（从中心恒星向外发光）
+    var ringData = macroDefs.map(function (m) {
+      var grad;
+      if (m.id === 'Subscription') {
+        grad = new echarts.graphic.RadialGradient(0.5, 0.4, 1, [
+          { offset: 0,   color: 'rgba(191,219,254,0.08)' },
+          { offset: 0.55,color: 'rgba(96,165,250,0.9)' },
+          { offset: 1,   color: 'rgba(30,64,175,1)' }
+        ]);
+      } else if (m.id === 'Solar') {
+        grad = new echarts.graphic.RadialGradient(0.5, 0.4, 1, [
+          { offset: 0,   color: 'rgba(187,247,208,0.08)' },
+          { offset: 0.55,color: 'rgba(34,197,94,0.9)' },
+          { offset: 1,   color: 'rgba(4,120,87,1)' }
+        ]);
+      } else { // Ads & Devices
+        grad = new echarts.graphic.RadialGradient(0.5, 0.4, 1, [
+          { offset: 0,   color: 'rgba(254,249,195,0.08)' },
+          { offset: 0.55,color: 'rgba(234,179,8,0.96)' },
+          { offset: 1,   color: 'rgba(133,77,14,1)' }
+        ]);
+      }
+      return {
+        value: m.value,
+        name: m.label,
+        itemStyle: {
+          color: grad,
+          shadowBlur: 40,
+          shadowColor: m.color,
+          borderWidth: 1.2,
+          borderColor: 'rgba(15,23,42,0.85)'
+        }
+      };
     });
 
     var option = {
@@ -416,7 +458,7 @@
         trigger: 'item',
         formatter: function (params) {
           var d = params.data || {};
-          if (!d.metric) return d.macroLabel || d.bizLabel || '';
+          if (!d.metric) return d.name || d.macroLabel || '';
           var trendText =
             d.trend === 'up'   ? '趋势：上升'
           : d.trend === 'down' ? '趋势：下降'
@@ -430,17 +472,15 @@
         }
       },
 
-      // 极坐标，用来放 KPI 星团
       polar: {
-        center: ['50%', '62%'],
-        radius: '78%'
+        center: ['50%', '52%'],   // 更居中
+        radius: '92%'            // 让星团撑满中部空间
       },
       angleAxis: {
         type: 'value',
         min: -180,
         max: 180,
         startAngle: 90,
-        boundaryGap: false,
         axisLine: { show: false },
         axisTick: { show: false },
         axisLabel: { show: false },
@@ -449,7 +489,8 @@
       radiusAxis: {
         type: 'value',
         min: 0,
-        max: 120,
+        max: maxRadius,
+        splitNumber: 6,
         axisLine: { show: false },
         axisTick: { show: false },
         axisLabel: { show: false },
@@ -460,34 +501,70 @@
       },
 
       series: [
-        // 中心 63 / 30 / 7 的环形图
+        // 背景同心环（用自定义 series，再叠加在行星环后面）
+        {
+          type: 'custom',
+          coordinateSystem: 'none',
+          renderItem: function (params, api) {
+            var cx = api.getWidth() / 2;
+            var cy = api.getHeight() * 0.52;
+            var maxR = Math.min(api.getWidth(), api.getHeight()) * 0.38;
+            var rings = [];
+            for (var i = 1; i <= 6; i++) {
+              rings.push({
+                type: 'circle',
+                shape: { cx: cx, cy: cy, r: (maxR / 6) * i },
+                style: {
+                  stroke: 'rgba(15,23,42,' + (0.35 + i * 0.05) + ')',
+                  fill: 'transparent',
+                  lineWidth: 1
+                }
+              });
+            }
+            // 中央恒星亮点
+            rings.push({
+              type: 'circle',
+              shape: { cx: cx, cy: cy, r: maxR * 0.16 },
+              style: {
+                fill: 'rgba(15,23,42,0.96)',
+                shadowBlur: 55,
+                shadowColor: 'rgba(248,250,252,0.85)'
+              }
+            });
+            return { type: 'group', children: rings };
+          },
+          data: [0],
+          silent: true,
+          zlevel: 0
+        },
+
+        // 中心水平 63 / 30 / 7 行星环
         {
           type: 'pie',
           name: 'Revenue Split',
-          radius: ['14%', '26%'],
-          center: ['50%', '62%'],
+          radius: ['20%', '38%'],
+          center: ['50%', '52%'],
           startAngle: 270,
-          data: macroDefs.map(function (m) {
-            return {
-              value: m.value,
-              name: m.label,
-              itemStyle: { color: m.color }
-            };
-          }),
+          padAngle: 3,
+          clockwise: false,
+          data: ringData,
           label: {
             color: '#e5e7eb',
-            formatter: '{b}'
+            fontSize: 11,
+            formatter: '{b}',
+            alignTo: 'edge',
+            distanceToLabelLine: 2
           },
           labelLine: {
-            length: 8,
+            length: 10,
             length2: 6
           },
           zlevel: 1
         },
 
-        // 外圈 KPI 星团
+        // 外圈 KPI 星团，用 effectScatter 做“发光星星 + 景深”
         {
-          type: 'scatter',
+          type: 'effectScatter',
           coordinateSystem: 'polar',
           name: 'KPI Cluster',
           encode: { radius: 0, angle: 1 },
@@ -495,7 +572,12 @@
           symbolSize: function (val, params) {
             return params.data.symbolSize || 6;
           },
-          zlevel: 2
+          rippleEffect: {
+            brushType: 'stroke',
+            scale: 2.4,
+            period: 10
+          },
+          zlevel: 3
         }
       ]
     };
