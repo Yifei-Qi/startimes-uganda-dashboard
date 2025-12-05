@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>人口数据 · StarTimes Uganda</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans SC", sans-serif;
+      background: radial-gradient(circle at top, #020617 0, #000000 55%, #020617 100%);
+      color: #e5e7eb;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+      backdrop-filter: blur(10px);
+      background: linear-gradient(to bottom, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.6));
+    }
+    .title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .subtitle {
+      font-size: 12px;
+      color: #9ca3af;
+      margin-top: 2px;
+    }
+    a.nav {
+      font-size: 12px;
+      color: #93c5fd;
+      text-decoration: none;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(59, 130, 246, 0.6);
+    }
+    main {
+      flex: 1;
+      padding: 18px 22px 22px;
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1.4fr);
+      gap: 18px;
+    }
+    .card {
+      border-radius: 20px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.78));
+      padding: 16px 18px;
+    }
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    #chart-main {
+      width: 100%;
+      height: 360px;
+    }
+    #chart-side {
+      width: 100%;
+      height: 220px;
+    }
+    footer {
+      padding: 8px 22px 14px;
+      font-size: 11px;
+      color: #6b7280;
+      border-top: 1px solid rgba(31, 41, 55, 0.9);
+    }
+    @media (max-width: 960px) {
+      main {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      #chart-main { height: 280px; }
+      #chart-side { height: 220px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <div class="title">人口数据 · Population Dashboard</div>
+      <div class="subtitle">后续将在这里展示 Region / District 分层人口可视化</div>
+    </div>
+    <a class="nav" href="index.html">返回星图导航</a>
+  </header>
+
+  <main>
+    <section class="card">
+      <div class="card-title">核心统计概览（示意占位）</div>
+      <div id="chart-main"></div>
+    </section>
+    <section class="card">
+      <div class="card-title">结构分布（示意占位）</div>
+      <div id="chart-side"></div>
+    </section>
+  </main>
+
+  <footer>
+    人口模块目前为示意页面，等待后续通过 Colab 导出真实数据文件（JSON/CSV/GeoJSON）后接入。
+  </footer>
+
+  <!-- 后续正式接数据仍然用 ECharts，这里先放简单占位图表 -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+  <script>
+    var mainChart = echarts.init(document.getElementById('chart-main'));
+    var sideChart = echarts.init(document.getElementById('chart-side'));
+
+    mainChart.setOption({
+      title: { text: '示意：各 Region 总人口', textStyle: { color: '#e5e7eb', fontSize: 12 } },
+      tooltip: {},
+      xAxis: { type: 'category', data: ['Central', 'Eastern', 'Northern', 'Western'], axisLabel: { color: '#9ca3af' } },
+      yAxis: { type: 'value', axisLabel: { color: '#9ca3af' } },
+      series: [{
+        type: 'bar',
+        data: [120, 90, 80, 100],
+        itemStyle: {
+          borderRadius: [6, 6, 0, 0]
+        }
+      }],
+      backgroundColor: 'transparent'
+    });
+
+    sideChart.setOption({
+      title: { text: '示意：城市 vs 乡村', textStyle: { color: '#e5e7eb', fontSize: 12 } },
+      tooltip: { trigger: 'item' },
+      legend: { bottom: 0, textStyle: { color: '#9ca3af', fontSize: 10 } },
+      series: [
+        {
+          type: 'pie',
+          radius: ['40%', '70%'],
+          itemStyle: { borderRadius: 6, borderColor: '#020617', borderWidth: 2 },
+          data: [
+            { value: 45, name: '城市 Urban' },
+            { value: 55, name: '乡村 Rural' }
+          ]
+        }
+      ],
+      backgroundColor: 'transparent'
+    });
+
+    window.addEventListener('resize', function () {
+      mainChart.resize();
+      sideChart.resize();
+    });
+  </script>
+</body>
+</html>
