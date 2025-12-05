@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>StarTimes Uganda · 数据宇宙导航</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- 基础样式：深色科技风 -->
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans SC", sans-serif;
+      background: radial-gradient(circle at top, #1f2933 0, #020617 45%, #000000 100%);
+      color: #e5e7eb;
+      min-height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      padding: 14px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+      backdrop-filter: blur(12px);
+      background: linear-gradient(to bottom, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.3));
+      position: relative;
+      z-index: 10;
+    }
+    .logo {
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #fbbf24;
+    }
+    .subtitle {
+      font-size: 12px;
+      color: #9ca3af;
+      margin-top: 4px;
+    }
+    nav ul {
+      display: flex;
+      gap: 20px;
+      list-style: none;
+      font-size: 13px;
+    }
+    nav a {
+      color: #e5e7eb;
+      text-decoration: none;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      transition: all 0.2s ease-out;
+      opacity: 0.85;
+    }
+    nav a:hover {
+      border-color: rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.9);
+      opacity: 1;
+    }
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+      gap: 24px;
+      padding: 20px 26px 26px;
+    }
+    #galaxy-container {
+      position: relative;
+      border-radius: 24px;
+      overflow: hidden;
+      background: radial-gradient(circle at top, #020617, #020617);
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      box-shadow: 0 24px 80px rgba(15, 23, 42, 0.9);
+    }
+    #galaxy {
+      width: 100%;
+      height: 100%;
+      min-height: 460px;
+    }
+    .panel {
+      border-radius: 24px;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.7));
+      padding: 20px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .panel-title {
+      font-size: 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .panel-title span {
+      font-size: 11px;
+      font-weight: 400;
+      color: #9ca3af;
+    }
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .tag {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      color: #cbd5f5;
+      background: radial-gradient(circle at top left, rgba(37, 99, 235, 0.4), transparent);
+    }
+    .modules-list {
+      margin-top: 8px;
+      font-size: 13px;
+      display: grid;
+      gap: 8px;
+    }
+    .module-item {
+      padding: 8px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: radial-gradient(circle at top left, rgba(59, 130, 246, 0.12), rgba(15, 23, 42, 0.95));
+    }
+    .module-name {
+      font-size: 13px;
+    }
+    .module-link {
+      font-size: 11px;
+      color: #93c5fd;
+      text-decoration: none;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(59, 130, 246, 0.8);
+      background: rgba(15, 23, 42, 0.9);
+    }
+    .module-link:hover {
+      background: rgba(37, 99, 235, 0.9);
+      color: #f9fafb;
+    }
+    footer {
+      padding: 8px 26px 14px;
+      font-size: 11px;
+      color: #6b7280;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    @media (max-width: 960px) {
+      main {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      #galaxy {
+        min-height: 320px;
+      }
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <div class="logo">STARTIMES UGANDA · DATA SPACE</div>
+      <div class="subtitle">人口数据 · 媒体环境 · 户外资源 · 社交媒体 · 竞品格局</div>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="ecosystem.html">生态 / 产业布局</a></li>
+        <li><a href="channels/index.html">渠道生态位</a></li>
+        <li><a href="market/index.html">市场生态位</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <!-- 左侧：3D 星图导航 -->
+    <section id="galaxy-container">
+      <div id="galaxy"></div>
+    </section>
+
+    <!-- 右侧：说明 + 快捷模块列表 -->
+    <aside class="panel">
+      <div class="panel-title">
+        数据宇宙导航
+        <span>点击左侧星图任意“星球”可进入对应模块</span>
+      </div>
+
+      <div class="tag-row">
+        <div class="tag">Tech / Sci-fi UI</div>
+        <div class="tag">ECharts 3D</div>
+        <div class="tag">Multi-layer Navigation</div>
+      </div>
+
+      <div class="modules-list">
+        <div class="module-item">
+          <div class="module-name">人口 / Population</div>
+          <a class="module-link" href="population.html">进入模块</a>
+        </div>
+        <div class="module-item">
+          <div class="module-name">媒体环境 / Media Landscape</div>
+          <a class="module-link" href="media.html">进入模块</a>
+        </div>
+        <div class="module-item">
+          <div class="module-name">户外资源 / Outdoor OOH</div>
+          <a class="module-link" href="outdoor.html">进入模块</a>
+        </div>
+        <div class="module-item">
+          <div class="module-name">社交媒体 / Social Media</div>
+          <a class="module-link" href="social.html">进入模块</a>
+        </div>
+        <div class="module-item">
+          <div class="module-name">竞品格局 / Competitors</div>
+          <a class="module-link" href="market/index.html">进入模块</a>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <footer>
+    <span>StarTimes Uganda Internal Visualization System · Prototype</span>
+    <span>Built with ECharts + GitHub Pages</span>
+  </footer>
+
+  <!-- 引入 ECharts 和 ECharts GL（3D） -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts-gl@2/dist/echarts-gl.min.js"></script>
+
+  <script>
+    // 1. 初始化 ECharts 实例
+    var dom = document.getElementById('galaxy');
+    var chart = echarts.init(dom);
+
+    // 2. 定义“星球”模块（节点）
+    //   value: [x, y, z] 决定空间位置，可随意调整让它们分散一点
+    var nodes = [
+      {
+        name: '人口 Population',
+        value: [0, 0, 0],
+        symbolSize: 18,
+        itemStyle: { color: '#fbbf24' },
+        link: 'population.html'
+      },
+      {
+        name: '媒体 Media',
+        value: [30, 10, 15],
+        symbolSize: 16,
+        itemStyle: { color: '#38bdf8' },
+        link: 'media.html'
+      },
+      {
+        name: '户外资源 OOH',
+        value: [-25, -5, 20],
+        symbolSize: 16,
+        itemStyle: { color: '#34d399' },
+        link: 'outdoor.html'
+      },
+      {
+        name: '社交媒体 Social',
+        value: [10, -30, -10],
+        symbolSize: 16,
+        itemStyle: { color: '#a855f7' },
+        link: 'social.html'
+      },
+      {
+        name: '竞品格局 Competitors',
+        value: [-20, 25, -15],
+        symbolSize: 16,
+        itemStyle: { color: '#f97316' },
+        link: 'market/index.html'
+      },
+      {
+        name: '生态 / 产业布局',
+        value: [0, 30, 10],
+        symbolSize: 14,
+        itemStyle: { color: '#60a5fa' },
+        link: 'ecosystem.html'
+      },
+      {
+        name: '渠道生态位 Channels',
+        value: [25, -5, 30],
+        symbolSize: 14,
+        itemStyle: { color: '#22c55e' },
+        link: 'channels/index.html'
+      }
+    ];
+
+    // 3. 定义连线（只是为了空间感，可按需要删减）
+    var edges = [
+      { source: 0, target: 1 },
+      { source: 0, target: 2 },
+      { source: 0, target: 3 },
+      { source: 0, target: 4 },
+      { source: 1, target: 5 },
+      { source: 2, target: 6 },
+      { source: 3, target: 6 },
+      { source: 4, target: 5 }
+    ];
+
+    // 4. 配置 3D 图表
+    var option = {
+      backgroundColor: 'transparent',
+      tooltip: {
+        formatter: function (params) {
+          return params.data.name || '';
+        }
+      },
+      xAxis3D: { type: 'value' },
+      yAxis3D: { type: 'value' },
+      zAxis3D: { type: 'value' },
+      grid3D: {
+        show: false,
+        viewControl: {
+          distance: 160,
+          animation: true,
+          animationDurationUpdate: 800,
+          autoRotate: true,
+          autoRotateSpeed: 20
+        },
+        light: {
+          main: { intensity: 1.4, shadow: false },
+          ambient: { intensity: 0.4 }
+        }
+      },
+      series: [
+        {
+          type: 'graphGL',
+          layout: 'none',
+          data: nodes,
+          edges: edges,
+          lineStyle: {
+            width: 1.2,
+            color: 'rgba(148, 163, 184, 0.8)'
+          },
+          itemStyle: {
+            opacity: 0.95
+          },
+          label: {
+            show: true,
+            formatter: '{b}',
+            textStyle: {
+              fontSize: 11,
+              color: '#e5e7eb'
+            }
+          }
+        }
+      ]
+    };
+
+    chart.setOption(option);
+
+    // 5. 点击节点跳转到对应页面
+    chart.on('click', function (params) {
+      if (params.data && params.data.link) {
+        window.location.href = params.data.link;
+      }
+    });
+
+    // 6. 自适应窗口尺寸变化
+    window.addEventListener('resize', function () {
+      chart.resize();
+    });
+  </script>
+</body>
+</html>
