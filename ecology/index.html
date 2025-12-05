@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <title>Ecology · StarTimes Uganda · Orbit View</title>
+  <title>Ecology · Revenue Orbits · StarTimes Uganda</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
@@ -129,10 +129,10 @@
       top: 82px;
     }
 
-    .panel-dvb {
+    .panel-subscription {
       top: 80px;
       right: 40px;
-      max-width: 220px;
+      max-width: 230px;
     }
 
     .panel-solar {
@@ -141,7 +141,7 @@
       max-width: 220px;
     }
 
-    .panel-content {
+    .panel-other {
       bottom: 46px;
       right: 44px;
       max-width: 240px;
@@ -166,7 +166,7 @@
       top: 50%;
       right: 50%;
       transform: translate(140%, -120%);
-      max-width: 180px;
+      max-width: 190px;
       text-align: right;
     }
 
@@ -194,8 +194,8 @@
         right: 16px;
         max-width: none;
       }
-      .panel-dvb, .panel-solar, .panel-content, .panel-kpi {
-        display: none; /* 手机上就只留一块主说明，避免过挤 */
+      .panel-subscription, .panel-solar, .panel-other, .panel-kpi {
+        display: none; /* 手机上只保留整体说明 */
       }
     }
   </style>
@@ -204,10 +204,10 @@
   <div class="top-bar">
     <div class="brand">
       <div class="brand-path">STARTIMES UGANDA · DATA SPACE</div>
-      <div class="brand-title">Ecology · 生态星环视图</div>
+      <div class="brand-title">Ecology · 收入星环视图 Revenue Orbits</div>
     </div>
     <div class="top-actions">
-      <div class="chip">DVB · SOLAR · CONTENT</div>
+      <div class="chip">Subscription · Solar · Ads & Devices</div>
       <a class="back" href="../index.html">Back to Universe</a>
     </div>
   </div>
@@ -219,54 +219,57 @@
     <!-- 文案面板：整体说明 -->
     <aside class="panel panel-main">
       <small>OVERVIEW</small>
-      <h2>乌干达四达的产业轨道</h2>
+      <h2>乌干达四达的三条收入轨道</h2>
       <p>
-        把 DVB、SOLAR 与 CONTENT 想像成三颗绕着同一颗“乌干达用户”旋转的卫星：
+        从收入角度看，乌干达四达可以被拆成三条主轨道：
+        <strong>收视费 Subscription</strong>、<strong>太阳能 Solar</strong>、
+        以及 <strong>其他收入（广告 / 传输 / 终端）</strong>。
         轨道的半径代表覆盖广度，角度代表营收权重，亮度则暗示技术门槛与不可替代性。
-        这一页只做一件事——帮你用一眼记住这张星图。
       </p>
       <div class="pill-row">
-        <span class="pill">DVB · 地面 / 卫星</span>
-        <span class="pill">SOLAR · 能源入口</span>
-        <span class="pill">CONTENT · 体验入口</span>
+        <span class="pill">Subscription · 63%</span>
+        <span class="pill">Solar · 30%</span>
+        <span class="pill">Ads / Devices · 7%</span>
       </div>
     </aside>
 
-    <!-- DVB 面板 -->
-    <aside class="panel panel-dvb">
-      <small>DVB ORBIT</small>
-      <h2>DTT / DTH · 广覆盖高门槛</h2>
+    <!-- 收视费面板 -->
+    <aside class="panel panel-subscription">
+      <small>SUBSCRIPTION ORBIT</small>
+      <h2>收视费 · 节目包 Subscription</h2>
       <p>
-        发射塔、机顶盒、频谱资源决定了 DVB 轨道半径几乎覆盖全国，
-        也是生态中技术门槛最高的一环。
+        约 <strong>63%</strong> 的业务体量来自收视费：
+        用户为频道包 / 节目包付费，其底层由 DVB 网络与内容资产共同支撑。
+        这条轨道决定了现金流的稳定性。
       </p>
     </aside>
 
     <!-- SOLAR 面板 -->
     <aside class="panel panel-solar">
       <small>SOLAR ORBIT</small>
-      <h2>离网能源 · 增长卫星</h2>
+      <h2>太阳能 · 30% 的增长引擎</h2>
       <p>
-        SOLAR 的轨道暂时更“局部”，但增长斜率陡峭，
-        与 DVB 在农村区域形成互补。
+        太阳能业务占整体体量约 <strong>30%</strong>，
+        覆盖更偏离网地区，受设备 / 安装网络与资金节奏影响，
+        但在农村区域与收视费形成协同。
       </p>
     </aside>
 
-    <!-- CONTENT 面板 -->
-    <aside class="panel panel-content">
-      <small>CONTENT ORBIT</small>
-      <h2>内容 · 把轨道变成记忆</h2>
+    <!-- OTHER 面板 -->
+    <aside class="panel panel-other">
+      <small>OTHER ORBIT</small>
+      <h2>广告 / 传输 / 终端 · 长尾 7%</h2>
       <p>
-        体育、剧集、自办频道让用户形成“情感锚点”，
-        CONTENT 的存在让整个星系有了品牌故事和文化氛围。
+        剩余 <strong>7%</strong> 来自广告、传输服务以及电视 / 机顶盒等终端销售。
+        这条轨道在营收上较轻，却是对品牌声量与生态闭环的重要补充。
       </p>
     </aside>
 
-    <!-- 中心 KPI 小卡片（示意） -->
+    <!-- 中心 KPI 小卡片 -->
     <aside class="panel panel-kpi">
-      <small>SIMULATED KPI</small>
-      <h2>68<span class="unit">% DVB</span></h2>
-      <p>当前生态中，约 68% 的收入与 DVB 相关，CONTENT 负责放大其边际价值。</p>
+      <small>CURRENT SPLIT</small>
+      <h2>63<span class="unit">% Subscription</span></h2>
+      <p>主轨道由收视费驱动，其余 30% 来自 Solar，7% 来自 Ads &amp; Devices。</p>
     </aside>
   </div>
 
@@ -274,161 +277,158 @@
   <script>
     var chart = echarts.init(document.getElementById('eco-orbit'));
 
-    // 采用极坐标星环图，营造“轨道”感
+    // 三条收入轨道：覆盖度 cov、营收 rev、技术门槛 tech
+    var rawProducts = [
+      { name: '收视费 · Subscription', cov: 88, rev: 63, tech: 0.88, color: 'rgb(96,165,250)' },
+      { name: '太阳能 · Solar',         cov: 52, rev: 30, tech: 0.75, color: 'rgb(34,197,94)' },
+      { name: '其他 · Ads / Devices',   cov: 40, rev: 7,  tech: 0.65, color: 'rgb(250,204,21)' }
+    ];
+
+    var totalRev = rawProducts.reduce(function (s, d) { return s + d.rev; }, 0);
+    var usedArc = 280;          // 总共用多少度来画三条光束（留一点空隙）
+    var startBase = -usedArc / 2;
+    var cursor = startBase;
+
+    var sectorData = rawProducts.map(function (p, idx) {
+      var sweep = usedArc * (p.rev / totalRev);   // 营收占比 → 扇形角度
+      var startAngle = cursor;
+      var endAngle = cursor + sweep;
+      cursor += sweep;
+
+      return {
+        value: [p.cov, p.rev, p.tech, startAngle, endAngle, idx],
+        label: p.name,
+        baseColor: p.color
+      };
+    });
+
     var option = {
       backgroundColor: 'transparent',
-      angleAxis: {
-        type: 'value',
-        startAngle: 90,
-        min: 0,
-        max: 360,
-        axisLabel: { show: false },
-        axisLine: { show: false },
-        axisTick: { show: false },
-        splitLine: { show: false }
-      },
-      radiusAxis: {
-        type: 'value',
-        min: 0,
-        max: 100,
-        axisLabel: { show: false },
-        axisLine: { show: false },
-        axisTick: { show: false },
-        splitLine: {
-          show: true,
-          lineStyle: { color: 'rgba(15,23,42,0.9)' }
-        }
-      },
-      polar: {
-        center: ['50%', '54%'],
-        radius: '70%'
-      },
       tooltip: {
-        formatter: function (p) {
-          if (!p.data || !p.data.label) return '';
-          return p.data.label + '<br/>Coverage: ' + p.data.cov +
-            '<br/>Revenue: ' + p.data.rev +
-            '<br/>Stickiness: ' + p.data.stick;
+        formatter: function (params) {
+          var v = params.data.value;
+          var name = params.data.label;
+          var cov = v[0];
+          var rev = v[1];
+          var tech = v[2];
+          return [
+            name,
+            '覆盖 Coverage：' + cov + ' / 100',
+            '营收 Revenue：' + rev + ' / ' + totalRev,
+            '技术门槛 Tech barrier：' + (tech * 100).toFixed(0) + '%'
+          ].join('<br/>');
         }
       },
       series: [
-        // 模糊底圈，增加空间感
+        // 背景同心圆 + 中心光点
         {
-          type: 'bar',
-          coordinateSystem: 'polar',
-          roundCap: true,
-          data: [
-            { value: 360, radius: 28 },
-            { value: 360, radius: 50 },
-            { value: 360, radius: 72 }
-          ],
-          barWidth: 18,
-          itemStyle: {
-            color: function (params) {
-              var idx = params.dataIndex;
-              if (idx === 0) return 'rgba(15,23,42,0.9)';
-              if (idx === 1) return 'rgba(15,23,42,0.8)';
-              return 'rgba(15,23,42,0.7)';
+          type: 'custom',
+          name: 'rings',
+          renderItem: function (params, api) {
+            var cx = api.getWidth() / 2;
+            var cy = api.getHeight() * 0.58;
+            var maxR = Math.min(api.getWidth(), api.getHeight()) * 0.46;
+            var levels = 6;
+            var children = [];
+
+            for (var i = 1; i <= levels; i++) {
+              children.push({
+                type: 'circle',
+                shape: { cx: cx, cy: cy, r: (maxR / levels) * i },
+                style: {
+                  stroke: 'rgba(15,23,42,' + (0.35 + i * 0.08) + ')',
+                  fill: 'transparent',
+                  lineWidth: 1
+                }
+              });
             }
+
+            // 中心光点
+            children.push({
+              type: 'circle',
+              shape: { cx: cx, cy: cy, r: maxR * 0.04 },
+              style: {
+                fill: 'rgba(248,250,252,0.96)',
+                shadowBlur: 28,
+                shadowColor: 'rgba(248,250,252,0.9)'
+              }
+            });
+
+            return { type: 'group', children: children };
           },
-          silent: true
+          data: [0],
+          silent: true,
+          z: 0
         },
 
-        // DVB 轨道
+        // 三条“收入轨道光束”
         {
-          type: 'bar',
-          coordinateSystem: 'polar',
-          roundCap: true,
-          name: 'DVB',
-          data: [{
-            value: 260, // 在 360° 中占比（营收权重示意）
-            radius: 72,
-            label: 'DVB · DTT / DTH',
-            cov: '92',
-            rev: '80',
-            stick: '75'
-          }],
-          barWidth: 12,
-          itemStyle: {
-            color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
-              { offset: 0, color: 'rgba(250,204,21,0.15)' },
-              { offset: 0.3, color: 'rgba(250,204,21,0.9)' },
-              { offset: 1, color: 'rgba(251,191,36,0.1)' }
-            ]),
-            shadowBlur: 24,
-            shadowColor: 'rgba(250,204,21,0.8)'
-          }
-        },
+          type: 'custom',
+          name: 'ecology-orbits',
+          renderItem: function (params, api) {
+            var value = api.value(0);   // 覆盖 cov
+            var tech  = api.value(2);   // 技术门槛 tech [0,1]
+            var startDeg = api.value(3);
+            var endDeg   = api.value(4);
+            var idx      = api.value(5);
 
-        // SOLAR 轨道
-        {
-          type: 'bar',
-          coordinateSystem: 'polar',
-          roundCap: true,
-          name: 'SOLAR',
-          data: [{
-            value: 140,
-            radius: 52,
-            label: 'SOLAR',
-            cov: '45',
-            rev: '65',
-            stick: '55'
-          }],
-          barWidth: 10,
-          itemStyle: {
-            color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
-              { offset: 0, color: 'rgba(52,211,153,0.1)' },
-              { offset: 0.4, color: 'rgba(52,211,153,0.95)' },
-              { offset: 1, color: 'rgba(22,163,74,0.1)' }
-            ]),
-            shadowBlur: 20,
-            shadowColor: 'rgba(34,197,94,0.8)'
-          }
-        },
+            var cx = api.getWidth() / 2;
+            var cy = api.getHeight() * 0.58;
+            var maxR = Math.min(api.getWidth(), api.getHeight()) * 0.46;
 
-        // CONTENT 轨道
-        {
-          type: 'bar',
-          coordinateSystem: 'polar',
-          roundCap: true,
-          name: 'CONTENT',
-          data: [{
-            value: 220,
-            radius: 32,
-            label: 'CONTENT',
-            cov: '68',
-            rev: '55',
-            stick: '95'
-          }],
-          barWidth: 8,
-          itemStyle: {
-            color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
-              { offset: 0, color: 'rgba(96,165,250,0.1)' },
-              { offset: 0.5, color: 'rgba(96,165,250,0.95)' },
-              { offset: 1, color: 'rgba(56,189,248,0.1)' }
-            ]),
-            shadowBlur: 18,
-            shadowColor: 'rgba(59,130,246,0.9)'
-          }
-        },
+            // 半径：最小半径 + 覆盖度映射
+            var rInner = maxR * 0.18;
+            var rOuter = rInner + (value / 100) * (maxR - rInner);
 
-        // 中心光晕
-        {
-          type: 'effectScatter',
-          coordinateSystem: 'polar',
-          symbol: 'circle',
-          symbolSize: 16,
-          data: [{ value: [0, 0] }],
-          itemStyle: {
-            color: 'rgba(248,250,252,0.95)',
-            shadowBlur: 35,
-            shadowColor: 'rgba(248,250,252,0.9)'
+            // 亮度：tech 越高，越“发光”
+            var baseColor = rawProducts[idx].color;
+            var alphaCore = 0.35 + tech * 0.4;
+            var alphaEdge = 0.05 + tech * 0.25;
+
+            // 颜色字符串从 rgb(...) 转成 rgba(...)
+            function withAlpha(c, a) {
+              return c.replace('rgb', 'rgba').replace(')', ',' + a.toFixed(2) + ')');
+            }
+
+            var gradient = new echarts.graphic.LinearGradient(
+              0, 0, 0, 1,
+              [
+                { offset: 0,   color: withAlpha(baseColor, alphaEdge) },
+                { offset: 0.35, color: withAlpha(baseColor, alphaCore) },
+                { offset: 1,   color: withAlpha(baseColor, 0.05) }
+              ],
+              false
+            );
+
+            return {
+              type: 'sector',
+              shape: {
+                cx: cx,
+                cy: cy,
+                r0: rInner,
+                r: rOuter,
+                startAngle: (startDeg * Math.PI) / 180,
+                endAngle:   (endDeg   * Math.PI) / 180
+              },
+              style: {
+                fill: gradient,
+                stroke: 'rgba(15,23,42,0.4)',
+                lineWidth: 1.2,
+                shadowBlur: 24,
+                shadowColor: withAlpha(baseColor, 0.55)
+              },
+              emphasis: {
+                style: {
+                  shadowBlur: 40,
+                  shadowColor: withAlpha(baseColor, 0.9),
+                  lineWidth: 1.6
+                }
+              }
+            };
           },
-          rippleEffect: {
-            scale: 6,
-            brushType: 'stroke'
-          },
-          silent: true
+          data: sectorData,
+          encode: { tooltip: [0,1,2] },
+          z: 2
         }
       ]
     };
