@@ -60,3 +60,241 @@
     .nav-pill {
       font-size: 12px;
       padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: rgba(15, 23, 42, 0.85);
+      color: #e5e7eb;
+      text-decoration: none;
+      backdrop-filter: blur(10px);
+      transition: all 0.2s ease-out;
+    }
+    .nav-pill:hover {
+      border-color: rgba(248, 250, 252, 0.9);
+      background: rgba(15, 23, 42, 0.95);
+    }
+
+    /* 左下角文案 */
+    .bottom-info {
+      position: absolute;
+      left: 26px;
+      bottom: 22px;
+      z-index: 10;
+      max-width: 360px;
+      font-size: 12px;
+      color: #9ca3af;
+      line-height: 1.5;
+      backdrop-filter: blur(10px);
+    }
+    .bottom-info strong {
+      color: #e5e7eb;
+      font-weight: 500;
+    }
+
+    /* 右下角小脚 */
+    .bottom-right {
+      position: absolute;
+      right: 26px;
+      bottom: 18px;
+      z-index: 10;
+      font-size: 11px;
+      color: #6b7280;
+    }
+
+    @media (max-width: 768px) {
+      .brand-title { font-size: 14px; }
+      .brand-subtitle { font-size: 10px; }
+      .top-nav { top: 64px; right: 16px; }
+      .bottom-info { left: 16px; right: 16px; bottom: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div id="galaxy"></div>
+
+    <div class="brand">
+      <div class="brand-title">STARTIMES UGANDA · DATA SPACE</div>
+      <div class="brand-subtitle">Ecology · Niche · Spatial Niche · Market Niche</div>
+    </div>
+
+    <div class="top-nav">
+      <a class="nav-pill" href="ecology/index.html">生态 Ecology</a>
+      <a class="nav-pill" href="niche/index.html">生态位 Niche</a>
+    </div>
+
+    <div class="bottom-info">
+      <strong>交互说明：</strong>拖动画布、滚轮缩放；点击节点可进入对应模块。<br />
+      当前层级仅展示一级结构：<strong>生态（Ecology）</strong> 与
+      <strong>生态位（Niche）</strong>，后续层级将从生态位内部展开
+      <strong>空间生态位（Spatial niche）</strong> 与
+      <strong>市场生态位（Market niche）</strong>。
+    </div>
+
+    <div class="bottom-right">
+      StarTimes Uganda Internal Visualization · GitHub Pages + ECharts
+    </div>
+  </div>
+
+  <!-- ECharts（用 2D graph 做高质感力导图，兼容性更好） -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+  <script>
+    var chart = echarts.init(document.getElementById('galaxy'));
+
+    // 定义节点（保留正确层级概念：Ecology / Niche；其余做“视觉卫星”）
+    var nodes = [
+      // 一级节点
+      {
+        id: 'ecology',
+        name: '生态 · Ecology',
+        value: 10,
+        symbolSize: 78,
+        category: 0,
+        itemStyle: { color: '#fbbf24' },
+        link: 'ecology/index.html'
+      },
+      {
+        id: 'niche',
+        name: '生态位 · Niche',
+        value: 10,
+        symbolSize: 78,
+        category: 1,
+        itemStyle: { color: '#38bdf8' },
+        link: 'niche/index.html'
+      },
+
+      // Niche 下二级概念（空间 & 市场），只是视觉上先展示出来
+      {
+        id: 'spatial',
+        name: '空间生态位 · Spatial',
+        value: 6,
+        symbolSize: 52,
+        category: 2,
+        itemStyle: { color: '#22c55e' },
+        link: 'niche/spatial/index.html'
+      },
+      {
+        id: 'market',
+        name: '市场生态位 · Market',
+        value: 6,
+        symbolSize: 52,
+        category: 3,
+        itemStyle: { color: '#f97316' },
+        link: 'niche/market/index.html'
+      },
+
+      // 一些“数据主题”卫星节点（后面可对应具体页面）
+      {
+        id: 'population',
+        name: '人口 · Population',
+        value: 4,
+        symbolSize: 40,
+        category: 4,
+        itemStyle: { color: '#a855f7' },
+        link: 'ecology/population.html'
+      },
+      {
+        id: 'media',
+        name: '媒体环境 · Media',
+        value: 4,
+        symbolSize: 40,
+        category: 4,
+        itemStyle: { color: '#0ea5e9' },
+        link: 'ecology/media.html'
+      },
+      {
+        id: 'ooh',
+        name: '户外资源 · OOH',
+        value: 4,
+        symbolSize: 40,
+        category: 4,
+        itemStyle: { color: '#22c55e' },
+        link: 'niche/spatial/offline-visual.html'
+      },
+      {
+        id: 'social',
+        name: '社交媒体 · Social',
+        value: 4,
+        symbolSize: 40,
+        category: 4,
+        itemStyle: { color: '#e11d48' },
+        link: 'niche/market/channel-design.html'
+      }
+    ];
+
+    // 边（表现层级关系）
+    var links = [
+      { source: 'ecology', target: 'niche' },        // Ecology ↔ Niche
+      { source: 'niche', target: 'spatial' },        // Niche → Spatial
+      { source: 'niche', target: 'market' },         // Niche → Market
+      { source: 'ecology', target: 'population' },   // Ecology → Population
+      { source: 'ecology', target: 'media' },        // Ecology → Media
+      { source: 'spatial', target: 'ooh' },          // Spatial → OOH
+      { source: 'market', target: 'social' }         // Market → Social
+    ];
+
+    var option = {
+      backgroundColor: 'transparent',
+      tooltip: {
+        formatter: function (params) {
+          return params.data.name || '';
+        }
+      },
+      animationDuration: 1200,
+      animationEasingUpdate: 'quinticInOut',
+      series: [
+        {
+          type: 'graph',
+          layout: 'force',
+          roam: true,
+          focusNodeAdjacency: true,
+          data: nodes,
+          links: links,
+          categories: [
+            { name: 'Ecology' },
+            { name: 'Niche' },
+            { name: 'Spatial' },
+            { name: 'Market' },
+            { name: 'DataTopic' }
+          ],
+          label: {
+            show: true,
+            color: '#e5e7eb',
+            fontSize: 12
+          },
+          lineStyle: {
+            color: 'rgba(148, 163, 184, 0.7)',
+            width: 1.4,
+            curveness: 0.15
+          },
+          force: {
+            repulsion: 260,
+            edgeLength: 140,
+            gravity: 0.03
+          },
+          emphasis: {
+            scale: 1.08,
+            label: {
+              fontSize: 13,
+              fontWeight: 600
+            }
+          }
+        }
+      ]
+    };
+
+    chart.setOption(option);
+
+    // 点击节点跳转
+    chart.on('click', function (params) {
+      if (params.data && params.data.link) {
+        window.location.href = params.data.link;
+      }
+    });
+
+    window.addEventListener('resize', function () {
+      chart.resize();
+    });
+  </script>
+</body>
+</html>
+
