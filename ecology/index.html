@@ -3,431 +3,478 @@
 <head>
   <meta charset="UTF-8" />
   <title>Ecology · Business Constellation · StarTimes Uganda</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
-    /* 1. 全局重置与基础设定 */
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    :root {
-      --bg-dark: #050816;
-      --glass-bg: rgba(15, 23, 42, 0.85);
-      --glass-border: rgba(148, 163, 184, 0.2);
-      --text-main: #e5e7eb;
-      --text-muted: #94a3b8;
-      --accent-blue: #38bdf8;
-      --top-bar-height: 56px;
-    }
-
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--bg-dark);
-      color: var(--text-main);
-      /* 核心布局：Flex 纵向排列，强制占满视口高度 */
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      overflow: hidden; /* 桌面端禁止滚动，保持沉浸感 */
-    }
-
-    /* 2. 顶部导航栏 - 固定高度，不参与压缩 */
-    .top-bar {
-      flex: 0 0 var(--top-bar-height);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 24px;
-      z-index: 50;
-      background: rgba(5, 8, 22, 0.8);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--glass-border);
-    }
-
-    .brand { display: flex; flex-direction: column; gap: 2px; }
-    .brand-path { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); }
-    .brand-title { font-size: 16px; font-weight: 700; letter-spacing: 0.5px; }
-
-    .top-actions { display: flex; align-items: center; gap: 12px; }
-    .chip {
-      padding: 4px 12px;
-      border-radius: 999px;
-      font-size: 11px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid var(--glass-border);
-      color: var(--text-muted);
-      display: none; /* 移动端隐藏，桌面端显示 */
-    }
-    @media (min-width: 768px) { .chip { display: block; } }
-
-    .back-btn {
-      padding: 6px 16px;
-      border-radius: 999px;
-      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-      color: white;
-      font-size: 12px;
-      font-weight: 600;
-      text-decoration: none;
-      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-      transition: transform 0.2s;
-    }
-    .back-btn:hover { transform: translateY(-1px); }
-
-    /* 3. 主舞台 - 自动填充剩余空间 */
-    .main-stage {
-      flex: 1; /* 占据除去顶部栏之外的所有空间 */
-      position: relative;
-      width: 100%;
-      height: 100%; /* 确保子元素能继承高度 */
-      background:
-        radial-gradient(circle at 15% 15%, rgba(56, 189, 248, 0.15), transparent 40%),
-        radial-gradient(circle at 85% 85%, rgba(234, 179, 8, 0.1), transparent 40%),
-        #020617;
+      font-family: -apple-system, BlinkMacSystemFont,"SF Pro Text",
+        "Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans SC",sans-serif;
+      background: #050816;
+      color: #e5e7eb;
       overflow: hidden;
     }
 
-    /* 4. 图表容器 - 绝对定位撑满主舞台 */
+    .top-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 26px;
+      z-index: 20;
+      backdrop-filter: blur(18px);
+      background: linear-gradient(
+        to bottom,
+        rgba(5,7,24,0.96),
+        rgba(5,7,24,0.75),
+        transparent
+      );
+      border-bottom: 1px solid rgba(148,163,184,0.35);
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .brand-path {
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #6b7280;
+    }
+
+    .brand-title {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 11px;
+    }
+
+    .chip {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.8);
+      color: #9ca3af;
+    }
+
+    .back {
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.7);
+      background: radial-gradient(circle at top left,rgba(96,165,250,0.9),rgba(15,23,42,0.98));
+      color: #e5e7eb;
+      text-decoration: none;
+    }
+
+    .scene {
+      position: absolute;
+      top: 52px; bottom: 0; left: 0; right: 0;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 15% 10%, rgba(56,189,248,0.24), transparent 55%),
+        radial-gradient(circle at 80% 90%, rgba(234,179,8,0.28), transparent 60%),
+        radial-gradient(circle at 70% 10%, rgba(244,63,94,0.18), transparent 55%),
+        #020617;
+    }
+
     #eco-orbit {
       position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
+      inset: 0;
       width: 100%;
       height: 100%;
-      z-index: 1; /* 图表在最底层 */
     }
 
-    /* 5. 悬浮面板系统 */
-    .panels-layer {
-      position: absolute;
-      inset: 0;
-      pointer-events: none; /* 让鼠标事件穿透面板层，直达图表 */
-      z-index: 10;
-      padding: 20px;
-    }
-
+    /* 信息卡片 */
     .panel {
-      pointer-events: auto; /* 恢复面板本身的交互 */
       position: absolute;
-      width: 260px;
-      padding: 16px;
-      border-radius: 16px;
-      background: var(--glass-bg);
-      border: 1px solid var(--glass-border);
-      backdrop-filter: blur(20px);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-      transition: opacity 0.3s, transform 0.3s;
+      border-radius: 20px;
+      padding: 14px 16px;
+      border: 1px solid rgba(148,163,184,0.55);
+      background: radial-gradient(circle at top left, rgba(15,23,42,0.95), rgba(15,23,42,0.9));
+      box-shadow:
+        0 18px 55px rgba(15,23,42,0.9),
+        0 0 0 1px rgba(15,23,42,0.9) inset;
+      backdrop-filter: blur(18px);
+      max-width: 260px;
+      font-size: 12px;
+      line-height: 1.6;
+      color: #9ca3af;
     }
 
-    .panel h2 { font-size: 14px; color: var(--text-main); margin-bottom: 6px; }
-    .panel small { display: block; font-size: 10px; color: var(--accent-blue); letter-spacing: 1px; margin-bottom: 4px; font-weight: 700; }
-    .panel p { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
-
-    /* 面板位置定位 */
-    .panel-overview { top: 20px; left: 20px; }
-    .panel-kpi { top: 20px; right: 20px; text-align: right; }
-    .panel-legacy { bottom: 20px; left: 20px; }
-    .panel-growth { bottom: 20px; right: 20px; text-align: right; }
-
-    /* 6. 标签胶囊样式 */
-    .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
-    .tag {
-      font-size: 10px; padding: 2px 8px; border-radius: 4px;
-      background: rgba(255,255,255,0.08); color: #cbd5e1;
+    .panel h2 {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: #e5e7eb;
     }
 
-    /* 7. 移动端适配：变为垂直滚动流 */
-    @media (max-width: 768px) {
-      body { height: auto; overflow-y: auto; } /* 允许滚动 */
-      .top-bar { position: sticky; top: 0; }
-      
-      .main-stage {
-        display: flex;
-        flex-direction: column;
-        height: auto;
-        min-height: 100vh; /* 保证至少一屏 */
-      }
+    .panel small {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: #64748b;
+    }
 
-      #eco-orbit {
-        position: relative; /* 恢复文档流 */
-        height: 85vh; /* 移动端图表高度 */
-        min-height: 500px;
-      }
+    .panel-main {
+      left: 42px;
+      top: 82px;
+    }
 
-      .panels-layer {
-        position: relative;
-        padding: 0 16px 32px 16px;
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-      }
+    .panel-legacy {
+      bottom: 42px;
+      left: 40px;
+      max-width: 230px;
+    }
 
-      .panel {
-        position: relative; /* 取消绝对定位 */
-        top: auto !important; left: auto !important; right: auto !important; bottom: auto !important;
-        width: 100%; /* 满宽 */
-        text-align: left !important;
+    .panel-new {
+      bottom: 46px;
+      right: 44px;
+      max-width: 230px;
+    }
+
+    .panel-kpi {
+      top: 80px;
+      right: 40px;
+      max-width: 230px;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .pill {
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.55);
+      font-size: 11px;
+      color: #cbd5f5;
+    }
+
+    @media (max-width: 900px) {
+      .panel-main {
+        left: 16px;
+        top: 76px;
+        right: 16px;
+        max-width: none;
+      }
+      .panel-legacy,
+      .panel-new,
+      .panel-kpi {
+        display: none;
       }
     }
   </style>
 </head>
 <body>
-
-  <!-- 顶部导航 -->
-  <nav class="top-bar">
+  <div class="top-bar">
     <div class="brand">
-      <span class="brand-path">STARTIMES · UGANDA</span>
-      <span class="brand-title">Business Constellation</span>
+      <div class="brand-path">STARTIMES UGANDA · DATA SPACE</div>
+      <div class="brand-title">Ecology · 业务星团图 Business Constellation</div>
     </div>
     <div class="top-actions">
-      <span class="chip">Data Space v2.1</span>
-      <a href="../index.html" class="back-btn">Exit</a>
+      <div class="chip">每个业务 = 一颗行星 · KPI = 周围星团</div>
+      <a class="back" href="../index.html">Back to Universe</a>
     </div>
-  </nav>
+  </div>
 
-  <!-- 主舞台 -->
-  <main class="main-stage">
-    
-    <!-- 1. ECharts 容器 -->
+  <div class="scene">
     <div id="eco-orbit"></div>
 
-    <!-- 2. 悬浮面板层 -->
-    <div class="panels-layer">
-      
-      <!-- 左上：总览 -->
-      <article class="panel panel-overview">
-        <small>SYSTEM OVERVIEW</small>
-        <h2>五大业务星系</h2>
-        <p>将核心业务线映射为行星轨道。点的大小代表 KPI 权重，颜色映射业绩趋势。</p>
-        <div class="tags">
-          <span class="tag">Solar</span>
-          <span class="tag">DTV/DTH/DTT</span>
-          <span class="tag">OTT</span>
-        </div>
-      </article>
+    <aside class="panel panel-main">
+      <small>OVERVIEW</small>
+      <h2>五条业务线的 KPI 星团</h2>
+      <p>
+        本图把五条核心业务线视作五颗行星：
+        <strong>Solar</strong>、<strong>DTV</strong>、<strong>DTH</strong>、
+        <strong>DTT</strong>、<strong>OTT</strong>。
+        行星周围的小点代表该业务下的关键指标（销量、收入、ARPPU 等）。
+        点越大代表数值越高，绿色表示环比/同比上升，红色表示下降，灰色则相对稳定。
+      </p>
+      <div class="pill-row">
+        <span class="pill">Solar · 线下太阳能</span>
+        <span class="pill">DTV / DTH / DTT · 传统 DVB</span>
+        <span class="pill">OTT · 互联网视频</span>
+      </div>
+    </aside>
 
-      <!-- 右上：指南 -->
-      <article class="panel panel-kpi">
-        <small>VISUAL GUIDE</small>
-        <h2>如何阅读星图</h2>
-        <p>
-          <span style="color:#4ade80">● 绿色</span> 增长/达标<br>
-          <span style="color:#f87171">● 红色</span> 下滑/未达标<br>
-          <span style="color:#94a3b8">● 灰色</span> 波动持平<br>
-          *点越大，业务数值体量越大
-        </p>
-      </article>
+    <aside class="panel panel-legacy">
+      <small>LEGACY DVB CLUSTER</small>
+      <h2>DTV · DTH · DTT 电视业务星团</h2>
+      <p>
+        这三个星团代表传统付费电视业务：新增用户、在线用户、扣费金额、
+        充值金额、ARPPU 等指标整体呈下行趋势，点云颜色偏暖红。
+        通过点的密度与大小，可以快速比较不同业务线的体量与衰减速度。
+      </p>
+    </aside>
 
-      <!-- 左下：传统业务 -->
-      <article class="panel panel-legacy">
-        <small>LEGACY CLUSTER</small>
-        <h2>DVB 传统电视业务</h2>
-        <p>包含 DTV、DTH 和 DTT。目前数据点呈现密集但偏暖色（红色），反映出存量市场的用户与营收下行压力。</p>
-      </article>
+    <aside class="panel panel-new">
+      <small>SOLAR &amp; OTT CLUSTER</small>
+      <h2>Solar 与 OTT 的新增长空间</h2>
+      <p>
+        Solar 星团体现离网增量市场，销量与分期款相关指标围绕其轨道分布；
+        OTT 星团则聚焦新增用户、DAU/MAU、会员充值与 DSP 广告收入等，
+        点云中更多绿色高亮点暗示其增长潜力与创新空间。
+      </p>
+    </aside>
 
-      <!-- 右下：新增长点 -->
-      <article class="panel panel-growth">
-        <small>GROWTH ENGINE</small>
-        <h2>Solar & OTT 新引擎</h2>
-        <p>外层轨道。Solar 的分期回款与 OTT 的活跃度呈现较多绿色高亮，是当前生态中活力最强的增长极。</p>
-      </article>
+    <aside class="panel panel-kpi">
+      <small>HOW TO READ</small>
+      <h2>点的含义</h2>
+      <p>
+        位置：靠近某颗行星的点属于该业务线；<br/>
+        大小：当前 KPI 数值在本业务内部的相对大小；<br/>
+        颜色：绿色 = 上升，红色 = 下降，灰色 = 稳定。
+        鼠标悬停可以查看具体指标名称与数值。
+      </p>
+    </aside>
+  </div>
 
-    </div>
-  </main>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<script>
+  var dom = document.getElementById('eco-orbit');
+  if (!dom) {
+    console.error('eco-orbit element not found');
+  }
+  var chart = echarts.init(dom);
 
-  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
-  <script>
-    // 初始化图表
-    var dom = document.getElementById('eco-orbit');
-    var chart = echarts.init(dom, null, { renderer: 'canvas' });
+  // 五条业务线的基础定义：角度、半径层级
+  var businessDefs = [
+    { id: 'Solar', label: 'Solar', angle: -120, radius: 22, tone: 'green' },
+    { id: 'DTV',  label: 'DTV',  angle: -40,  radius: 36, tone: 'blue'  },
+    { id: 'DTH',  label: 'DTH',  angle: 40,   radius: 50, tone: 'cyan'  },
+    { id: 'DTT',  label: 'DTT',  angle: 120,  radius: 64, tone: 'indigo'},
+    { id: 'OTT',  label: 'OTT',  angle: 200,  radius: 78, tone: 'violet'}
+  ];
 
-    // 配置参数
-    var businessDefs = [
-      { id: 'Solar', label: 'Solar', angle: -120, radius: 0.30, tone: 'green' },
-      { id: 'DTV',   label: 'DTV',   angle: -45,  radius: 0.44, tone: 'blue'  },
-      { id: 'DTH',   label: 'DTH',   angle: 45,   radius: 0.58, tone: 'cyan'  },
-      { id: 'DTT',   label: 'DTT',   angle: 120,  radius: 0.72, tone: 'indigo'},
-      { id: 'OTT',   label: 'OTT',   angle: 200,  radius: 0.86, tone: 'violet'}
-    ];
-
-    // 颜色生成器
-    function toneColor(tone, alpha) {
-      var map = {
-        'green':  '34, 197, 94',
-        'blue':   '59, 130, 246',
-        'cyan':   '45, 212, 191',
-        'indigo': '99, 102, 241',
-        'violet': '217, 70, 239'
-      };
-      var rgb = map[tone] || '148, 163, 184';
-      return 'rgba(' + rgb + ', ' + alpha + ')';
+  function toneColor(tone, alpha) {
+    switch (tone) {
+      case 'green':  return 'rgba(34,197,94,'  + alpha + ')';
+      case 'blue':   return 'rgba(59,130,246,' + alpha + ')';
+      case 'cyan':   return 'rgba(45,212,191,' + alpha + ')';
+      case 'indigo': return 'rgba(129,140,248,'+ alpha + ')';
+      case 'violet': return 'rgba(236,72,153,' + alpha + ')';
+      default:       return 'rgba(148,163,184,'+ alpha + ')';
     }
+  }
 
-    // 数据集
-    var kpiRaw = {
-      Solar: [
-        { name: '销量', value: 1481, trend: 'down' },
-        { name: '应收收入', value: 168973, trend: 'down' },
-        { name: '累计应收', value: 23072112, trend: 'up' }, // 大泡泡
-        { name: '回款进度', value: 80729, trend: 'down' }
-      ],
-      DTV: [
-        { name: '新增用户', value: 110, trend: 'down' },
-        { name: '活跃用户', value: 39510, trend: 'down' },
-        { name: 'ARPPU', value: 3.28, trend: 'down' }
-      ],
-      DTH: [
-        { name: '活跃用户', value: 349860, trend: 'down' }, // 中泡泡
-        { name: '充值金额', value: 289402, trend: 'down' },
-        { name: '新增用户', value: 425, trend: 'down' }
-      ],
-      DTT: [
-        { name: '活跃用户', value: 344459, trend: 'down' },
-        { name: '充值金额', value: 263016, trend: 'down' },
-        { name: 'ARPPU', value: 2.33, trend: 'down' }
-      ],
-      OTT: [
-        { name: 'MAU', value: 371110, trend: 'up' },
-        { name: 'DAU', value: 46168, trend: 'up' },
-        { name: '会员收入', value: 2365, trend: 'up' },
-        { name: '广告收入', value: 10, trend: 'up' }
-      ]
-    };
+  // 根据你发的截图整理的 KPI（数值只是示意，用来拉开量级）
+  var kpiRaw = {
+    Solar: [
+      { name: '销量 每月累计',          value: 1481,    trend: 'down' },
+      { name: '销售收入(应收) 每月累计', value: 168973,  trend: 'down' },
+      { name: '全款收款 每月累计',      value: 1148,    trend: 'down' },
+      { name: '首付款收款 每月累计',    value: 10171,   trend: 'down' },
+      { name: '分期款收款 每月累计',    value: 80729,   trend: 'down' },
+      { name: '累计应收分期款',         value: 23072112,trend: 'up'   },
+      { name: '当月应收分期款',         value: 224472,  trend: 'down' },
+      { name: '分期中用户数',           value: 234390,  trend: 'up'   }
+    ],
+    DTV: [
+      { name: '新增用户数 每月累计',    value: 110,   trend: 'down' },
+      { name: '在线用户数 每月去重',    value: 8112, trend: 'down' },
+      { name: '注册用户数 月末最后一天',value: 39510,trend: 'down' },
+      { name: '扣费金额 每月累计',      value: 4353, trend: 'down' },
+      { name: '充值金额 每月累计',      value: 6408, trend: 'down' },
+      { name: '扣费用户数 每月去重',    value: 7501, trend: 'down' },
+      { name: '充值用户数 每月去重',    value: 1949, trend: 'down' },
+      { name: '月扣费ARPPU',           value: 0.58, trend: 'down' },
+      { name: '月充值ARPPU',           value: 3.288,trend: 'down' },
+      { name: '销量 每月累计',          value: 50,   trend: 'down' }
+    ],
+    DTH: [
+      { name: '新增用户数 每月累计',    value: 425,    trend: 'down' },
+      { name: '在线用户数 每月去重',    value: 349860, trend: 'down' },
+      { name: '注册用户数 月末最后一天',value: 1101568,trend: 'down' },
+      { name: '扣费金额 每月累计',      value: 190787, trend: 'down' },
+      { name: '充值金额 每月累计',      value: 289402, trend: 'down' },
+      { name: '扣费用户数 每月去重',    value: 339611, trend: 'down' },
+      { name: '充值用户数 每月去重',    value: 85237,  trend: 'down' },
+      { name: '月扣费ARPPU',           value: 0.562,  trend: 'down' },
+      { name: '月充值ARPPU',           value: 3.395,  trend: 'down' }
+    ],
+    DTT: [
+      { name: '新增用户数 每月累计',    value: 249,    trend: 'down' },
+      { name: '在线用户数 每月去重',    value: 344459, trend: 'down' },
+      { name: '注册用户数 月末最后一天',value: 1848112,trend: 'down' },
+      { name: '扣费金额 每月累计',      value: 180694, trend: 'down' },
+      { name: '充值金额 每月累计',      value: 263016, trend: 'down' },
+      { name: '扣费用户数 每月去重',    value: 340802, trend: 'down' },
+      { name: '充值用户数 每月去重',    value: 112640, trend: 'down' },
+      { name: '月扣费ARPPU',           value: 0.53,   trend: 'down' },
+      { name: '月充值ARPPU',           value: 2.335,  trend: 'down' }
+    ],
+    OTT: [
+      { name: '新增用户 本月累计',       value: 13426,  trend: 'up'  },
+      { name: 'App日活 本月日均',       value: 46168,  trend: 'up'  },
+      { name: 'App月活 本月日均',       value: 371110, trend: 'up'  },
+      { name: '会员充值金额 本月累计',   value: 2365.15,trend: 'up'  },
+      { name: 'DVB充值金额 本月累计',    value: 1782.63,trend: 'up'  },
+      { name: '绑卡续费率 本月日均',     value: 31.74,  trend: 'up'  },
+      { name: 'DSP广告收入 本月累计',   value: 9.78,   trend: 'up'  }
+    ]
+  };
 
-    // 生成数据点
-    var clusterPoints = [];
-    var planetCores = [];
+  // 星团点 & 行星核心数据
+  var clusterPoints = [];
+  var planetPoints  = [];
 
-    businessDefs.forEach(function(biz) {
-      var metrics = kpiRaw[biz.id] || [];
-      
-      // 1. 添加行星核心
-      planetCores.push({
-        name: biz.label,
-        value: [biz.angle, biz.radius], // 极坐标：角度，半径
-        itemStyle: {
-          color: toneColor(biz.tone, 1),
-          shadowBlur: 20,
-          shadowColor: toneColor(biz.tone, 0.8)
-        },
-        label: { show: true, formatter: '{b}', offset: [0, 20], color: '#fff' }
-      });
+  businessDefs.forEach(function (biz) {
+    var metrics = kpiRaw[biz.id] || [];
+    if (!metrics.length) return;
 
-      if(metrics.length === 0) return;
-      var maxVal = Math.max.apply(null, metrics.map(function(o){return o.value}));
+    var maxVal = metrics.reduce(function (m, x) {
+      return Math.max(m, x.value);
+    }, 0.0001);
 
-      // 2. 生成卫星云点
-      metrics.forEach(function(m) {
-        var count = 3 + Math.floor(Math.random() * 5); // 每个指标分裂成 3-8 个点
-        var ratio = Math.sqrt(m.value / maxVal); // 归一化大小
-        
-        for(var i=0; i<count; i++) {
-          // 随机扰动位置
-          var jitterAngle = (Math.random() - 0.5) * 20; 
-          var jitterRadius = (Math.random() - 0.5) * 0.12;
-          
-          // 确定颜色
-          var color = '#94a3b8'; // default grey
-          if(m.trend === 'up') color = '#4ade80'; // bright green
-          if(m.trend === 'down') color = '#f87171'; // soft red
-
-          var alpha = 0.3 + Math.random() * 0.5;
-
-          clusterPoints.push({
-            name: m.name,
-            valRaw: m.value,
-            trend: m.trend,
-            // 极坐标数据结构: [角度, 半径, 大小]
-            value: [
-              biz.angle + jitterAngle, 
-              biz.radius + jitterRadius, 
-              (3 + ratio * 8) * (0.8 + Math.random()) // 大小随机化
-            ],
-            itemStyle: {
-              color: color,
-              opacity: alpha
-            }
-          });
-        }
-      });
+    // 行星核心
+    planetPoints.push({
+      value: [biz.radius, biz.angle],
+      bizId: biz.id,
+      bizLabel: biz.label,
+      itemStyle: { color: toneColor(biz.tone, 0.95) },
+      symbolSize: 16
     });
 
-    // ECharts 配置
-    var option = {
-      backgroundColor: 'transparent',
-      // 极坐标系配置
-      polar: {
-        radius: ['10%', '85%']
-      },
-      angleAxis: {
-        type: 'value',
-        startAngle: 90,
-        min: -180,
-        max: 180,
-        axisLine: { show: false },
-        axisTick: { show: false },
-        axisLabel: { show: false },
-        splitLine: { show: false }
-      },
-      radiusAxis: {
-        type: 'value',
-        axisLine: { show: false },
-        axisTick: { show: false },
-        axisLabel: { show: false },
-        splitLine: { 
-          show: true,
-          lineStyle: {
-            color: 'rgba(255,255,255,0.05)',
-            type: 'dashed'
-          }
+    metrics.forEach(function (m) {
+      var copies = 2 + Math.round((m.value / maxVal) * 4); // 2-6 个点，体量感
+      var valueRatio = m.value / maxVal;
+
+      for (var i = 0; i < copies; i++) {
+        var angleJitter  = (Math.random() - 0.5) * 26;  // ±13°
+        var radiusJitter = (Math.random() - 0.5) * 6;   // 半径抖动
+
+        var angle  = biz.angle  + angleJitter;
+        var radius = biz.radius + radiusJitter;
+
+        var baseSize = 3 + 7 * Math.sqrt(valueRatio);
+        var size     = baseSize * (0.7 + Math.random() * 0.6);
+
+        var trend = m.trend || 'flat';
+        var alpha = 0.45 + Math.random() * 0.4;
+        var color;
+        if (trend === 'up') {
+          color = 'rgba(74,222,128,' + alpha + ')';
+        } else if (trend === 'down') {
+          color = 'rgba(248,113,113,' + alpha + ')';
+        } else {
+          color = toneColor(biz.tone, alpha);
         }
-      },
-      tooltip: {
-        show: true,
-        backgroundColor: 'rgba(15, 23, 42, 0.9)',
-        borderColor: '#334155',
-        textStyle: { color: '#f1f5f9' },
-        formatter: function(params) {
-          if(params.seriesName === 'Planets') return params.name;
-          var d = params.data;
-          var trendIcon = d.trend === 'up' ? '▲' : (d.trend === 'down' ? '▼' : '-');
-          return `
-            <div style="font-weight:bold; color:#cbd5e1">${d.name}</div>
-            <div style="font-size:12px; color:#94a3b8">Value: ${d.valRaw.toLocaleString()}</div>
-            <div style="font-size:12px; margin-top:4px">Trend: ${trendIcon}</div>
-          `;
-        }
-      },
-      series: [
-        // 1. 核心行星
-        {
-          name: 'Planets',
-          type: 'scatter',
-          coordinateSystem: 'polar',
-          symbolSize: 24,
-          data: planetCores,
-          z: 10
-        },
-        // 2. 数据星云
-        {
-          name: 'KPI Clusters',
-          type: 'scatter',
-          coordinateSystem: 'polar',
-          data: clusterPoints,
-          symbolSize: function(val) { return val[2]; }, // 使用数据中的第三位作为大小
+
+        clusterPoints.push({
+          value: [radius, angle],   // [radius, angle]
+          bizId: biz.id,
+          bizLabel: biz.label,
+          metric: m.name,
+          rawValue: m.value,
+          trend: trend,
+          symbolSize: size,
           itemStyle: {
-            shadowBlur: 5
-          },
-          z: 5
-        }
-      ],
-      animationDuration: 2000,
-      animationEasing: 'cubicOut'
-    };
-
-    chart.setOption(option);
-
-    // 监听窗口大小变化
-    window.addEventListener('resize', function() {
-      chart.resize();
+            color: color,
+            opacity: 0.95
+          }
+        });
+      }
     });
-  </script>
+  });
+
+  var option = {
+    backgroundColor: 'transparent',
+    tooltip: {
+      trigger: 'item',
+      formatter: function (params) {
+        var d = params.data || {};
+        if (!d.metric) {
+          return d.bizLabel || '';
+        }
+        var trendText =
+          d.trend === 'up'   ? '趋势：上升'
+        : d.trend === 'down' ? '趋势：下降'
+                             : '趋势：相对平稳';
+        return [
+          d.bizLabel + ' · ' + d.metric,
+          '当前值：' + d.rawValue,
+          trendText
+        ].join('<br/>');
+      }
+    },
+    polar: {
+      center: ['50%', '62%'],
+      radius: '70%'
+    },
+    angleAxis: {
+      type: 'value',
+      min: -180,
+      max: 180,
+      startAngle: 90,
+      boundaryGap: false,
+      axisLine: { show: false },
+      axisTick: { show: false },
+      axisLabel: { show: false },
+      splitLine: { show: false }
+    },
+    radiusAxis: {
+      type: 'value',
+      min: 0,
+      max: 100,
+      axisLine: { show: false },
+      axisTick: { show: false },
+      axisLabel: { show: false },
+      splitLine: {
+        show: true,
+        lineStyle: { color: 'rgba(15,23,42,0.6)' }
+      }
+    },
+    series: [
+      // KPI 星团
+      {
+        type: 'scatter',
+        coordinateSystem: 'polar',
+        name: 'KPI Cluster',
+        encode: { radius: 0, angle: 1 },
+        data: clusterPoints,
+        symbolSize: function (val, params) {
+          return params.data.symbolSize || 4;
+        },
+        zlevel: 2
+      },
+      // 行星核心
+      {
+        type: 'scatter',
+        coordinateSystem: 'polar',
+        name: 'Planets',
+        encode: { radius: 0, angle: 1 },
+        data: planetPoints,
+        label: {
+          show: true,
+          formatter: function (p) { return p.data.bizLabel; },
+          color: '#e5e7eb',
+          fontSize: 11,
+          distance: 8
+        },
+        zlevel: 3
+      }
+    ]
+  };
+
+  chart.setOption(option);
+  window.addEventListener('resize', function () {
+    chart.resize();
+  });
+</script>
+
 </body>
 </html>
