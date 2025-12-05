@@ -177,12 +177,12 @@
 <script>
   var chart = echarts.init(document.getElementById('galaxy'));
 
-  // 使用固定坐标布局：layout: 'none'
-  // 只保留结构节点：Ecology / Niche / Spatial / Market / Population / Media / OOH / Social / Competitors
+  // 固定坐标布局：确保一进来能看全
   var nodes = [
+    // 一级：生态位 & 生态
     {
       name: '生态位 · Niche',
-      x: 480,
+      x: 420,
       y: 260,
       symbolSize: 90,
       itemStyle: {
@@ -202,7 +202,7 @@
     {
       name: '生态 · Ecology',
       x: 760,
-      y: 300,
+      y: 260,
       symbolSize: 90,
       itemStyle: {
         color: '#fbbf24',
@@ -218,9 +218,11 @@
       },
       link: 'ecology/index.html'
     },
+
+    // 生态位下面：空间 & 市场
     {
       name: '空间生态位 · Spatial niche',
-      x: 380,
+      x: 340,
       y: 420,
       symbolSize: 60,
       itemStyle: {
@@ -239,7 +241,7 @@
     },
     {
       name: '市场生态位 · Market niche',
-      x: 580,
+      x: 520,
       y: 420,
       symbolSize: 60,
       itemStyle: {
@@ -256,107 +258,55 @@
       },
       link: 'niche/market/index.html'
     },
+
+    // 生态下面：横向 / 纵向
     {
-      name: '人口 · Population',
-      x: 880,
-      y: 380,
-      symbolSize: 46,
+      name: '横向 · 产业产品布局',
+      x: 900,
+      y: 180,
+      symbolSize: 60,
       itemStyle: {
-        color: '#a855f7',
-        opacity: 0.9,
-        shadowBlur: 24,
-        shadowColor: 'rgba(168,85,247,0.8)'
-      },
-      label: {
-        show: true,
-        fontSize: 14,
-        color: '#f5f3ff'
-      },
-      link: 'ecology/population.html'
-    },
-    {
-      name: '媒体环境 · Media',
-      x: 880,
-      y: 220,
-      symbolSize: 46,
-      itemStyle: {
-        color: '#0ea5e9',
-        opacity: 0.9,
-        shadowBlur: 24,
-        shadowColor: 'rgba(56,189,248,0.9)'
-      },
-      label: {
-        show: true,
-        fontSize: 14,
-        color: '#e0f2fe'
-      },
-      link: 'ecology/media.html'
-    },
-    {
-      name: '户外资源 · OOH',
-      x: 260,
-      y: 420,
-      symbolSize: 42,
-      itemStyle: {
-        color: '#22c55e',
-        opacity: 0.9,
-        shadowBlur: 22,
-        shadowColor: 'rgba(34,197,94,0.8)'
-      },
-      label: {
-        show: true,
-        fontSize: 13,
-        color: '#dcfce7'
-      },
-      link: 'niche/spatial/offline-visual.html'
-    },
-    {
-      name: '社交媒体 · Social',
-      x: 700,
-      y: 520,
-      symbolSize: 42,
-      itemStyle: {
-        color: '#ec4899',
+        color: '#facc15',
         opacity: 0.9,
         shadowBlur: 26,
-        shadowColor: 'rgba(236,72,153,0.85)'
+        shadowColor: 'rgba(250,204,21,0.8)'
       },
       label: {
         show: true,
-        fontSize: 13,
-        color: '#ffe4f5'
+        fontSize: 14,
+        color: '#fef9c3'
       },
-      link: 'niche/market/channel-design.html'
+      link: 'ecology/horizontal.html'
     },
     {
-      name: '竞品 · DSTV / GoTV / AzamTV',
-      x: 830,
-      y: 480,
-      symbolSize: 42,
+      name: '纵向 · 特点 / 门槛 / 不可替代性',
+      x: 900,
+      y: 340,
+      symbolSize: 60,
       itemStyle: {
-        color: '#f97316',
+        color: '#eab308',
         opacity: 0.9,
-        shadowBlur: 24,
-        shadowColor: 'rgba(249,115,22,0.85)'
+        shadowBlur: 26,
+        shadowColor: 'rgba(234,179,8,0.85)'
       },
       label: {
         show: true,
-        fontSize: 13,
-        color: '#ffedd5'
+        fontSize: 14,
+        color: '#fef3c7'
       },
-      link: 'niche/market/index.html'
+      link: 'ecology/vertical.html'
     }
   ];
 
   var links = [
-    { source: '生态 · Ecology', target: '生态位 · Niche' },
+    // 生态位 → 空间 / 市场
     { source: '生态位 · Niche', target: '空间生态位 · Spatial niche' },
     { source: '生态位 · Niche', target: '市场生态位 · Market niche' },
-    { source: '生态 · Ecology', target: '人口 · Population' },
-    { source: '生态 · Ecology', target: '媒体环境 · Media' },
-    { source: '空间生态位 · Spatial niche', target: '户外资源 · OOH' },
-    { source: '市场生态位 · Market niche', target: '社交媒体 · Social' },
-    { source: '市场生态位 · Market niche', target: '竞品 · DSTV / GoTV / AzamTV' }
+    // 生态 → 横向 / 纵向
+    { source: '生态 · Ecology', target: '横向 · 产业产品布局' },
+    { source: '生态 · Ecology', target: '纵向 · 特点 / 门槛 / 不可替代性' },
+    // 生态 与 生态位 之间连一条关系线
+    { source: '生态位 · Niche', target: '生态 · Ecology' }
   ];
 
   var option = {
@@ -369,10 +319,10 @@
     series: [
       {
         type: 'graph',
-        layout: 'none',      // 固定坐标，不会乱飞
+        layout: 'none',      // 使用上面给定的 x, y
         data: nodes,
         links: links,
-        roam: true,          // 仍可拖拽/缩放
+        roam: true,          // 可以拖拽/缩放
         focusNodeAdjacency: true,
         edgeSymbol: ['none', 'circle'],
         edgeSymbolSize: 3,
@@ -398,7 +348,6 @@
 
   chart.setOption(option);
 
-  // 点击节点跳转
   chart.on('click', function (params) {
     if (params.data && params.data.link) {
       window.location.href = params.data.link;
@@ -409,6 +358,7 @@
     chart.resize();
   });
 </script>
+
 
 
 </body>
