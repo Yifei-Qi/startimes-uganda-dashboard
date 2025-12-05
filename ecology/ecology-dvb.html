@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>Ecology · DVB TV Ecosystem · StarTimes Uganda</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- 字体统一：Barlow / JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: #050816;
+      --glass-bg: rgba(20, 25, 40, 0.65);
+      --glass-border: rgba(255, 255, 255, 0.15);
+      --glass-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.7);
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+
+      --c-platform: #38bdf8;   /* 平台层 Platform */
+      --c-infra:    #22c55e;   /* 基础设施层 Infrastructure */
+      --c-user:     #f97316;   /* 用户层 Customer */
+
+      --font-din:  'Barlow', sans-serif;
+      --font-cond: 'Barlow Condensed', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-din);
+      background: var(--bg-dark);
+      color: var(--text-main);
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+      background-image:
+        radial-gradient(circle at 50% 60%, rgba(15, 23, 42, 1) 0%, transparent 80%),
+        radial-gradient(circle at 80% 20%, rgba(56, 189, 248, 0.14) 0%, transparent 45%),
+        radial-gradient(circle at 20% 80%, rgba(34, 197, 94, 0.12) 0%, transparent 40%);
+    }
+
+    /* 顶栏 */
+    .top-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      z-index: 20;
+      background: linear-gradient(to bottom, rgba(5,8,22,0.96), transparent);
+      pointer-events: none;
+    }
+    .brand {
+      pointer-events: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .brand-path {
+      font-family: var(--font-cond);
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #38bdf8;
+      opacity: 0.9;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+    .brand-title {
+      font-family: var(--font-cond);
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      color: #fff;
+    }
+
+    .top-actions {
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .breadcrumb {
+      pointer-events: auto;
+      font-family: var(--font-cond);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      color: rgba(148,163,184,0.9);
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 12px;
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .crumb-sep    { opacity: 0.6; }
+    .crumb-active { color: #e5e7eb; }
+
+    .back-btn {
+      font-family: var(--font-cond); font-size: 14px; font-weight: 600;
+      padding: 8px 24px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      color: var(--text-main);
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.2);
+      backdrop-filter: blur(12px);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+    }
+    .back-btn:hover {
+      background: #38bdf8;
+      color: #000;
+      border-color: #38bdf8;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(56,189,248,0.45);
+    }
+
+    /* 中心图表 */
+    #chart-container {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+    }
+
+    /* 浮动文字层 */
+    .panel-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      pointer-events: none;
+      padding: 40px;
+    }
+
+    .hero-text {
+      position: absolute;
+      top: 96px;
+      left: 50px;
+      max-width: 420px;
+      pointer-events: none;
+      user-select: none;
+      text-shadow: 0 4px 30px rgba(0,0,0,0.8);
+    }
+    .hero-label {
+      font-family: var(--font-cond);
+      font-size: 12px;
+      font-weight: 700;
+      color: #38bdf8;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: 1.5px;
+    }
+    .hero-title {
+      font-family: var(--font-cond);
+      font-size: 48px;
+      font-weight: 700;
+      line-height: 0.9;
+      margin-bottom: 24px;
+      text-transform: uppercase;
+      letter-spacing: -0.5px;
+      background: linear-gradient(180deg, #fff 0%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-desc {
+      font-size: 14px;
+      line-height: 1.6;
+      font-weight: 300;
+      color: var(--text-muted);
+      position: relative;
+      padding-left: 20px;
+      margin-bottom: 24px;
+    }
+    .hero-desc::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 4px;
+      bottom: 4px;
+      width: 4px;
+      background: rgba(148,163,184,0.7);
+      border-radius: 4px;
+    }
+
+    .legend-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.92);
+      color: #e5e7eb;
+    }
+
+    .pill.platform   { border-color: var(--c-platform); color: var(--c-platform); }
+    .pill.infra      { border-color: var(--c-infra);    color: var(--c-infra);    }
+    .pill.customer   { border-color: var(--c-user);     color: var(--c-user);     }
+
+    /* 右下详情卡 */
+    .glass-card {
+      position: absolute;
+      width: 320px;
+      padding: 26px;
+      border-radius: 28px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: var(--glass-shadow);
+      pointer-events: auto;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.35s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+    .glass-card.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .pos-bottom-right { bottom: 40px; right: 40px; }
+
+    .card-header {
+      font-family: var(--font-cond);
+      font-size: 13px;
+      font-weight: 700;
+      color: rgba(148,163,184,0.9);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .card-title {
+      font-family: var(--font-cond);
+      font-size: 22px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .metric-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 16px;
+    }
+    .metric-label {
+      font-family: var(--font-cond);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: rgba(148,163,184,0.9);
+    }
+    .metric-val {
+      font-family: var(--font-mono);
+      font-size: 18px;
+      color: #e5e7eb;
+    }
+    .card-note {
+      font-size: 12px;
+      line-height: 1.6;
+      color: var(--text-muted);
+      border-top: 1px solid rgba(148,163,184,0.4);
+      padding-top: 12px;
+    }
+
+    @media (max-width: 768px) {
+      .top-bar {
+        padding: 0 20px;
+        height: 60px;
+      }
+      .hero-text {
+        top: 76px;
+        left: 20px;
+        right: 20px;
+        max-width: none;
+      }
+      .hero-title {
+        font-size: 34px;
+      }
+      .glass-card {
+        left: 20px;
+        right: 20px;
+        bottom: 20px;
+        width: auto;
+        border-radius: 22px;
+      }
+      .breadcrumb { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 顶栏 -->
+  <div class="top-bar">
+    <div class="brand">
+      <div class="brand-path">STARTIMES / UGANDA / ECOLOGY / DVB</div>
+      <div class="brand-title">DVB TV Ecosystem</div>
+    </div>
+    <div class="top-actions">
+      <!-- 注意：这里 href="./ecology.html" 你要改成实际 Ecology 星系页的文件名 -->
+      <a class="back-btn" href="./ecology.html">Back to Ecology</a>
+    </div>
+
+    <div class="breadcrumb">
+      <span>Data Space</span><span class="crumb-sep">/</span>
+      <span>Ecology</span><span class="crumb-sep">/</span>
+      <span class="crumb-active">DVB TV Ecosystem</span>
+    </div>
+  </div>
+
+  <!-- 图表容器 -->
+  <div id="chart-container"></div>
+
+  <!-- 浮动文字层 -->
+  <div class="panel-layer">
+    <section class="hero-text">
+      <div class="hero-label">DVB CLUSTER</div>
+      <h1 class="hero-title">Linear TV<br>Signal Flow Map</h1>
+      <p class="hero-desc">
+        这一页从信号流 (Signal Flow) 视角拆解乌干达四达的
+        <strong>DTT</strong>、<strong>DTH</strong>、<strong>DTV</strong> 三个 DVB 业务：
+        平台层 (Platform Layer)、基础设施层 (Infrastructure Layer)、用户层 (Customer Layer)
+        分别通过节点和连线呈现。<br><br>
+        你可以拖拽、缩放整个星图；悬停或点击任意节点，右下角会显示该环节在业务中的角色与
+        关键指标。
+      </p>
+
+      <div class="legend-pills">
+        <span class="pill platform">Platform Layer</span>
+        <span class="pill infra">Infrastructure Layer</span>
+        <span class="pill customer">Customer Layer</span>
+      </div>
+    </section>
+
+    <!-- 右下详情卡 -->
+    <aside class="glass-card pos-bottom-right" id="detail-panel">
+      <div class="card-header">
+        <span id="p-layer">LAYER</span>
+        <span id="p-biz">DVB CLUSTER</span>
+      </div>
+      <div class="card-title" id="p-name">Node Name</div>
+      <div class="metric-row">
+        <span class="metric-label">Key Metrics / 关键指标</span>
+        <span class="metric-val" id="p-metric">—</span>
+      </div>
+      <div class="card-note" id="p-note">
+        悬停或点击任意节点以查看该环节的详细描述。
+      </div>
+    </aside>
+  </div>
+
+  <!-- ECharts -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  <script>
+    var chart = echarts.init(document.getElementById('chart-container'));
+
+    // ================= 数据建模 =================
+    var categories = [
+      { name: 'Platform Layer', color: 'var(--c-platform)' },
+      { name: 'Infrastructure Layer', color: 'var(--c-infra)' },
+      { name: 'Customer Layer', color: 'var(--c-user)' }
+    ];
+
+    // 每个节点附带：layer, biz, metric, note
+    var nodes = [
+      // 平台层 PLATFORM
+      {
+        id: 'coreDVB',
+        name: 'DVB CORE',
+        category: 0,
+        value: 80,
+        symbolSize: 70,
+        layer: 'Platform',
+        biz: 'DVB Cluster',
+        metric: '线性电视核心平台 · DVB Core Platform',
+        note: '整合 DTT / DTH / DTV 信号调度、加解密 (CAS/DRM)、计费与套餐管理，是 Subscription 业务的中枢。'
+      },
+      {
+        id: 'dtt',
+        name: 'DTT',
+        category: 0,
+        value: 55,
+        symbolSize: 40,
+        layer: 'Platform',
+        biz: 'DTT',
+        metric: '在线用户：344,459 · 月充值：263,016',
+        note: '地面数字电视 (Digital Terrestrial TV)，在城市与城郊具备较高覆盖率，是传统收视费的主力板块之一。'
+      },
+      {
+        id: 'dth',
+        name: 'DTH',
+        category: 0,
+        value: 60,
+        symbolSize: 44,
+        layer: 'Platform',
+        biz: 'DTH',
+        metric: '在线用户：349,860 · 月充值：289,402',
+        note: '卫星电视 (Direct-To-Home)，负责大范围区域覆盖与偏远地区入户，是农村与跨区域用户的重要入口。'
+      },
+      {
+        id: 'dtv',
+        name: 'DTV',
+        category: 0,
+        value: 40,
+        symbolSize: 34,
+        layer: 'Platform',
+        biz: 'DTV',
+        metric: '在线用户：8,112 · 月充值：6,408',
+        note: '有线或小区集中供信号的 DTV 业务，体量相对较小，但在特定城镇与园区场景可以与 Solar / OTT 协同。'
+      },
+
+      // 基础设施层 INFRASTRUCTURE
+      {
+        id: 'uplink',
+        name: 'Uplink Hub',
+        category: 1,
+        value: 55,
+        symbolSize: 30,
+        layer: 'Infrastructure',
+        biz: 'Network',
+        metric: '多路节目编码 + 上行链路',
+        note: '汇聚内容信号，进行编码复用与上行，是 DTT/DTH 信号发射链路的起点。'
+      },
+      {
+        id: 'satellite',
+        name: 'Satellite',
+        category: 1,
+        value: 65,
+        symbolSize: 34,
+        layer: 'Infrastructure',
+        biz: 'Network',
+        metric: '覆盖全境的星上转发器',
+        note: '卫星转发器负责区域覆盖与多波束分发，为 DTH 和部分 DTT 回传提供基础。'
+      },
+      {
+        id: 'txsites',
+        name: 'TX Sites',
+        category: 1,
+        value: 60,
+        symbolSize: 32,
+        layer: 'Infrastructure',
+        biz: 'Network',
+        metric: '发射台站数 · 覆盖人口',
+        note: '地面发射台 (Tx Sites) 将 DVB 信号覆盖至具体城市与乡镇，是 DTT 收视的物理基础设施。'
+      },
+      {
+        id: 'stb',
+        name: 'STB / Dish',
+        category: 1,
+        value: 50,
+        symbolSize: 30,
+        layer: 'Infrastructure',
+        biz: 'Devices',
+        metric: '终端销量 · ARPU · 安装网络',
+        note: '机顶盒 (STB)、天线与安装网络既是终端设备收入的一部分，也决定用户接入 DVB 服务的门槛与体验。'
+      },
+
+      // 用户层 CUSTOMER
+      {
+        id: 'urbanHH',
+        name: 'Urban HH',
+        category: 2,
+        value: 60,
+        symbolSize: 32,
+        layer: 'Customer',
+        biz: 'Urban Households',
+        metric: '城市家庭 · 更高 ARPU',
+        note: '城市家庭用户，通常拥有更稳定的收入与更高的套餐倾向，是 Premium 内容与增值服务的主力。'
+      },
+      {
+        id: 'ruralHH',
+        name: 'Rural HH',
+        category: 2,
+        value: 55,
+        symbolSize: 30,
+        layer: 'Customer',
+        biz: 'Rural Households',
+        metric: '农村家庭 · 更敏感价格带',
+        note: '农村家庭用户对价格更加敏感，对频道组合与 Solar 等离网方案有更强依赖。'
+      },
+      {
+        id: 'smallBiz',
+        name: 'Shops & Bars',
+        category: 2,
+        value: 45,
+        symbolSize: 28,
+        layer: 'Customer',
+        biz: 'Commercial',
+        metric: '小店 / 酒吧 · 商用屏',
+        note: '餐饮、酒吧、小型商业场景在比赛日与重大赛事期间贡献显著收视和广告价值。'
+      },
+      {
+        id: 'govInst',
+        name: 'Gov & Schools',
+        category: 2,
+        value: 35,
+        symbolSize: 26,
+        layer: 'Customer',
+        biz: 'Institutional',
+        metric: '政府 / 学校 · 集中布点',
+        note: '政府项目与学校布点通常与公共服务、宣传任务与品牌形象绑定，影响渠道与谈判策略。'
+      }
+    ];
+
+    var links = [
+      // 核心 DVB 平台向三个子平台扩散
+      { source: 'coreDVB', target: 'dtt' },
+      { source: 'coreDVB', target: 'dth' },
+      { source: 'coreDVB', target: 'dtv' },
+
+      // 平台层与基础设施层
+      { source: 'coreDVB', target: 'uplink' },
+      { source: 'uplink',  target: 'satellite' },
+      { source: 'satellite', target: 'txsites' },
+      { source: 'satellite', target: 'dth' },
+      { source: 'txsites',   target: 'dtt' },
+      { source: 'stb',       target: 'dth' },
+      { source: 'stb',       target: 'dtt' },
+      { source: 'stb',       target: 'dtv' },
+
+      // 平台层到用户层
+      { source: 'dtt', target: 'urbanHH' },
+      { source: 'dtt', target: 'ruralHH' },
+      { source: 'dth', target: 'urbanHH' },
+      { source: 'dth', target: 'ruralHH' },
+      { source: 'dth', target: 'smallBiz' },
+      { source: 'dtv', target: 'urbanHH' },
+      { source: 'dtv', target: 'smallBiz' },
+
+      // 用户层之间
+      { source: 'urbanHH', target: 'smallBiz' },
+      { source: 'urbanHH', target: 'govInst' }
+    ];
+
+    // ================= 视觉配置 =================
+    var option = {
+      backgroundColor: 'transparent',
+      tooltip: {
+        trigger: 'item',
+        formatter: function (params) {
+          if (params.data && params.data.metric) {
+            return '<strong>' + params.data.name + '</strong><br/>' +
+                   params.data.metric;
+          }
+          return params.name || '';
+        }
+      },
+      series: [
+        {
+          type: 'graph',
+          layout: 'circular',
+          circular: {
+            rotateLabel: true
+          },
+          coordinateSystem: null,
+          roam: true,          // 支持缩放+拖拽（平面层面的“旋转”）
+          focusNodeAdjacency: true,
+          animationDuration: 900,
+          animationEasing: 'cubicOut',
+
+          data: nodes.map(function (n) {
+            var catColor;
+            if (n.category === 0) catColor = getComputedStyle(document.documentElement).getPropertyValue('--c-platform') || '#38bdf8';
+            if (n.category === 1) catColor = getComputedStyle(document.documentElement).getPropertyValue('--c-infra') || '#22c55e';
+            if (n.category === 2) catColor = getComputedStyle(document.documentElement).getPropertyValue('--c-user') || '#f97316';
+
+            return Object.assign({}, n, {
+              itemStyle: {
+                color: catColor,
+                borderColor: 'rgba(15,23,42,0.9)',
+                borderWidth: 2,
+                shadowBlur: 22,
+                shadowColor: 'rgba(15,23,42,0.9)'
+              },
+              label: {
+                show: true,
+                color: '#e5e7eb',
+                fontFamily: 'Barlow Condensed',
+                fontWeight: 600,
+                fontSize: 12
+              }
+            });
+          }),
+
+          links: links,
+          categories: categories.map(function (c) { return { name: c.name }; }),
+
+          lineStyle: {
+            color: 'rgba(148,163,184,0.6)',
+            width: 1.2,
+            curveness: 0.25
+          },
+          emphasis: {
+            lineStyle: {
+              width: 2,
+              color: '#e5e7eb'
+            }
+          }
+        }
+      ]
+    };
+
+    chart.setOption(option);
+
+    // ================= 交互：更新右下详情卡 =================
+    var panel = document.getElementById('detail-panel');
+    var elLayer  = document.getElementById('p-layer');
+    var elBiz    = document.getElementById('p-biz');
+    var elName   = document.getElementById('p-name');
+    var elMetric = document.getElementById('p-metric');
+    var elNote   = document.getElementById('p-note');
+
+    function updatePanel(data) {
+      if (!data) return;
+      elLayer.textContent  = (data.layer || 'DVB') + ' Layer';
+      elBiz.textContent    = data.biz || 'DVB Cluster';
+      elName.textContent   = data.name || 'Node';
+      elMetric.textContent = data.metric || '—';
+      elNote.textContent   = data.note || '';
+      panel.classList.add('active');
+    }
+
+    chart.on('click', function (params) {
+      if (params.data && params.data.metric) {
+        updatePanel(params.data);
+      }
+    });
+
+    chart.on('mouseover', function (params) {
+      if (params.data && params.data.metric) {
+        updatePanel(params.data);
+      }
+    });
+
+    window.addEventListener('resize', function () {
+      chart.resize();
+    });
+  </script>
+</body>
+</html>
