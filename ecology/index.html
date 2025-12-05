@@ -440,7 +440,6 @@
       });
     }
 
-    // === ECharts 配置 ===
     var option = {
       backgroundColor: 'transparent',
       tooltip: {
@@ -527,74 +526,92 @@
           zlevel: 0
         },
 
-        // 三束“极光”收入光带
+        // 三束“极光”收入光带（带入场动画）
         {
+          id: 'aurora',
           type: 'custom',
           coordinateSystem: 'none',
+          data: [0],          // 这里的数值 = progress 0~1，由 JS 外部动画驱动
           renderItem: function (params, api) {
+            var progress = api.value(0);
+            if (progress == null) progress = 1;
+            progress = Math.max(0, Math.min(progress, 1));
+
+            if (progress <= 0.01) {
+              return { type: 'group', children: [] };
+            }
+
             var shapes = [];
             var cx = api.getWidth() / 2;
             var cy = api.getHeight() * 0.52;
             var maxR = Math.min(api.getWidth(), api.getHeight()) * 0.40;
-            var rInner = maxR * 0.22;
-            var rOuter = maxR * 0.72;
+
+            // 从中心向外生长
+            var rInner = maxR * 0.22 * progress;
+            var rOuter = maxR * (0.28 + 0.44 * progress);
 
             macroDefs.forEach(function (m) {
               var startAngle = (m.startDeg * Math.PI) / 180;
               var endAngle   = (m.endDeg   * Math.PI) / 180;
 
-              var auroraColor;
-              if (m.id === 'Subscription') {
-                auroraColor = new echarts.graphic.LinearGradient(
-                  0.5, 0.1, 0.5, 1,
-                  [
-                    { offset: 0,   color: 'rgba(34,211,238,0.96)' },
-                    { offset: 0.45,color: 'rgba(59,130,246,0.45)' },
-                    { offset: 1,   color: 'rgba(15,23,42,0)' }
-                  ]
-                );
-              } else if (m.id === 'Solar') {
-                auroraColor = new echarts.graphic.LinearGradient(
-                  0.5, 0.05, 0.5, 1,
-                  [
-                    { offset: 0,   color: 'rgba(190,242,100,0.96)' },
-                    { offset: 0.5, color: 'rgba(45,212,191,0.45)' },
-                    { offset: 1,   color: 'rgba(15,23,42,0)' }
-                  ]
-                );
-              } else { // Ads & Devices
-                auroraColor = new echarts.graphic.LinearGradient(
-                  0.5, 0.12, 0.5, 1,
-                  [
-                    { offset: 0,   color: 'rgba(244,114,182,0.97)' },
-                    { offset: 0.5, color: 'rgba(251,191,36,0.48)' },
-                    { offset: 1,   color: 'rgba(15,23,42,0)' }
-                  ]
-                );
-              }
+              // 为了边缘柔和一点，在同一扇区叠加几层不同透明度的极光
+              for (var layer = 0; layer < 3; layer++) {
+                var inner = rInner + layer * (maxR * 0.01);
+                var outer = rOuter + layer * (maxR * 0.015);
+                var alphaMul = 1 - layer * 0.35;
 
-              shapes.push({
-                type: 'sector',
-                shape: {
-                  cx: cx,
-                  cy: cy,
-                  r0: rInner,
-                  r: rOuter,
-                  startAngle: startAngle,
-                  endAngle: endAngle
-                },
-                style: {
-                  fill: auroraColor,
-                  stroke: 'none',
-                  shadowBlur: 70,
-                  shadowColor: m.color
+                var auroraColor;
+                if (m.id === 'Subscription') {
+                  auroraColor = new echarts.graphic.LinearGradient(
+                    0.5, 0.1, 0.5, 1,
+                    [
+                      { offset: 0,   color: 'rgba(34,211,238,' + (0.96 * alphaMul) + ')' },
+                      { offset: 0.5, color: 'rgba(59,130,246,' + (0.35 * alphaMul) + ')' },
+                      { offset: 1,   color: 'rgba(15,23,42,0)' }
+                    ]
+                  );
+                } else if (m.id === 'Solar') {
+                  auroraColor = new echarts.graphic.LinearGradient(
+                    0.5, 0.05, 0.5, 1,
+                    [
+                      { offset: 0,   color: 'rgba(190,242,100,' + (0.95 * alphaMul) + ')' },
+                      { offset: 0.5, color: 'rgba(45,212,191,' + (0.35 * alphaMul) + ')' },
+                      { offset: 1,   color: 'rgba(15,23,42,0)' }
+                    ]
+                  );
+                } else { // Ads & Devices
+                  auroraColor = new echarts.graphic.LinearGradient(
+                    0.5, 0.12, 0.5, 1,
+                    [
+                      { offset: 0,   color: 'rgba(244,114,182,' + (0.97 * alphaMul) + ')' },
+                      { offset: 0.5, color: 'rgba(251,191,36,' + (0.40 * alphaMul) + ')' },
+                      { offset: 1,   color: 'rgba(15,23,42,0)' }
+                    ]
+                  );
                 }
-              });
+
+                shapes.push({
+                  type: 'sector',
+                  shape: {
+                    cx: cx,
+                    cy: cy,
+                    r0: inner,
+                    r: outer,
+                    startAngle: startAngle,
+                    endAngle: endAngle
+                  },
+                  style: {
+                    fill: auroraColor,
+                    stroke: 'none',
+                    shadowBlur: 90 * progress,
+                    shadowColor: m.color
+                  }
+                });
+              }
             });
 
             return { type: 'group', children: shapes };
           },
-          data: [0],
           silent: true,
           zlevel: 1
         },
@@ -615,7 +632,7 @@
           silent: true
         },
 
-        // KPI 主星（发光散点）
+        // KPI 主星
         {
           type: 'effectScatter',
           coordinateSystem: 'polar',
@@ -636,6 +653,32 @@
     };
 
     chart.setOption(option);
+
+    // === 极光从中心向外“生长”的入场动画 ===
+    (function animateAurora() {
+      var start = Date.now();
+      var duration = 1200; // 1.2s
+
+      function frame() {
+        var now = Date.now();
+        var t = (now - start) / duration;
+        if (t > 1) t = 1;
+
+        chart.setOption({
+          series: [{
+            id: 'aurora',
+            data: [t]   // progress 0 ~ 1
+          }]
+        });
+
+        if (t < 1) {
+          requestAnimationFrame(frame);
+        }
+      }
+
+      requestAnimationFrame(frame);
+    })();
+
     window.addEventListener('resize', function () {
       chart.resize();
     });
