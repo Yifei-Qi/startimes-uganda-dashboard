@@ -274,167 +274,171 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
-  <script>
-    var chart = echarts.init(document.getElementById('eco-orbit'));
+<script>
+  var chart = echarts.init(document.getElementById('eco-orbit'));
 
-    // 三条收入轨道：覆盖度 cov、营收 rev、技术门槛 tech
-    var rawProducts = [
-      { name: '收视费 · Subscription', cov: 88, rev: 63, tech: 0.88, color: 'rgb(96,165,250)' },
-      { name: '太阳能 · Solar',         cov: 52, rev: 30, tech: 0.75, color: 'rgb(34,197,94)' },
-      { name: '其他 · Ads / Devices',   cov: 40, rev: 7,  tech: 0.65, color: 'rgb(250,204,21)' }
-    ];
+  // 三条收入轨道：覆盖度 cov、营收 rev、技术门槛 tech
+  var products = [
+    { name: '收视费 · Subscription', cov: 88, rev: 63, tech: 0.88, color: '#60a5fa' },
+    { name: '太阳能 · Solar',         cov: 52, rev: 30, tech: 0.75, color: '#22c55e' },
+    { name: '其他 · Ads & Devices',   cov: 40, rev: 7,  tech: 0.65, color: '#facc15' }
+  ];
 
-    var totalRev = rawProducts.reduce(function (s, d) { return s + d.rev; }, 0);
-    var usedArc = 280;          // 总共用多少度来画三条光束（留一点空隙）
-    var startBase = -usedArc / 2;
-    var cursor = startBase;
+  var totalRev = products.reduce(function (s, d) { return s + d.rev; }, 0);
 
-    var sectorData = rawProducts.map(function (p, idx) {
-      var sweep = usedArc * (p.rev / totalRev);   // 营收占比 → 扇形角度
-      var startAngle = cursor;
-      var endAngle = cursor + sweep;
-      cursor += sweep;
+  // 把 360° 中取出约 280° 用来画三条光束
+  var usedArcDeg = 280;
+  var startDeg = -usedArcDeg / 2; // 让整体居中展开
+  var sectors = [];
+  var cursorDeg = startDeg;
 
-      return {
-        value: [p.cov, p.rev, p.tech, startAngle, endAngle, idx],
-        label: p.name,
-        baseColor: p.color
-      };
+  products.forEach(function (p, idx) {
+    var sweepDeg = usedArcDeg * (p.rev / totalRev); // 角度 = 营收占比
+    var s = cursorDeg;
+    var e = cursorDeg + sweepDeg;
+    cursorDeg += sweepDeg;
+
+    sectors.push({
+      value: [p.cov, p.rev, p.tech, s, e],
+      name: p.name,
+      color: p.color,
+      idx: idx
     });
+  });
 
-    var option = {
-      backgroundColor: 'transparent',
-      tooltip: {
-        formatter: function (params) {
-          var v = params.data.value;
-          var name = params.data.label;
-          var cov = v[0];
-          var rev = v[1];
-          var tech = v[2];
-          return [
-            name,
-            '覆盖 Coverage：' + cov + ' / 100',
-            '营收 Revenue：' + rev + ' / ' + totalRev,
-            '技术门槛 Tech barrier：' + (tech * 100).toFixed(0) + '%'
-          ].join('<br/>');
-        }
-      },
-      series: [
-        // 背景同心圆 + 中心光点
-        {
-          type: 'custom',
-          name: 'rings',
-          renderItem: function (params, api) {
-            var cx = api.getWidth() / 2;
-            var cy = api.getHeight() * 0.58;
-            var maxR = Math.min(api.getWidth(), api.getHeight()) * 0.46;
-            var levels = 6;
-            var children = [];
+  var option = {
+    backgroundColor: 'transparent',
+    tooltip: {
+      formatter: function (params) {
+        var v = params.data.value;
+        var cov = v[0];
+        var rev = v[1];
+        var tech = v[2];
+        return [
+          params.data.name,
+          '覆盖 Coverage：' + cov + ' / 100',
+          '营收 Revenue：' + rev + ' / ' + totalRev,
+          '技术门槛 Tech barrier：' + (tech * 100).toFixed(0) + '%'
+        ].join('<br/>');
+      }
+    },
+    series: [
+      // 背景同心圆 + 中心光点
+      {
+        type: 'custom',
+        name: 'rings',
+        renderItem: function (params, api) {
+          var cx = api.getWidth() / 2;
+          var cy = api.getHeight() * 0.58;
+          var maxR = Math.min(api.getWidth(), api.getHeight()) * 0.46;
+          var levels = 6;
+          var children = [];
 
-            for (var i = 1; i <= levels; i++) {
-              children.push({
-                type: 'circle',
-                shape: { cx: cx, cy: cy, r: (maxR / levels) * i },
-                style: {
-                  stroke: 'rgba(15,23,42,' + (0.35 + i * 0.08) + ')',
-                  fill: 'transparent',
-                  lineWidth: 1
-                }
-              });
-            }
-
-            // 中心光点
+          for (var i = 1; i <= levels; i++) {
             children.push({
               type: 'circle',
-              shape: { cx: cx, cy: cy, r: maxR * 0.04 },
+              shape: { cx: cx, cy: cy, r: (maxR / levels) * i },
               style: {
-                fill: 'rgba(248,250,252,0.96)',
-                shadowBlur: 28,
-                shadowColor: 'rgba(248,250,252,0.9)'
+                stroke: 'rgba(15,23,42,' + (0.35 + i * 0.08) + ')',
+                fill: 'transparent',
+                lineWidth: 1
               }
             });
+          }
 
-            return { type: 'group', children: children };
-          },
-          data: [0],
-          silent: true,
-          z: 0
-        },
-
-        // 三条“收入轨道光束”
-        {
-          type: 'custom',
-          name: 'ecology-orbits',
-          renderItem: function (params, api) {
-            var value = api.value(0);   // 覆盖 cov
-            var tech  = api.value(2);   // 技术门槛 tech [0,1]
-            var startDeg = api.value(3);
-            var endDeg   = api.value(4);
-            var idx      = api.value(5);
-
-            var cx = api.getWidth() / 2;
-            var cy = api.getHeight() * 0.58;
-            var maxR = Math.min(api.getWidth(), api.getHeight()) * 0.46;
-
-            // 半径：最小半径 + 覆盖度映射
-            var rInner = maxR * 0.18;
-            var rOuter = rInner + (value / 100) * (maxR - rInner);
-
-            // 亮度：tech 越高，越“发光”
-            var baseColor = rawProducts[idx].color;
-            var alphaCore = 0.35 + tech * 0.4;
-            var alphaEdge = 0.05 + tech * 0.25;
-
-            // 颜色字符串从 rgb(...) 转成 rgba(...)
-            function withAlpha(c, a) {
-              return c.replace('rgb', 'rgba').replace(')', ',' + a.toFixed(2) + ')');
+          // 中心光点
+          children.push({
+            type: 'circle',
+            shape: { cx: cx, cy: cy, r: maxR * 0.04 },
+            style: {
+              fill: 'rgba(248,250,252,0.96)',
+              shadowBlur: 28,
+              shadowColor: 'rgba(248,250,252,0.9)'
             }
+          });
 
-            var gradient = new echarts.graphic.LinearGradient(
-              0, 0, 0, 1,
-              [
-                { offset: 0,   color: withAlpha(baseColor, alphaEdge) },
-                { offset: 0.35, color: withAlpha(baseColor, alphaCore) },
-                { offset: 1,   color: withAlpha(baseColor, 0.05) }
-              ],
-              false
-            );
+          return { type: 'group', children: children };
+        },
+        data: [0],
+        silent: true,
+        z: 0
+      },
 
-            return {
-              type: 'sector',
-              shape: {
-                cx: cx,
-                cy: cy,
-                r0: rInner,
-                r: rOuter,
-                startAngle: (startDeg * Math.PI) / 180,
-                endAngle:   (endDeg   * Math.PI) / 180
-              },
+      // 三条收入轨道光束
+      {
+        type: 'custom',
+        name: 'revenue-orbits',
+        renderItem: function (params, api) {
+          var d = params.data;
+          var v = d.value;
+          var cov  = v[0];      // 覆盖度
+          var tech = v[2];      // 技术门槛
+          var sDeg = v[3];
+          var eDeg = v[4];
+
+          var cx = api.getWidth() / 2;
+          var cy = api.getHeight() * 0.58;
+          var maxR = Math.min(api.getWidth(), api.getHeight()) * 0.46;
+
+          var rInner = maxR * 0.18;
+          var rOuter = rInner + (cov / 100) * (maxR - rInner); // 半径 = 覆盖度映射
+
+          var startAngle = sDeg * Math.PI / 180;
+          var endAngle   = eDeg * Math.PI / 180;
+
+          // 亮度：tech 越高，越亮、阴影越强
+          var coreAlpha = 0.4 + tech * 0.4;
+          var edgeAlpha = 0.06 + tech * 0.2;
+
+          var colorCore = d.color.replace('#', '');
+          // 手动写几个 rgba 颜色，避免字符串复杂操作
+          var fillGradient = new echarts.graphic.LinearGradient(
+            0, 0, 0, 1,
+            [
+              { offset: 0,   color: echarts.color.modifyAlpha(d.color, edgeAlpha) },
+              { offset: 0.35, color: echarts.color.modifyAlpha(d.color, coreAlpha) },
+              { offset: 1,   color: echarts.color.modifyAlpha(d.color, 0.05) }
+            ],
+            false
+          );
+
+          return {
+            type: 'sector',
+            shape: {
+              cx: cx,
+              cy: cy,
+              r0: rInner,
+              r: rOuter,
+              startAngle: startAngle,
+              endAngle: endAngle
+            },
+            style: {
+              fill: fillGradient,
+              stroke: 'rgba(15,23,42,0.5)',
+              lineWidth: 1.2,
+              shadowBlur: 26,
+              shadowColor: echarts.color.modifyAlpha(d.color, 0.6)
+            },
+            emphasis: {
               style: {
-                fill: gradient,
-                stroke: 'rgba(15,23,42,0.4)',
-                lineWidth: 1.2,
-                shadowBlur: 24,
-                shadowColor: withAlpha(baseColor, 0.55)
-              },
-              emphasis: {
-                style: {
-                  shadowBlur: 40,
-                  shadowColor: withAlpha(baseColor, 0.9),
-                  lineWidth: 1.6
-                }
+                shadowBlur: 40,
+                shadowColor: echarts.color.modifyAlpha(d.color, 0.95),
+                lineWidth: 1.6
               }
-            };
-          },
-          data: sectorData,
-          encode: { tooltip: [0,1,2] },
-          z: 2
-        }
-      ]
-    };
+            }
+          };
+        },
+        data: sectors,
+        z: 2
+      }
+    ]
+  };
 
-    chart.setOption(option);
-    window.addEventListener('resize', function () { chart.resize(); });
-  </script>
+  chart.setOption(option);
+  window.addEventListener('resize', function () {
+    chart.resize();
+  });
+</script>
+
 </body>
 </html>
