@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <title>Ecology · Revenue Orbits · StarTimes Uganda</title>
+  <title>Ecology · Revenue Beams · StarTimes Uganda</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
@@ -197,7 +197,7 @@
         max-width: none;
       }
       .panel-subscription, .panel-solar, .panel-other, .panel-kpi {
-        display: none; /* 手机上只保留整体说明 */
+        display: none;
       }
     }
   </style>
@@ -206,10 +206,10 @@
   <div class="top-bar">
     <div class="brand">
       <div class="brand-path">STARTIMES UGANDA · DATA SPACE</div>
-      <div class="brand-title">Ecology · 收入星环视图 Revenue Orbits</div>
+      <div class="brand-title">Ecology · 收入光束视图 Revenue Beams</div>
     </div>
     <div class="top-actions">
-      <div class="chip">Subscription · Solar · Ads & Devices</div>
+      <div class="chip">Angle = Revenue · Radius = Coverage · Glow = Tech barrier</div>
       <a class="back" href="../index.html">Back to Universe</a>
     </div>
   </div>
@@ -219,12 +219,13 @@
 
     <aside class="panel panel-main">
       <small>OVERVIEW</small>
-      <h2>乌干达四达的三条收入轨道</h2>
+      <h2>乌干达四达的三条收入光束</h2>
       <p>
-        从收入角度看，乌干达四达可以被拆成三条主轨道：
+        把整体业务看作一颗恒星，向外延伸出三条收入光束：
         <strong>收视费 Subscription</strong>、<strong>太阳能 Solar</strong>、
         以及 <strong>其他收入（广告 / 传输 / 终端）</strong>。
-        星环上的点密度与角度共同呈现 63 · 30 · 7 的收入结构。
+        光束的开口角度代表营收权重（63 / 30 / 7），光束长度代表覆盖广度，
+        亮度则暗示技术门槛与不可替代性。
       </p>
       <div class="pill-row">
         <span class="pill">Subscription · 63%</span>
@@ -234,38 +235,38 @@
     </aside>
 
     <aside class="panel panel-subscription">
-      <small>SUBSCRIPTION ORBIT</small>
+      <small>SUBSCRIPTION BEAM</small>
       <h2>收视费 · 节目包 Subscription</h2>
       <p>
         约 <strong>63%</strong> 的业务体量来自收视费：
         用户为频道包 / 节目包付费，其底层由 DVB 网络与内容资产共同支撑。
-        这条轨道决定了现金流的稳定性。
+        这条光束的角度最大、亮度最高。
       </p>
     </aside>
 
     <aside class="panel panel-solar">
-      <small>SOLAR ORBIT</small>
+      <small>SOLAR BEAM</small>
       <h2>太阳能 · 30% 的增长引擎</h2>
       <p>
         太阳能业务占整体体量约 <strong>30%</strong>，
         覆盖更偏离网地区，受设备 / 安装网络与资金节奏影响，
-        但在农村区域与收视费形成协同。
+        在农村区域与收视费形成协同。
       </p>
     </aside>
 
     <aside class="panel panel-other">
-      <small>OTHER ORBIT</small>
+      <small>OTHER BEAM</small>
       <h2>广告 / 传输 / 终端 · 长尾 7%</h2>
       <p>
         剩余 <strong>7%</strong> 来自广告、传输服务以及电视 / 机顶盒等终端销售。
-        这条轨道在营收上较轻，却是对品牌声量与生态闭环的重要补充。
+        光束最窄，但在品牌声量与生态闭环中起到补全作用。
       </p>
     </aside>
 
     <aside class="panel panel-kpi">
       <small>CURRENT SPLIT</small>
       <h2>63<span class="unit">% Subscription</span></h2>
-      <p>主轨道由收视费驱动，其余 30% 来自 Solar，7% 来自 Ads &amp; Devices。</p>
+      <p>主光束由收视费驱动，其余 30% 来自 Solar，7% 来自 Ads &amp; Devices。</p>
     </aside>
   </div>
 
@@ -274,159 +275,131 @@
     var dom = document.getElementById('eco-orbit');
     var chart = echarts.init(dom);
 
-    // 三条收入轨道基础数据
+    // 三条收入轨道
     var products = [
       {
         name: '收视费 · Subscription',
-        rev: 63,
+        key: 'Subscription',
         cov: 88,
+        rev: 63,
         tech: 0.88,
-        color: 'rgba(96,165,250,',
+        colors: {
+          core: 'rgba(96,165,250,0.95)',
+          mid:  'rgba(37,99,235,0.55)',
+          edge: 'rgba(37,99,235,0.05)',
+          glow: 'rgba(96,165,250,0.85)'
+        }
       },
       {
         name: '太阳能 · Solar',
-        rev: 30,
+        key: 'Solar',
         cov: 52,
+        rev: 30,
         tech: 0.75,
-        color: 'rgba(34,197,94,',
+        colors: {
+          core: 'rgba(34,197,94,0.95)',
+          mid:  'rgba(22,163,74,0.55)',
+          edge: 'rgba(22,163,74,0.05)',
+          glow: 'rgba(34,197,94,0.8)'
+        }
       },
       {
         name: '其他 · Ads & Devices',
-        rev: 7,
+        key: 'Ads & Devices',
         cov: 40,
+        rev: 7,
         tech: 0.65,
-        color: 'rgba(250,204,21,',
+        colors: {
+          core: 'rgba(250,204,21,0.95)',
+          mid:  'rgba(217,119,6,0.55)',
+          edge: 'rgba(217,119,6,0.05)',
+          glow: 'rgba(250,204,21,0.8)'
+        }
       }
     ];
 
     var totalRev = products.reduce(function (s, p) { return s + p.rev; }, 0);
 
-    // 角度分配：在 320° 范围内分配 63 / 30 / 7
-    var usedArc = 320;
-    var angleOffset = -usedArc / 2; // 让环大致水平居中
-    var cursor = angleOffset;
+    // 在 280° 范围内按 63/30/7 分配角度
+    var usedArc = 280;
+    var startDeg = -usedArc / 2;
+    var cursorDeg = startDeg;
 
-    var particleData = [];
-    var planetData = [];
-
-    products.forEach(function (p) {
-      var sweep = usedArc * (p.rev / totalRev);    // 这一段对应多少角度
-      var start = cursor;
-      var end   = cursor + sweep;
-      var mid   = (start + end) / 2;
-      cursor = end;
-
-      // 星环半径设定：用覆盖度 cov 映射
-      var baseRadius = 60 + (p.cov / 100) * 20; // 60~80
-      var band = 6; // 环的厚度
-
-      // 生成这一段上的点（粒子）
-      var count = 260; // 粒子数量，越多越密
-      for (var i = 0; i < count; i++) {
-        var ang = start + Math.random() * (end - start);
-        var rad = baseRadius + (Math.random() - 0.5) * band;
-
-        particleData.push({
-          value: [ang, rad],
-          name: p.name,
-          rev: p.rev,
-          cov: p.cov,
-          tech: p.tech,
-          itemStyle: {
-            color: p.color + (0.22 + Math.random() * 0.4) + ')'
-          },
-          symbolSize: 1.5 + Math.random() * 2.2
-        });
-      }
-
-      // 行星点：在对应轨道上的一个更亮的点
-      planetData.push({
-        value: [mid, baseRadius + band * 0.4],
+    var beams = products.map(function (p) {
+      var span = usedArc * (p.rev / totalRev);
+      var s = cursorDeg;
+      var e = cursorDeg + span;
+      cursorDeg = e;
+      return {
+        value: [p.cov, p.rev, p.tech, s, e],
         name: p.name,
-        rev: p.rev,
-        cov: p.cov,
-        tech: p.tech,
-        itemStyle: {
-          color: p.color + '0.95)'
-        },
-        symbolSize: 10 + p.tech * 10
-      });
+        key: p.key,
+        colors: p.colors
+      };
     });
 
     var option = {
       backgroundColor: 'transparent',
       tooltip: {
-        trigger: 'item',
-        formatter: function (p) {
-          var d = p.data;
-          if (!d) return '';
+        formatter: function (params) {
+          var v = params.data.value;
+          var cov  = v[0];
+          var rev  = v[1];
+          var tech = v[2];
           return [
-            d.name,
-            'Revenue：' + d.rev + '%',
-            'Coverage：' + d.cov + ' / 100',
-            'Tech barrier：' + (d.tech * 100).toFixed(0) + '%'
+            params.data.name,
+            'Revenue share：' + rev + '%',
+            'Coverage：' + cov + ' / 100',
+            'Tech barrier：' + (tech * 100).toFixed(0) + '%'
           ].join('<br/>');
         }
       },
-      angleAxis: {
-        type: 'value',
-        min: -180,
-        max: 180,
-        startAngle: 90,
-        show: false
-      },
-      radiusAxis: {
-        type: 'value',
-        min: 0,
-        max: 100,
-        show: false
-      },
-      polar: {
-        center: ['50%', '60%'],
-        radius: '80%'
-      },
       series: [
-        // 背景细刻度环
+        // 背景同心圆 + 中心恒星
         {
           type: 'custom',
-          coordinateSystem: 'polar',
+          name: 'rings',
           renderItem: function (params, api) {
             var cx = api.getWidth() / 2;
-            var cy = api.getHeight() * 0.6;
-            var maxR = Math.min(api.getWidth(), api.getHeight()) * 0.4;
-            var levels = 10;
+            var cy = api.getHeight() * 0.62;
+            var maxR = Math.min(api.getWidth(), api.getHeight()) * 0.46;
+            var levels = 7;
             var children = [];
+
             for (var i = 1; i <= levels; i++) {
               children.push({
                 type: 'circle',
                 shape: { cx: cx, cy: cy, r: (maxR / levels) * i },
                 style: {
-                  stroke: 'rgba(15,23,42,' + (0.25 + i * 0.04) + ')',
+                  stroke: 'rgba(15,23,42,' + (0.25 + i * 0.07) + ')',
                   fill: 'transparent',
-                  lineWidth: 0.6
+                  lineWidth: 0.8
                 }
               });
             }
-            // 中心黑洞
+
+            // 中心基座
             children.push({
               type: 'circle',
-              shape: { cx: cx, cy: cy, r: maxR * 0.18 },
+              shape: { cx: cx, cy: cy, r: maxR * 0.17 },
               style: {
                 fill: 'rgba(15,23,42,0.98)',
-                shadowBlur: 40,
-                shadowColor: 'rgba(0,0,0,0.9)'
+                shadowBlur: 32,
+                shadowColor: 'rgba(0,0,0,0.95)'
               }
             });
+
             // 中心光点
             children.push({
               type: 'circle',
-              shape: { cx: cx, cy: cy, r: maxR * 0.03 },
+              shape: { cx: cx, cy: cy, r: maxR * 0.035 },
               style: {
                 fill: 'rgba(248,250,252,0.96)',
-                shadowBlur: 32,
+                shadowBlur: 36,
                 shadowColor: 'rgba(248,250,252,0.9)'
               }
             });
+
             return { type: 'group', children: children };
           },
           data: [0],
@@ -434,36 +407,58 @@
           z: 0
         },
 
-        // 星环上的粒子
+        // 三条收入光束
         {
-          type: 'scatter',
-          coordinateSystem: 'polar',
-          symbol: 'circle',
-          data: particleData,
-          large: true,
-          itemStyle: {
-            shadowBlur: 22,
-            shadowColor: 'rgba(15,23,42,0.9)'
-          },
-          z: 2
-        },
+          type: 'custom',
+          name: 'revenue-beams',
+          renderItem: function (params, api) {
+            var value = api.value(0);   // cov
+            var startDeg = api.value(3);
+            var endDeg   = api.value(4);
 
-        // 三个行星点（稍大）
-        {
-          type: 'effectScatter',
-          coordinateSystem: 'polar',
-          data: planetData,
-          symbol: 'circle',
-          rippleEffect: {
-            period: 6,
-            scale: 3.8,
-            brushType: 'stroke'
+            var cx = api.getWidth() / 2;
+            var cy = api.getHeight() * 0.62;
+            var maxR = Math.min(api.getWidth(), api.getHeight()) * 0.46;
+
+            var rInner = maxR * 0.2;
+            var rOuter = rInner + (value / 100) * (maxR - rInner);
+
+            var sRad = startDeg * Math.PI / 180;
+            var eRad = endDeg   * Math.PI / 180;
+
+            var c = params.data.colors;
+
+            var gradient = new echarts.graphic.LinearGradient(
+              0, 0, 0, 1,
+              [
+                { offset: 0,   color: c.edge },
+                { offset: 0.35, color: c.mid },
+                { offset: 1,   color: c.core }
+              ],
+              false
+            );
+
+            return {
+              type: 'sector',
+              shape: {
+                cx: cx,
+                cy: cy,
+                r0: rInner,
+                r: rOuter,
+                startAngle: sRad,
+                endAngle: eRad
+              },
+              style: {
+                fill: gradient,
+                stroke: 'rgba(15,23,42,0.7)',
+                lineWidth: 1.2,
+                shadowBlur: 30,
+                shadowColor: c.glow
+              }
+            };
           },
-          itemStyle: {
-            shadowBlur: 32,
-            shadowColor: 'rgba(255,255,255,0.85)'
-          },
-          z: 3
+          data: beams,
+          z: 2
         }
       ]
     };
