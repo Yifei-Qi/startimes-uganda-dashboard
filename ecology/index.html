@@ -4,285 +4,305 @@
   <meta charset="UTF-8" />
   <title>Ecology · Business Constellation · StarTimes Uganda</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <!-- DIN 风格字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
   <style>
+    :root {
+      --bg-dark: #050816;
+      --glass-bg: rgba(20, 25, 40, 0.65);
+      --glass-border: rgba(255, 255, 255, 0.15);
+      --glass-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.7);
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --c-sub: #06b6d4;   /* Content Blue */
+      --c-solar: #10b981; /* Solar Green */
+      --c-dev: #f43f5e;   /* Devices Red */
+      --font-din: 'Barlow', sans-serif;
+      --font-cond: 'Barlow Condensed', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont,"SF Pro Text",
-        "Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans SC",sans-serif;
-      background: #050816;
-      color: #e5e7eb;
+      font-family: var(--font-din);
+      background: var(--bg-dark);
+      color: var(--text-main);
       overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+      background-image: 
+        radial-gradient(circle at 50% 60%, rgba(15, 23, 42, 1) 0%, transparent 80%),
+        radial-gradient(circle at 85% 20%, rgba(6, 182, 212, 0.05) 0%, transparent 20%),
+        radial-gradient(circle at 15% 80%, rgba(16, 185, 129, 0.05) 0%, transparent 20%);
     }
 
     .top-bar {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      height: 52px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 26px;
-      z-index: 20;
-      backdrop-filter: blur(18px);
-      background: linear-gradient(
-        to bottom,
-        rgba(5,7,24,0.96),
-        rgba(5,7,24,0.75),
-        transparent
-      );
-      border-bottom: 1px solid rgba(148,163,184,0.35);
+      position: fixed; top: 0; left: 0; right: 0; height: 70px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 40px; z-index: 20;
+      background: linear-gradient(to bottom, rgba(5,8,22,0.95), transparent);
+      pointer-events: none;
     }
-
-    .brand {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
-
+    .brand { pointer-events: auto; display: flex; flex-direction: column; }
     .brand-path {
-      font-size: 11px;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: #6b7280;
+      font-family: var(--font-cond); font-size: 11px; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--c-sub); opacity: 0.9; margin-bottom: 4px; font-weight: 600;
     }
-
     .brand-title {
-      font-size: 16px;
-      font-weight: 600;
+      font-family: var(--font-cond); font-size: 20px; font-weight: 700;
+      letter-spacing: 0.5px; text-transform: uppercase; color: #fff;
     }
-
-    .top-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 11px;
-    }
-
-    .chip {
-      padding: 4px 10px;
+    .top-actions { pointer-events: auto; display: flex; align-items: center; gap: 16px; }
+    .back-btn {
+      font-family: var(--font-cond); font-size: 14px; font-weight: 600;
+      padding: 8px 28px;
       border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.6);
-      background: rgba(15,23,42,0.8);
-      color: #9ca3af;
+      background: rgba(255,255,255,0.08); color: var(--text-main);
+      text-decoration: none; border: 1px solid rgba(255,255,255,0.2);
+      backdrop-filter: blur(12px);
+      text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    .back-btn:hover {
+      background: var(--c-sub); color: #000; border-color: var(--c-sub);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(6, 182, 212, 0.4);
     }
 
-    .back {
-      padding: 6px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.7);
-      background: radial-gradient(circle at top left,rgba(96,165,250,0.9),rgba(15,23,42,0.98));
-      color: #e5e7eb;
-      text-decoration: none;
+    #chart-container { position: absolute; inset: 0; z-index: 1; }
+
+    .panel-layer { position: absolute; inset: 0; pointer-events: none; z-index: 10; padding: 40px; }
+
+    .hero-text {
+      position: absolute; top: 90px; left: 50px; max-width: 440px; pointer-events: auto;
+      text-shadow: 0 4px 30px rgba(0,0,0,0.8);
+    }
+    .hero-label {
+      font-family: var(--font-cond); font-size: 12px; font-weight: 700;
+      color: var(--c-sub); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; letter-spacing: 1.5px;
+    }
+    .hero-title {
+      font-family: var(--font-cond); font-size: 56px; font-weight: 700; line-height: 0.9; margin-bottom: 24px;
+      text-transform: uppercase; letter-spacing: -1px;
+      background: linear-gradient(180deg, #fff 0%, #94a3b8 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero-desc {
+      font-size: 14px; line-height: 1.6; font-weight: 300; color: var(--text-muted);
+      position: relative;
+      padding-left: 20px; margin-bottom: 32px;
+    }
+    .hero-desc::before {
+      content: ''; position: absolute; left: 0; top: 4px; bottom: 4px; width: 4px;
+      background: rgba(255,255,255,0.2); border-radius: 4px;
     }
 
-    .scene {
-      position: absolute;
-      top: 52px; bottom: 0; left: 0; right: 0;
-      overflow: hidden;
-      background:
-        radial-gradient(circle at 15% 10%, rgba(56,189,248,0.22), transparent 55%),
-        radial-gradient(circle at 85% 90%, rgba(234,179,8,0.25), transparent 60%),
-        radial-gradient(circle at 70% 15%, rgba(236,72,153,0.18), transparent 55%),
-        #020617;
+    .struct-legend { display: flex; flex-direction: column; gap: 16px; }
+    .struct-item { display: flex; align-items: center; gap: 14px; color: rgba(255,255,255,0.9); }
+    .struct-bar { width: 6px; height: 32px; border-radius: 6px; box-shadow: 0 0 12px currentColor; }
+    .struct-info { display: flex; flex-direction: column; justify-content: center; }
+    .struct-pct { font-family: var(--font-mono); font-weight: 700; font-size: 18px; line-height: 1; margin-bottom: 2px; }
+    .struct-name { font-family: var(--font-cond); font-size: 12px; text-transform: uppercase; opacity: 0.7; letter-spacing: 0.5px; }
+
+    .glass-card {
+      position: absolute; width: 320px; padding: 28px;
+      border-radius: 32px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      box-shadow: var(--glass-shadow);
+      pointer-events: auto; opacity: 0; transform: translateY(30px);
+      transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
     }
+    .glass-card.active { opacity: 1; transform: translateY(0); }
 
-    #eco-orbit {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
+    .card-header {
+      font-family: var(--font-cond); font-size: 13px; font-weight: 700;
+      color: rgba(255,255,255,0.6); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;
+      display: flex; justify-content: space-between; align-items: center;
     }
-
-    .panel {
-      position: absolute;
-      border-radius: 20px;
-      padding: 14px 16px;
-      border: 1px solid rgba(148,163,184,0.55);
-      background: radial-gradient(circle at top left, rgba(15,23,42,0.95), rgba(15,23,42,0.9));
-      box-shadow:
-        0 18px 55px rgba(15,23,42,0.9),
-        0 0 0 1px rgba(15,23,42,0.9) inset;
-      backdrop-filter: blur(18px);
-      max-width: 260px;
-      font-size: 12px;
-      line-height: 1.6;
-      color: #9ca3af;
-      z-index: 5;
+    .card-title {
+      font-family: var(--font-cond); font-size: 24px; font-weight: 600; color: #fff; margin-bottom: 16px;
+      text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.2;
     }
+    .metric-val { font-family: var(--font-mono); font-size: 36px; font-weight: 400; color: #fff; display: block; margin-bottom: 4px; }
+    .metric-label { font-family: var(--font-cond); font-size: 12px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px; }
 
-    .panel h2 {
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 4px;
-      color: #e5e7eb;
-    }
+    .pos-bottom-right { bottom: 50px; right: 50px; }
 
-    .panel small {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      color: #64748b;
-    }
-
-    .panel-main { left: 32px; top: 80px; max-width: 280px; }
-    .panel-legacy { bottom: 36px; left: 32px; max-width: 260px; }
-    .panel-new { bottom: 36px; right: 32px; max-width: 260px; }
-    .panel-kpi { top: 80px; right: 32px; max-width: 260px; }
-
-    .pill-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 8px;
-    }
-
-    .pill {
-      padding: 3px 8px;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.55);
-      font-size: 11px;
-      color: #cbd5f5;
-    }
-
-    @media (max-width: 900px) {
-      .panel-main {
-        left: 16px;
-        top: 70px;
-        right: 16px;
-        max-width: none;
-      }
-      .panel-legacy,
-      .panel-new,
-      .panel-kpi {
-        display: none;
-      }
+    @media (max-width: 768px) {
+      .top-bar { padding: 0 20px; height: 60px; }
+      .hero-text { top: 80px; left: 24px; right: 24px; max-width: none; }
+      .hero-title { font-size: 40px; }
+      .glass-card { left: 24px; right: 24px; bottom: 24px; width: auto; border-radius: 24px; }
     }
   </style>
 </head>
 <body>
+
   <div class="top-bar">
     <div class="brand">
-      <div class="brand-path">STARTIMES UGANDA · DATA SPACE</div>
-      <div class="brand-title">Ecology · 业务星团图 Business Constellation</div>
+      <div class="brand-path">STARTIMES / UGANDA</div>
+      <div class="brand-title">Ecology Constellation</div>
     </div>
     <div class="top-actions">
-      <div class="chip">中心 63·30·7 收入恒星光带 · 外圈 KPI 星团</div>
-      <a class="back" href="../index.html">Back to Universe</a>
+      <a class="back-btn" href="../index.html">EXIT</a>
     </div>
   </div>
 
-  <div class="scene">
-    <div id="eco-orbit"></div>
+  <div id="chart-container"></div>
 
-    <aside class="panel panel-main">
-      <small>OVERVIEW</small>
-      <h2>收入结构 + 五条业务线的 KPI 星团</h2>
-      <p>
-        中心恒星光带展示三条主收入轨道：
-        <strong>Subscription 63%</strong>、
-        <strong>Solar 30%</strong>、
-        <strong>Ads &amp; Devices 7%</strong>。
-        外圈的星团把这三大块拆开成具体业务线
-        （Solar、DTV、DTH、DTT、OTT）的 KPI。
-      </p>
-      <p style="margin-top:6px;">
-        每个指标是一颗主星，靠近哪条光带就属于哪块收入；
-        颜色区分业务线；大小近似代表该指标在本业务内部的体量。
-      </p>
-      <div class="pill-row">
-        <span class="pill">青蓝光带 · Subscription · 63%</span>
-        <span class="pill">青绿光带 · Solar · 30%</span>
-        <span class="pill">洋红金光带 · Ads &amp; Devices · 7%</span>
+  <div class="panel-layer">
+    <div class="hero-text">
+      <div class="hero-label">ECOSYSTEM OVERVIEW</div>
+      <h1 class="hero-title">Business<br>Planetary System</h1>
+      <div class="hero-desc">
+        三条收入扇区 (Sectors) 代表 Subscription 63%、Solar 30%、Ads &amp; Devices 7% 的大盘光带。
+        <br>
+        五颗业务行星围绕恒星运行，KPI 星点按照所属收入扇区分布：部分 DTV / DTH / DTT 的硬件与广告指
+        标跃迁至 Devices 扇区。
       </div>
-    </aside>
 
-    <aside class="panel panel-legacy">
-      <small>LEGACY DVB CLUSTER</small>
-      <h2>DTV · DTH · DTT 电视业务星团</h2>
-      <p>
-        传统付费电视业务的充值、扣费、ARPPU 等指标被归入
-        <strong>Subscription</strong> 光带；其中带“销量 / 终端 / 设备”
-        的指标则归入 <strong>Ads &amp; Devices</strong> 光带。
-        通过星点的密度与大小，很直观地看到收视费与终端收入在整体生态中的相对贡献。
-      </p>
-    </aside>
+      <div class="struct-legend">
+        <div class="struct-item">
+          <div class="struct-bar" style="background:var(--c-sub); color:var(--c-sub)"></div>
+          <div class="struct-info">
+            <span class="struct-pct" style="color:var(--c-sub)">63%</span>
+            <span class="struct-name">Content Subscription</span>
+          </div>
+        </div>
+        <div class="struct-item">
+          <div class="struct-bar" style="background:var(--c-solar); color:var(--c-solar)"></div>
+          <div class="struct-info">
+            <span class="struct-pct" style="color:var(--c-solar)">30%</span>
+            <span class="struct-name">Solar Energy</span>
+          </div>
+        </div>
+        <div class="struct-item">
+          <div class="struct-bar" style="background:var(--c-dev); color:var(--c-dev)"></div>
+          <div class="struct-info">
+            <span class="struct-pct" style="color:var(--c-dev)">07%</span>
+            <span class="struct-name">Devices &amp; Advertising</span>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <aside class="panel panel-new">
-      <small>SOLAR &amp; OTT CLUSTER</small>
-      <h2>Solar 与 OTT 的新增长空间</h2>
-      <p>
-        Solar 星团聚集于青绿光带，代表 30% 的离网增量收入；
-        OTT 星团主要落在 Subscription 光带，但广告相关 KPI
-        归入 Ads &amp; Devices。橙色上升点与蓝色下降点，
-        暗示了未来可以重点挖掘或修复的增长星域。
-      </p>
-    </aside>
-
-    <aside class="panel panel-kpi">
-      <small>HOW TO READ</small>
-      <h2>点的含义</h2>
-      <p>
-        位置：中心恒星光带外，对应所属收入扇区；<br/>
-        颜色：区分业务线 Solar / DTV / DTH / DTT / OTT；<br/>
-        大小：在本业务内的相对指标体量；<br/>
-        颜色倾向：<span style="color:#f97316;">橙色 = 上升</span>，
-        <span style="color:#60a5fa;">蓝色 = 下降</span>；<br/>
-        悬停：查看业务线 + 指标名称 + 当前值。
-      </p>
-    </aside>
+    <div class="glass-card pos-bottom-right" id="detail-panel">
+      <div class="card-header">
+        <span id="p-biz">BUSINESS</span>
+        <span id="p-type" style="color:var(--c-sub)">SECTOR</span>
+      </div>
+      <div class="card-title" id="p-name">Metric Name</div>
+      <div style="margin-bottom:16px;">
+         <span class="metric-val" id="p-val">0</span>
+         <span class="metric-label">Current Value</span>
+      </div>
+      <div style="border-top:1px solid rgba(255,255,255,0.1); padding-top:16px; font-family:var(--font-din); font-size:13px; color:rgba(255,255,255,0.8); display:flex; align-items:center; gap:8px;">
+        Trend Status:
+        <span id="p-trend" style="font-weight:bold; font-size:14px; padding:2px 8px; border-radius:12px; background:rgba(255,255,255,0.1);">--</span>
+      </div>
+    </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
   <script>
-    var dom = document.getElementById('eco-orbit');
-    var chart = echarts.init(dom);
-
-    // === 63 / 30 / 7 三条收入光带 ===
+    // ===================== 配置与数据 =====================
     var macroDefs = [
-      { id: 'Subscription', label: 'Subscription 63%', value: 63, color: '#22d3ee' },
-      { id: 'Solar',        label: 'Solar 30%',        value: 30, color: '#4ade80' },
-      { id: 'AdsDevices',   label: 'Ads & Devices 7%', value: 7,  color: '#fb7185' }
+      { id: 'Subscription', label: 'Subscription', value: 63, color: '#06b6d4' },
+      { id: 'Solar',        label: 'Solar',        value: 30, color: '#10b981' },
+      { id: 'AdsDevices',   label: 'Ads & Devices',value: 7,  color: '#f97316' }
     ];
-    var totalMacro = macroDefs.reduce(function (s, m) { return s + m.value; }, 0);
 
-    // 业务线配色（区分业务，而不是收入块）
     var businessDefs = [
-      { id: 'Solar', label: 'Solar', tone: 'green' },
-      { id: 'DTV',  label: 'DTV',  tone: 'blue'  },
-      { id: 'DTH',  label: 'DTH',  tone: 'cyan'  },
-      { id: 'DTT',  label: 'DTT',  tone: 'indigo'},
-      { id: 'OTT',  label: 'OTT',  tone: 'violet'}
+      { id: 'Solar', label: 'SOLAR', tone: 'green' },
+      { id: 'DTV',   label: 'DTV',   tone: 'blue'  },
+      { id: 'DTH',   label: 'DTH',   tone: 'cyan'  },
+      { id: 'DTT',   label: 'DTT',   tone: 'indigo'},
+      { id: 'OTT',   label: 'OTT',   tone: 'violet'}
     ];
 
     function toneColor(tone, alpha) {
-      switch (tone) {
-        case 'green':  return 'rgba(74,222,128,'  + alpha + ')';
-        case 'blue':   return 'rgba(59,130,246,' + alpha + ')';
-        case 'cyan':   return 'rgba(45,212,191,' + alpha + ')';
-        case 'indigo': return 'rgba(129,140,248,'+ alpha + ')';
-        case 'violet': return 'rgba(236,72,153,' + alpha + ')';
-        default:       return 'rgba(148,163,184,'+ alpha + ')';
-      }
+      if (tone === 'green')  return 'rgba(74,222,128,'  + alpha + ')';
+      if (tone === 'blue')   return 'rgba(59,130,246,' + alpha + ')';
+      if (tone === 'cyan')   return 'rgba(34,211,238,' + alpha + ')';
+      if (tone === 'indigo') return 'rgba(129,140,248,'+ alpha + ')';
+      if (tone === 'violet') return 'rgba(192,132,252,'+ alpha + ')';
+      return 'rgba(148,163,184,'+ alpha + ')';
     }
 
-    // KPI 原始数据
+    // 0~100 的角度坐标上布扇区（允许很小的 gap）
+    var gap = 0.5;
+    var effectiveTotal = 100 - macroDefs.length * gap;
+    var currentVal = 0;
+    var macroLayout = {};
+    ['Subscription','Solar','AdsDevices'].forEach(function(id) {
+      var m = macroDefs.find(function(x){return x.id===id;});
+      var span = (m.value / 100) * effectiveTotal;
+      macroLayout[id] = {
+        start: currentVal,
+        end: currentVal + span,
+        mid: currentVal + span/2,
+        color: m.color,
+        label: m.label
+      };
+      currentVal += span + gap;
+    });
+
+    // 行星锚点
+    var planetPoints = [];
+    var planetMap = {};
+    businessDefs.forEach(function(biz){
+      var targetMacroId = 'Subscription';
+      if (biz.id === 'Solar') targetMacroId = 'Solar';
+
+      var layout = macroLayout[targetMacroId];
+      var angleVal = layout.mid;
+
+      if (targetMacroId === 'Subscription') {
+        var subBizs = ['DTV','DTH','DTT','OTT'];
+        var idx = subBizs.indexOf(biz.id);
+        var step = (layout.end - layout.start) / (subBizs.length + 1);
+        if (idx >= 0) angleVal = layout.start + step * (idx + 1);
+      }
+
+      var radius = 60; // 行星轨道
+
+      planetPoints.push({
+        name: biz.label,
+        value: [radius, angleVal],
+        itemStyle: {
+          color: toneColor(biz.tone, 0.95),
+          borderColor: 'rgba(255,255,255,0.9)',
+          borderWidth: 2,
+          shadowBlur: 30,
+          shadowColor: 'rgba(15,23,42,0.8)'
+        }
+      });
+      planetMap[biz.id] = { radius: radius, angle: angleVal, tone: biz.tone, label: biz.label };
+    });
+
+    // KPI 原始数据（按业务线）
     var kpiRaw = {
       Solar: [
-        { name: '销量 每月累计',          value: 1481,    trend: 'down' },
-        { name: '销售收入(应收) 每月累计', value: 168973,  trend: 'down' },
-        { name: '全款收款 每月累计',      value: 1148,    trend: 'down' },
-        { name: '首付款收款 每月累计',    value: 10171,   trend: 'down' },
-        { name: '分期款收款 每月累计',    value: 80729,   trend: 'down' },
-        { name: '累计应收分期款',         value: 23072112,trend: 'up'   },
-        { name: '当月应收分期款',         value: 224472,  trend: 'down' },
-        { name: '分期中用户数',           value: 234390,  trend: 'up'   }
+        { name: '销量 每月累计',          value: 1481,     trend: 'down' },
+        { name: '销售收入(应收) 每月累计', value: 168973,   trend: 'down' },
+        { name: '全款收款 每月累计',      value: 1148,     trend: 'down' },
+        { name: '首付款收款 每月累计',    value: 10171,    trend: 'down' },
+        { name: '分期款收款 每月累计',    value: 80729,    trend: 'down' },
+        { name: '累计应收分期款 月末',    value: 23072112, trend: 'up'   },
+        { name: '当月应收分期款 月末',    value: 224472,   trend: 'down' },
+        { name: '分期中用户数 月末',      value: 234390,   trend: 'up'   }
       ],
       DTV: [
         { name: '新增用户数 每月累计',    value: 110,   trend: 'down' },
         { name: '在线用户数 每月去重',    value: 8112, trend: 'down' },
-        { name: '注册用户数 月末最后一天',value: 39510,trend: 'down' },
+        { name: '注册用户数 月末',        value: 39510,trend: 'down' },
         { name: '扣费金额 每月累计',      value: 4353, trend: 'down' },
         { name: '充值金额 每月累计',      value: 6408, trend: 'down' },
         { name: '扣费用户数 每月去重',    value: 7501, trend: 'down' },
@@ -294,7 +314,7 @@
       DTH: [
         { name: '新增用户数 每月累计',    value: 425,    trend: 'down' },
         { name: '在线用户数 每月去重',    value: 349860, trend: 'down' },
-        { name: '注册用户数 月末最后一天',value: 1101568,trend: 'down' },
+        { name: '注册用户数 月末',        value: 1101568,trend: 'down' },
         { name: '扣费金额 每月累计',      value: 190787, trend: 'down' },
         { name: '充值金额 每月累计',      value: 289402, trend: 'down' },
         { name: '扣费用户数 每月去重',    value: 339611, trend: 'down' },
@@ -305,7 +325,7 @@
       DTT: [
         { name: '新增用户数 每月累计',    value: 249,    trend: 'down' },
         { name: '在线用户数 每月去重',    value: 344459, trend: 'down' },
-        { name: '注册用户数 月末最后一天',value: 1848112,trend: 'down' },
+        { name: '注册用户数 月末',        value: 1848112,trend: 'down' },
         { name: '扣费金额 每月累计',      value: 180694, trend: 'down' },
         { name: '充值金额 每月累计',      value: 263016, trend: 'down' },
         { name: '扣费用户数 每月去重',    value: 340802, trend: 'down' },
@@ -324,402 +344,339 @@
       ]
     };
 
-    // 根据业务线 + 指标名称，映射到收入块
     function classifyMacro(bizId, metricName) {
       if (bizId === 'Solar') return 'Solar';
       if (/广告|DSP/.test(metricName)) return 'AdsDevices';
-      if (/销量|终端|机顶盒|设备/.test(metricName) && bizId !== 'Solar') {
+      if (/销量|新.*用户|终端|设备|机顶盒/.test(metricName) && bizId !== 'Solar') {
         return 'AdsDevices';
       }
       return 'Subscription';
     }
 
-    // 360° 全圆分配给三条光带
-    var usedArcDeg = 360;
-    var startDeg = -usedArcDeg / 2; // -180° ~ +180°
-    var cursorDeg = startDeg;
-    macroDefs.forEach(function (m) {
-      var sweep = usedArcDeg * (m.value / totalMacro);
-      m.startDeg = cursorDeg;
-      m.endDeg   = cursorDeg + sweep;
-      cursorDeg += sweep;
-    });
+    var MAX_RADIUS = 100;
 
-    function getMacroDef(id) {
-      return macroDefs.find(function (m) { return m.id === id; });
-    }
-    function getMacroIndex(id) {
-      return macroDefs.findIndex(function (m) { return m.id === id; });
-    }
-    function getBizDef(id) {
-      return businessDefs.find(function (b) { return b.id === id; });
-    }
-
-    var maxRadius = 105;
-
-    // === KPI 主星 ===
+    // KPI 星点
     var clusterPoints = [];
-    businessDefs.forEach(function (biz) {
+    businessDefs.forEach(function(biz){
       var metrics = kpiRaw[biz.id] || [];
       if (!metrics.length) return;
 
-      var maxVal = metrics.reduce(function (m, x) {
-        return Math.max(m, x.value);
-      }, 0.0001);
+      var planet = planetMap[biz.id];
+      var maxVal = metrics.reduce(function(m,x){return Math.max(m, x.value);}, 0.0001);
 
-      metrics.forEach(function (m) {
+      metrics.forEach(function(m){
         var macroId = classifyMacro(biz.id, m.name);
-        var macro = getMacroDef(macroId);
-        if (!macro) return;
+        var layout = macroLayout[macroId];
 
-        // 在该收入扇区内部随机分布角度
-        var angle =
-          macro.startDeg +
-          (macro.endDeg - macro.startDeg) *
-            (0.18 + 0.64 * Math.random());
-
-        var bandIndex = getMacroIndex(macroId);     // 0 / 1 / 2
-        var baseBandRadius = 52 + bandIndex * 18;   // 三条大环带
-        var jitter = (Math.random() - 0.5) * 16;
-        var radius = baseBandRadius + jitter;
-
-        var valueRatio = m.value / maxVal;
-        var baseSize = 14 + 14 * Math.sqrt(valueRatio);
-        var size     = baseSize * (0.9 + Math.random() * 0.2);
-
-        var trend = m.trend || 'flat';
-        var depth = radius / maxRadius;
-        var alphaBase = 0.55 + 0.3 * depth;
-
-        var color;
-        if (trend === 'up') {
-          color = 'rgba(249,115,22,' + alphaBase + ')'; // 橙色上升
-        } else if (trend === 'down') {
-          color = 'rgba(59,130,246,' + alphaBase + ')'; // 蓝色下降
+        var angle, radius;
+        if (macroId === 'AdsDevices') {
+          var span = layout.end - layout.start;
+          angle = layout.start + span * (0.18 + 0.64 * Math.random());
+          radius = 70 + Math.random()*22;
         } else {
-          color = toneColor(biz.tone, alphaBase);
+          angle = planet.angle + (Math.random()-0.5) * 10;
+          radius = planet.radius + (Math.random()-0.5) * 18;
         }
+
+        var ratio = m.value / maxVal;
+        var size = 12 + 16 * Math.sqrt(ratio);
+
+        var fillColor = toneColor(planet.tone, 0.9);
+        var borderColor = 'rgba(226,232,240,0.8)';
+        if (m.trend === 'up') borderColor = '#f97316';       // 橙色上升
+        else if (m.trend === 'down') borderColor = '#3b82f6';// 蓝色下降
 
         clusterPoints.push({
           value: [radius, angle],
-          bizId: biz.id,
-          bizLabel: biz.label,
-          macroId: macroId,
-          macroLabel: macro.label,
-          metric: m.name,
-          rawValue: m.value,
-          trend: trend,
+          info: {
+            name: m.name,
+            value: m.value,
+            trend: m.trend,
+            biz: planet.label,
+            type: layout.label
+          },
           symbolSize: size,
           itemStyle: {
-            color: color,
-            opacity: 0.98,
-            shadowBlur: 26 + 14 * depth,
-            shadowColor: color
+            color: fillColor,
+            opacity: 0.95,
+            borderColor: borderColor,
+            borderWidth: 2,
+            shadowBlur: 26,
+            shadowColor: borderColor
           }
         });
       });
     });
 
-    // === 装饰用的小白星星 ===
+    // 星场装饰
     var starfield = [];
-    var starCount = 220;
-    for (var i = 0; i < starCount; i++) {
-      var macro = macroDefs[i % macroDefs.length];
-      var angle =
-        macro.startDeg +
-        (macro.endDeg - macro.startDeg) * Math.random();
+    (function(){
+      var count = 260;
+      for (var i=0;i<count;i++){
+        var radius = 20 + Math.random()*(MAX_RADIUS-15);
+        var angle = Math.random()*100;
+        var alpha = 0.15 + 0.5*Math.random();
+        starfield.push({
+          value: [radius, angle],
+          symbolSize: 1 + 2.5*Math.random(),
+          itemStyle: {
+            color: 'rgba(248,250,252,' + alpha + ')',
+            opacity: 1
+          }
+        });
+      }
+    })();
 
-      var radius = 30 + Math.random() * (maxRadius - 32);
-      var depth = radius / maxRadius;
-      var alpha = 0.18 + 0.45 * Math.random();
-
-      starfield.push({
-        value: [radius, angle],
-        symbolSize: 1.5 + 2.5 * Math.random(),
-        itemStyle: {
-          color: 'rgba(248,250,252,' + (alpha * (0.5 + 0.5 * depth)) + ')',
-          opacity: 1
-        }
-      });
-    }
+    // ===================== ECharts =====================
+    var chart = echarts.init(document.getElementById('chart-container'));
 
     var option = {
       backgroundColor: 'transparent',
-      tooltip: {
-        trigger: 'item',
-        formatter: function (params) {
-          var d = params.data || {};
-          if (!d.metric) return d.macroLabel || '';
-          var trendText =
-            d.trend === 'up'   ? '趋势：上升'
-          : d.trend === 'down' ? '趋势：下降'
-          : '趋势：相对平稳';
-          return [
-            d.macroLabel + ' · ' + d.bizLabel,
-            d.metric,
-            '当前值：' + d.rawValue,
-            trendText
-          ].join('<br/>');
-        }
-      },
-
-      polar: {
-        center: ['50%', '52%'],
-        radius: '95%'
-      },
+      tooltip: { show: false },
+      polar: { center: ['50%','52%'], radius: '120%' },
       angleAxis: {
         type: 'value',
-        min: -180,
-        max: 180,
+        min: 0,
+        max: 100,
+        show: false,
         startAngle: 90,
-        axisLine: { show: false },
-        axisTick: { show: false },
-        axisLabel: { show: false },
-        splitLine: { show: false }
+        clockwise: true
       },
       radiusAxis: {
         type: 'value',
         min: 0,
-        max: maxRadius,
-        splitNumber: 6,
-        axisLine: { show: false },
-        axisTick: { show: false },
-        axisLabel: { show: false },
-        splitLine: {
-          show: true,
-          lineStyle: { color: 'rgba(15,23,42,0.6)' }
-        }
+        max: MAX_RADIUS,
+        show: false
       },
-
       series: [
-        // 1) 背景同心圆（最底层）
-        {
-          type: 'custom',
-          coordinateSystem: 'none',
-          renderItem: function (params, api) {
-            var cx = api.getWidth() / 2;
-            var cy = api.getHeight() * 0.52;
-            var maxR = Math.min(api.getWidth(), api.getHeight()) * 0.40;
-            var rings = [];
-            for (var i = 1; i <= 6; i++) {
-              rings.push({
-                type: 'circle',
-                shape: { cx: cx, cy: cy, r: (maxR / 6) * i },
-                style: {
-                  stroke: 'rgba(15,23,42,' + (0.35 + i * 0.05) + ')',
-                  fill: 'transparent',
-                  lineWidth: 1
-                }
-              });
-            }
-            return { type: 'group', children: rings };
-          },
-          data: [0],
-          silent: true,
-          zlevel: 0
-        },
-
-        // 2) 三束“极光”收入光带（在恒星下方）
+        // 极光扇区
         {
           id: 'aurora',
           type: 'custom',
           coordinateSystem: 'none',
-          data: [0], // 数值 = progress 0~1，由外部动画驱动
-          renderItem: function (params, api) {
+          data: [0],
+          renderItem: function(params, api){
             var progress = api.value(0);
             if (progress == null) progress = 1;
-            progress = Math.max(0, Math.min(progress, 1));
+            if (progress < 0) progress = 0; if (progress>1) progress=1;
+            if (progress <= 0.01) return {type:'group',children:[]};
 
-            if (progress <= 0.01) {
-              return { type: 'group', children: [] };
-            }
+            var cx = api.getWidth()/2;
+            var cy = api.getHeight()*0.52;
+            var maxR = Math.min(api.getWidth(), api.getHeight())*0.50;
+            var rInner = maxR*0.18*progress;
+            var rOuter = maxR*(0.30 + 0.42*progress);
 
-            var shapes = [];
-            var cx = api.getWidth() / 2;
-            var cy = api.getHeight() * 0.52;
-            var maxR = Math.min(api.getWidth(), api.getHeight()) * 0.40;
-
-            var rInner = maxR * 0.18 * progress;
-            var rOuter = maxR * (0.26 + 0.44 * progress);
-
-            macroDefs.forEach(function (m) {
-              var startAngle = (m.startDeg * Math.PI) / 180;
-              var endAngle   = (m.endDeg   * Math.PI) / 180;
-
-              for (var layer = 0; layer < 3; layer++) {
-                var inner = rInner + layer * (maxR * 0.01);
-                var outer = rOuter + layer * (maxR * 0.015);
-                var alphaMul = 1 - layer * 0.35;
-
-                var auroraColor;
-                if (m.id === 'Subscription') {
-                  auroraColor = new echarts.graphic.LinearGradient(
-                    0.5, 0.1, 0.5, 1,
-                    [
-                      { offset: 0,   color: 'rgba(34,211,238,' + (0.96 * alphaMul) + ')' },
-                      { offset: 0.5, color: 'rgba(59,130,246,' + (0.35 * alphaMul) + ')' },
-                      { offset: 1,   color: 'rgba(15,23,42,0)' }
-                    ]
-                  );
-                } else if (m.id === 'Solar') {
-                  auroraColor = new echarts.graphic.LinearGradient(
-                    0.5, 0.05, 0.5, 1,
-                    [
-                      { offset: 0,   color: 'rgba(190,242,100,' + (0.95 * alphaMul) + ')' },
-                      { offset: 0.5, color: 'rgba(45,212,191,' + (0.35 * alphaMul) + ')' },
-                      { offset: 1,   color: 'rgba(15,23,42,0)' }
-                    ]
-                  );
-                } else { // Ads & Devices
-                  auroraColor = new echarts.graphic.LinearGradient(
-                    0.5, 0.12, 0.5, 1,
-                    [
-                      { offset: 0,   color: 'rgba(244,114,182,' + (0.97 * alphaMul) + ')' },
-                      { offset: 0.5, color: 'rgba(251,191,36,' + (0.40 * alphaMul) + ')' },
-                      { offset: 1,   color: 'rgba(15,23,42,0)' }
-                    ]
-                  );
+            var children = [];
+            ['Subscription','Solar','AdsDevices'].forEach(function(id){
+              var lay = macroLayout[id];
+              var startRad = (lay.start/100)*Math.PI*2 - Math.PI/2;
+              var endRad   = (lay.end/100)*Math.PI*2   - Math.PI/2;
+              for (var layer=0; layer<3; layer++){
+                var inner = rInner + layer*maxR*0.01;
+                var outer = rOuter + layer*maxR*0.015;
+                var alphaMul = 1 - layer*0.35;
+                var grad;
+                if (id === 'Subscription') {
+                  grad = new echarts.graphic.LinearGradient(0.5,0.0,0.5,1,[
+                    {offset:0,  color:'rgba(34,211,238,' + (0.96*alphaMul) + ')'},
+                    {offset:0.5,color:'rgba(59,130,246,' + (0.40*alphaMul) + ')'},
+                    {offset:1,  color:'rgba(15,23,42,0)'}
+                  ]);
+                } else if (id === 'Solar') {
+                  grad = new echarts.graphic.LinearGradient(0.5,0.0,0.5,1,[
+                    {offset:0,  color:'rgba(190,242,100,' + (0.96*alphaMul) + ')'},
+                    {offset:0.5,color:'rgba(45,212,191,' + (0.40*alphaMul) + ')'},
+                    {offset:1,  color:'rgba(15,23,42,0)'}
+                  ]);
+                } else {
+                  grad = new echarts.graphic.LinearGradient(0.5,0.0,0.5,1,[
+                    {offset:0,  color:'rgba(244,114,182,' + (0.96*alphaMul) + ')'},
+                    {offset:0.5,color:'rgba(251,191,36,' + (0.45*alphaMul) + ')'},
+                    {offset:1,  color:'rgba(15,23,42,0)'}
+                  ]);
                 }
-
-                shapes.push({
-                  type: 'sector',
-                  shape: {
-                    cx: cx,
-                    cy: cy,
-                    r0: inner,
-                    r: outer,
-                    startAngle: startAngle,
-                    endAngle: endAngle
-                  },
-                  style: {
-                    fill: auroraColor,
-                    stroke: 'none',
-                    shadowBlur: 80 * progress,
-                    shadowColor: m.color
+                children.push({
+                  type:'sector',
+                  shape:{cx:cx,cy:cy,r0:inner,r:outer,startAngle:startRad,endAngle:endRad},
+                  style:{
+                    fill:grad,
+                    stroke:'none',
+                    shadowBlur:80*progress,
+                    shadowColor:lay.color
                   }
                 });
               }
             });
-
-            return { type: 'group', children: shapes };
+            return {type:'group',children:children};
           },
-          silent: true,
-          zlevel: 1
+          silent:true,
+          zlevel:1
         },
 
-        // 3) 中央白色恒星（在光带之上）
+        // 同心轨道圈
         {
-          type: 'custom',
-          coordinateSystem: 'none',
-          renderItem: function (params, api) {
-            var cx = api.getWidth() / 2;
-            var cy = api.getHeight() * 0.52;
-            var maxR = Math.min(api.getWidth(), api.getHeight()) * 0.40;
+          type:'custom',
+          coordinateSystem:'none',
+          data:[0],
+          renderItem:function(params, api){
+            var cx = api.getWidth()/2;
+            var cy = api.getHeight()*0.52;
+            var maxR = Math.min(api.getWidth(), api.getHeight())*0.50;
+            var rings=[];
+            [0.32,0.46,0.60,0.74,0.88].forEach(function(rp){
+              rings.push({
+                type:'circle',
+                shape:{cx:cx,cy:cy,r:maxR*rp},
+                style:{fill:'none',stroke:'rgba(15,23,42,0.9)',lineWidth:1}
+              });
+            });
+            return {type:'group',children:rings};
+          },
+          silent:true,
+          zlevel:0
+        },
 
-            var haloR = maxR * 0.18;
-            var starR = maxR * 0.10;
-
+        // 中央恒星
+        {
+          type:'custom',
+          coordinateSystem:'none',
+          data:[0],
+          renderItem:function(params, api){
+            var cx = api.getWidth()/2;
+            var cy = api.getHeight()*0.52;
+            var maxR = Math.min(api.getWidth(), api.getHeight())*0.50;
+            var haloR = maxR*0.16;
+            var starR = maxR*0.09;
             return {
-              type: 'group',
-              children: [
+              type:'group',
+              children:[
                 {
-                  // 柔和光晕
-                  type: 'circle',
-                  shape: { cx: cx, cy: cy, r: haloR },
-                  style: {
-                    fill: new echarts.graphic.RadialGradient(0.5, 0.5, 1, [
-                      { offset: 0,   color: 'rgba(248,250,252,0.75)' },
-                      { offset: 0.35,color: 'rgba(248,250,252,0.28)' },
-                      { offset: 1,   color: 'rgba(15,23,42,0)' }
+                  type:'circle',
+                  shape:{cx:cx,cy:cy,r:haloR},
+                  style:{
+                    fill:new echarts.graphic.RadialGradient(0.5,0.5,1,[
+                      {offset:0,color:'rgba(248,250,252,0.8)'},
+                      {offset:0.4,color:'rgba(248,250,252,0.28)'},
+                      {offset:1,color:'rgba(15,23,42,0)'}
                     ]),
-                    shadowBlur: 65,
-                    shadowColor: 'rgba(248,250,252,0.85)'
+                    shadowBlur:70,
+                    shadowColor:'rgba(248,250,252,0.9)'
                   }
                 },
                 {
-                  // 中心恒星本体（更小、更干净）
-                  type: 'circle',
-                  shape: { cx: cx, cy: cy, r: starR },
-                  style: {
-                    fill: 'rgba(248,250,252,0.98)',
-                    shadowBlur: 30,
-                    shadowColor: 'rgba(248,250,252,0.95)'
+                  type:'circle',
+                  shape:{cx:cx,cy:cy,r:starR},
+                  style:{
+                    fill:'rgba(248,250,252,0.98)',
+                    shadowBlur:32,
+                    shadowColor:'rgba(248,250,252,0.95)'
                   }
                 }
               ]
             };
           },
-          data: [0],
-          silent: true,
-          zlevel: 3
+          silent:true,
+          zlevel:3
         },
 
-        // 4) 装饰的小白星
+        // 星场小白点
         {
-          type: 'scatter',
-          coordinateSystem: 'polar',
-          name: 'Starfield',
+          type:'scatter',
+          name:'Starfield',
+          coordinateSystem:'polar',
           data: starfield,
-          symbolSize: function (val, params) {
-            return params.data.symbolSize || 2;
-          },
-          itemStyle: {
-            color: 'rgba(248,250,252,0.8)'
-          },
-          zlevel: 2,
-          silent: true
+          symbolSize:function(val,params){return params.data.symbolSize || 2;},
+          itemStyle:{color:'rgba(248,250,252,0.8)'},
+          silent:true,
+          zlevel:2
         },
 
-        // 5) KPI 主星
+        // 五颗业务行星
         {
-          type: 'effectScatter',
-          coordinateSystem: 'polar',
-          name: 'KPI Cluster',
-          encode: { radius: 0, angle: 1 },
+          type:'scatter',
+          name:'Planets',
+          coordinateSystem:'polar',
+          data: planetPoints,
+          symbolSize:26,
+          label:{
+            show:true,
+            formatter:'{b}',
+            position:'top',
+            color:'#e5e7eb',
+            fontFamily:'Barlow Condensed',
+            fontSize:14,
+            fontWeight:600
+          },
+          zlevel:4
+        },
+
+        // KPI 星团
+        {
+          type:'effectScatter',
+          name:'KPI Cluster',
+          coordinateSystem:'polar',
           data: clusterPoints,
-          symbolSize: function (val, params) {
-            return params.data.symbolSize || 10;
+          symbolSize:function(val,params){return params.data.symbolSize;},
+          rippleEffect:{
+            scale:2.3,
+            brushType:'stroke',
+            period:12
           },
-          rippleEffect: {
-            brushType: 'stroke',
-            scale: 2.6,
-            period: 10
-          },
-          zlevel: 4
+          zlevel:5
         }
       ]
     };
 
     chart.setOption(option);
 
-    // 极光从中心向外“生长”的入场动画
-    (function animateAurora() {
+    // 极光入场动画
+    (function animateAurora(){
       var start = Date.now();
-      var duration = 1200;
-
-      function frame() {
+      var duration = 1300;
+      function frame(){
         var now = Date.now();
-        var t = (now - start) / duration;
-        if (t > 1) t = 1;
-
-        chart.setOption({
-          series: [{
-            id: 'aurora',
-            data: [t]
-          }]
-        });
-
-        if (t < 1) {
-          requestAnimationFrame(frame);
-        }
+        var t = (now-start)/duration;
+        if (t>1) t=1;
+        chart.setOption({series:[{id:'aurora',data:[t]}]});
+        if (t<1) requestAnimationFrame(frame);
       }
-
       requestAnimationFrame(frame);
     })();
 
-    window.addEventListener('resize', function () {
-      chart.resize();
+    // 右下卡片联动
+    var panel = document.getElementById('detail-panel');
+    chart.on('mouseover', function(params){
+      if (params.seriesName !== 'KPI Cluster' || !params.data || !params.data.info) return;
+      var d = params.data.info;
+      var elVal = document.getElementById('p-val');
+      var elName = document.getElementById('p-name');
+      var elTrend = document.getElementById('p-trend');
+      var elBiz = document.getElementById('p-biz');
+      var elType = document.getElementById('p-type');
+
+      elName.innerText = d.name;
+      elVal.innerText = d.value.toLocaleString();
+      var color = '#e5e7eb';
+      if (d.trend === 'up') color = '#f97316';
+      else if (d.trend === 'down') color = '#3b82f6';
+      elVal.style.color = color;
+
+      elTrend.innerText = d.trend ? d.trend.toUpperCase() : '--';
+      elTrend.style.color = color;
+      elTrend.style.background = d.trend === 'up'
+        ? 'rgba(249,115,22,0.12)'
+        : d.trend === 'down'
+          ? 'rgba(59,130,246,0.12)'
+          : 'rgba(148,163,184,0.15)';
+
+      elBiz.innerText = d.biz;
+      elType.innerText = d.type;
+
+      panel.classList.add('active');
     });
+
+    window.addEventListener('resize', function(){ chart.resize(); });
   </script>
 </body>
 </html>
