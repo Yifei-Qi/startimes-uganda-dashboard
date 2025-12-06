@@ -333,9 +333,9 @@
           同时看到<span style="white-space:nowrap;">「占有率 × 结构优势」</span>。
         </p>
         <ul class="hero-list">
-          <li><strong>2.2.1 市场占有率：</strong>基于 Ipsos NAMS 2023.6 与公司内部估算。</li>
-          <li><strong>2.2.2 SWOT 概览：</strong>悬停运营商或外圈维度，可在下方卡片看到简要 SWOT。</li>
-          <li><strong>2.2.3–2.2.6：</strong>后续小节将分别展开「产品类型与价格带、频道 / 节目包、最优产品、渠道对比」。</li>
+          <li><strong>市场占有率：</strong>基于 Ipsos NAMS 2023.6 与公司内部估算。</li>
+          <li><strong>SWOT 概览：</strong>悬停运营商或外圈维度，可在下方卡片看到简要 SWOT。</li>
+          <li>后续小节将分别展开「产品类型与价格带、频道 / 节目包、最优产品、渠道对比」。</li>
         </ul>
       </div>
 
@@ -565,7 +565,6 @@
   const baseOption = {
     backgroundColor: 'transparent',
     animationDuration: 1100,
-    animationEasing: 'cubicOut',
 
     tooltip: {
       trigger: 'item',
@@ -666,15 +665,6 @@
 
   // 根据当前 viewState + 画布大小，重新计算 center / radius / levels
   function updateLayout() {
-    const w = chart.getWidth();
-    const h = chart.getHeight();
-    const minSide = Math.min(w, h);
-    const baseR = minSide * 0.42 * viewState.scale;
-
-    const baseCx = w * 0.62;
-    const baseCy = h * 0.50;
-    const cx = baseCx + viewState.offsetX;
-    const cy = baseCy + viewState.offsetY;
 
     chart.setOption({
       series: [
