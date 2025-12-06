@@ -39,6 +39,7 @@
       overflow: hidden;
     }
 
+    /* 顶部栏 */
     .top-bar {
       position: fixed;
       inset: 0 0 auto 0;
@@ -121,14 +122,14 @@
       transform: translateY(-2px);
     }
 
-    /* 背景图表容器 */
+    /* 图表容器：铺满背景 */
     #niche-chart {
       position: absolute;
       inset: 0;
       z-index: 1;
     }
 
-    /* 前景文案与右侧卡片 */
+    /* 前景文案层 */
     .panel-layer {
       position: absolute;
       inset: 0;
@@ -187,7 +188,8 @@
       border-left: 3px solid rgba(148,163,184,0.6);
       margin-bottom: 24px;
     }
-    .hero-desc strong { color:#e5e7eb; }
+
+    .hero-desc strong { color:#e5e7eb; font-weight:600; }
 
     .hero-buttons {
       display:flex;
@@ -218,6 +220,7 @@
     }
     .hero-chip.spatial .chip-dot{ background:var(--c-spatial); }
     .hero-chip.market  .chip-dot{ background:var(--c-market); }
+
     .hero-chip:hover{
       border-color:#f9fafb;
       transform:translateY(-1px);
@@ -346,7 +349,7 @@
   <!-- 背景细胞图 -->
   <div id="niche-chart"></div>
 
-  <!-- 文案层 -->
+  <!-- 前景文案层 -->
   <div class="panel-layer">
     <section class="hero-block">
       <div class="hero-tag">NICHE · UGANDA</div>
@@ -359,7 +362,7 @@
         <strong>位置问题</strong>。本页拆成两条主线：<strong>空间生态位</strong> 关注渠道 / 触点与媒体场景的分布；
         <strong>市场生态位</strong> 关注竞争格局、套餐价格与打包方式。中心蓝色节点代表 Niche，
         绿色细胞为 <strong>Spatial Niche</strong>，橙色细胞为 <strong>Market Niche</strong>。
-        可从图中任意节点放大，或进入下一级页面。
+        可从图中主要节点理解结构，再进入下一级页面。
       </div>
       <div class="hero-buttons">
         <a href="./spatial.html" class="hero-chip spatial">
@@ -406,305 +409,317 @@
         <span>Hint</span>
       </div>
       <div class="card-foot-hint">
-        蓝色为核心节点 Niche；绿色细胞为 Spatial Niche 相关类目；
-        橙色细胞为 Market Niche 相关类目。可点击绿色或橙色大节点进入对应下一级页面。
+        蓝色为核心节点 <strong>Niche</strong>；绿色细胞为 <strong>Spatial Niche</strong> 相关类目；
+        橙色细胞为 <strong>Market Niche</strong> 相关类目。当前版本仅作为结构示意，
+        详细渠道与指标在下一级页面中展开。
       </div>
     </aside>
   </div>
 
-  <!-- ECharts & d3-hierarchy -->
+  <!-- 只用 ECharts，不再引入 d3 -->
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/d3-hierarchy@2.0.0/dist/d3-hierarchy.min.js"></script>
-
   <script>
-    window.addEventListener('DOMContentLoaded', function () {
-      var dom = document.getElementById('niche-chart');
-      if (!dom) {
-        console.error('容器 #niche-chart 未找到');
-        return;
-      }
-      var chart = echarts.init(dom);
+    var nicheChart = echarts.init(document.getElementById('niche-chart'));
 
-      // 层级数据
-      const nicheTree = {
+    // 节点数据（不再做层级计算，全部手工配置，保证稳定）
+    const nodes = [
+      // 根节点
+      {
+        id: 'niche-root',
         name: '生态位 · Niche',
-        type: 'root',
-        value: 100,
+        role: 'root',
+        fx: 0,
+        fy: 0,
+        fr: 1.0
+      },
+      // 两个一级细胞
+      {
+        id: 'spatial-main',
+        name: '空间生态位\nSpatial niche',
+        role: 'spatial-main',
+        link: 'spatial.html',
+        fx: -0.34,
+        fy: 0.04,
+        fr: 0.62
+      },
+      {
+        id: 'market-main',
+        name: '市场生态位\nMarket niche',
+        role: 'market-main',
+        link: 'market.html',
+        fx: 0.34,
+        fy: 0.08,
+        fr: 0.58
+      },
+      // Spatial 下的小细胞（示意）
+      {
+        id: 'spatial-offline-visual',
+        name: '线下视觉\nOffline visual',
+        role: 'spatial-sub',
+        fx: -0.60,
+        fy: 0.32,
+        fr: 0.20
+      },
+      {
+        id: 'spatial-offline-audio',
+        name: '线下听觉\nOffline audio',
+        role: 'spatial-sub',
+        fx: -0.40,
+        fy: 0.45,
+        fr: 0.18
+      },
+      {
+        id: 'spatial-online-visual',
+        name: '线上视觉\nOnline visual',
+        role: 'spatial-sub',
+        fx: -0.23,
+        fy: -0.10,
+        fr: 0.18
+      },
+      {
+        id: 'spatial-online-audio',
+        name: '线上听觉\nOnline audio',
+        role: 'spatial-sub',
+        fx: -0.48,
+        fy: -0.25,
+        fr: 0.18
+      },
+      {
+        id: 'spatial-av',
+        name: '视听融合触点\nVisual + audio',
+        role: 'spatial-sub',
+        fx: -0.12,
+        fy: 0.20,
+        fr: 0.18
+      },
+      // Market 下的小细胞（示意：对应 2.2.x）
+      {
+        id: 'market-share',
+        name: '2.2.1\n市场占有率',
+        role: 'market-sub',
+        fx: 0.18,
+        fy: -0.22,
+        fr: 0.18
+      },
+      {
+        id: 'market-swot',
+        name: '2.2.2\nSWOT 分析',
+        role: 'market-sub',
+        fx: 0.52,
+        fy: -0.18,
+        fr: 0.18
+      },
+      {
+        id: 'market-product',
+        name: '2.2.3\n产品类型 / 价格',
+        role: 'market-sub',
+        fx: 0.15,
+        fy: 0.33,
+        fr: 0.18
+      },
+      {
+        id: 'market-package',
+        name: '2.2.4\n频道 & 节目包',
+        role: 'market-sub',
+        fx: 0.48,
+        fy: 0.34,
+        fr: 0.18
+      },
+      {
+        id: 'market-best-offer',
+        name: '2.2.5\n最具竞争力产品',
+        role: 'market-sub',
+        fx: 0.30,
+        fy: 0.56,
+        fr: 0.18
+      },
+      {
+        id: 'market-channel-compare',
+        name: '2.2.6\n渠道对比',
+        role: 'market-sub',
+        fx: 0.66,
+        fy: 0.10,
+        fr: 0.18
+      }
+    ];
+
+    function getNodeStyle(role) {
+      // 统一渐变逻辑：根 = 蓝，Spatial = 绿，Market = 橙，子节点稍淡
+      let fill, stroke, shadow, opacity, lineWidth;
+      if (role === 'root') {
+        fill = new echarts.graphic.RadialGradient(0.5, 0.35, 1, [
+          { offset: 0,   color: '#38bdf8' },
+          { offset: 0.6, color: '#0ea5e9' },
+          { offset: 1,   color: '#0369a1' }
+        ]);
+        stroke = 'rgba(191,219,254,0.95)';
+        shadow = 'rgba(59,130,246,0.95)';
+        opacity = 0.98;
+        lineWidth = 3;
+      } else if (role === 'spatial-main' || role === 'spatial-sub') {
+        fill = new echarts.graphic.RadialGradient(0.5, 0.3, 1, [
+          { offset: 0,   color: '#4ade80' },
+          { offset: 0.7, color: '#22c55e' },
+          { offset: 1,   color: '#15803d' }
+        ]);
+        stroke = 'rgba(187,247,208,0.95)';
+        shadow = 'rgba(34,197,94,0.9)';
+        opacity = role === 'spatial-main' ? 0.95 : 0.92;
+        lineWidth = role === 'spatial-main' ? 2 : 1.2;
+      } else if (role === 'market-main' || role === 'market-sub') {
+        fill = new echarts.graphic.RadialGradient(0.5, 0.3, 1, [
+          { offset: 0,   color: '#fdba74' },
+          { offset: 0.7, color: '#fb923c' },
+          { offset: 1,   color: '#c2410c' }
+        ]);
+        stroke = 'rgba(254,215,170,0.95)';
+        shadow = 'rgba(249,115,22,0.9)';
+        opacity = role === 'market-main' ? 0.95 : 0.92;
+        lineWidth = role === 'market-main' ? 2 : 1.2;
+      } else {
+        fill = 'rgba(15,23,42,0.9)';
+        stroke = 'rgba(148,163,184,0.7)';
+        shadow = 'rgba(15,23,42,0.9)';
+        opacity = 0.9;
+        lineWidth = 1;
+      }
+      return { fill, stroke, shadow, opacity, lineWidth };
+    }
+
+    function renderItem(params, api) {
+      const node = params.data;
+      if (!node) return;
+
+      const w = api.getWidth();
+      const h = api.getHeight();
+
+      const baseR = Math.min(w, h) * 0.38;        // 根节点基准半径
+      const cx0   = w * 0.62;                     // 整个细胞图中心，略偏右
+      const cy0   = h * 0.54;
+
+      const cx = cx0 + node.fx * baseR;
+      const cy = cy0 + node.fy * baseR;
+      const r  = baseR * node.fr;
+
+      const style = getNodeStyle(node.role);
+
+      let fontSize;
+      if (node.role === 'root') {
+        fontSize = Math.max(r / 4, 22);
+      } else if (node.role === 'spatial-main' || node.role === 'market-main') {
+        fontSize = Math.max(r / 4.2, 16);
+      } else {
+        fontSize = Math.max(r / 4.5, 11);
+      }
+
+      return {
+        type: 'group',
         children: [
           {
-            name: '空间生态位 · Spatial niche',
-            type: 'spatial',
-            value: 40,
-            link: 'spatial.html',
-            children: [
-              {
-                name: '线下视觉 · Offline visual',
-                type: 'spatial-offline-visual',
-                value: 10,
-                children: [
-                  { name: '户外大牌 · Outdoor billboard', value: 1 },
-                  { name: '灯杆广告 · Light pole banners', value: 1 },
-                  { name: '营业厅 / 代理商 · Flyers & posters', value: 1 },
-                  { name: '纸媒 & 网媒 · Print & online media', value: 1 }
-                ]
-              },
-              {
-                name: '线下视觉 + 听觉 · Offline visual + audio',
-                type: 'spatial-offline-av',
-                value: 7,
-                children: [
-                  { name: '路演 · Roadshow', value: 1 },
-                  { name: '发布会 · Press conference', value: 1 }
-                ]
-              },
-              {
-                name: '线下听觉 · Offline audio',
-                type: 'spatial-offline-audio',
-                value: 6,
-                children: [
-                  { name: '广播节目 · Radio spots', value: 1 },
-                  { name: '呼叫中心 · Call center / IVR', value: 1 }
-                ]
-              },
-              {
-                name: '线上视觉 · Online visual',
-                type: 'spatial-online-visual',
-                value: 8,
-                children: [
-                  { name: 'EPG 广告 · Opening / zapping / volume bar', value: 1 },
-                  { name: 'OTT 开屏广告 · App splash', value: 1 },
-                  { name: 'Mini banner · 小尺寸横幅', value: 1 }
-                ]
-              },
-              {
-                name: '线上视觉 + 听觉 · Online visual + audio',
-                type: 'spatial-online-av',
-                value: 7,
-                children: [
-                  { name: 'TVC · Promo spots', value: 1 },
-                  { name: '社媒 · Social / Facebook / X', value: 1 },
-                  { name: 'WhatsApp 群发 · Broadcast list', value: 1 }
-                ]
+            type: 'circle',
+            shape: { cx, cy, r },
+            style: {
+              fill: style.fill,
+              stroke: style.stroke,
+              lineWidth: style.lineWidth,
+              shadowBlur: node.role === 'root' ? 90 : 40,
+              shadowColor: style.shadow,
+              opacity: style.opacity
+            },
+            emphasis: {
+              style: {
+                shadowBlur: 110,
+                opacity: 1
               }
-            ]
+            }
           },
           {
-            name: '市场生态位 · Market niche',
-            type: 'market',
-            value: 40,
-            link: 'market.html',
-            children: [
-              { name: '2.2.1 市场占有率 · Market share', value: 4 },
-              { name: '2.2.2 SWOT 分析 · SWOT analysis', value: 4 },
-              { name: '2.2.3 产品类型 / 属性 & 价格对比', value: 4 },
-              { name: '2.2.4 频道类型 / 数量 & 节目包价格对比', value: 4 },
-              { name: '2.2.5 最有竞争力的产品分析', value: 4 },
-              { name: '2.2.6 渠道对比 · Visual & social metrics', value: 4 }
-            ]
+            type: 'text',
+            style: {
+              text: node.name,
+              x: cx,
+              y: cy,
+              fontFamily: 'Barlow Condensed, system-ui',
+              fontSize: fontSize,
+              textAlign: 'center',
+              textVerticalAlign: 'middle',
+              lineHeight: 16,
+              fill: '#f9fafb'
+            }
           }
         ]
       };
+    }
 
-      function buildPackedNodes() {
-        const w = chart.getWidth();
-        const h = chart.getHeight();
-        const boxSize = Math.min(w * 0.8, h * 1.1);
-        const centerX = w * 0.6;
-        const centerY = h * 0.55;
+    const option = {
+      backgroundColor: 'transparent',
+      hoverLayerThreshold: Infinity,
+      tooltip: {
+        trigger: 'item',
+        backgroundColor: 'rgba(15,23,42,0.96)',
+        borderColor: 'rgba(148,163,184,0.6)',
+        borderWidth: 1,
+        padding: 10,
+        textStyle: {
+          fontFamily: 'Barlow, system-ui, -apple-system, BlinkMacSystemFont',
+          fontSize: 11,
+          color: '#e5e7eb'
+        },
+        formatter: function (params) {
+          const d = params.data;
+          if (!d) return '';
+          let line2 = '';
+          if (d.role === 'spatial-main') line2 = '空间生态位 · 渠道 / 触点';
+          else if (d.role === 'market-main') line2 = '市场生态位 · 竞品 / 定价 / 包型';
+          else if (d.role === 'spatial-sub') line2 = 'Spatial Niche 细分渠道';
+          else if (d.role === 'market-sub') line2 = 'Market Niche 细分分析维度';
 
-        const root = d3.hierarchy(nicheTree).sum(d => d.value || 1);
-        d3.pack()
-          .size([boxSize, boxSize])
-          .padding(8)(root);
-
-        const nodes = [];
-        root.descendants().forEach(function (n) {
-          nodes.push({
-            name: n.data.name,
-            depth: n.depth,
-            type: n.data.type || 'leaf',
-            link: n.data.link || null,
-            x: n.x - boxSize / 2 + centerX,
-            y: n.y - boxSize / 2 + centerY,
-            r: n.r
-          });
-        });
-        return nodes;
-      }
-
-      function getNodeStyle(node) {
-        let fill, stroke, glow;
-        const t = node.type;
-        const d = node.depth;
-
-        if (d === 0) {
-          fill = new echarts.graphic.RadialGradient(0.5, 0.35, 1, [
-            { offset: 0,   color: '#38bdf8' },
-            { offset: 0.6, color: '#0ea5e9' },
-            { offset: 1,   color: '#0369a1' }
-          ]);
-          stroke = 'rgba(191,219,254,0.9)';
-          glow   = 'rgba(59,130,246,0.9)';
-        } else if (t === 'spatial') {
-          fill = new echarts.graphic.RadialGradient(0.5, 0.3, 1, [
-            { offset: 0,   color: '#4ade80' },
-            { offset: 0.7, color: '#22c55e' },
-            { offset: 1,   color: '#15803d' }
-          ]);
-          stroke = 'rgba(187,247,208,0.9)';
-          glow   = 'rgba(34,197,94,0.9)';
-        } else if (t === 'market') {
-          fill = new echarts.graphic.RadialGradient(0.5, 0.3, 1, [
-            { offset: 0,   color: '#fdba74' },
-            { offset: 0.7, color: '#fb923c' },
-            { offset: 1,   color: '#c2410c' }
-          ]);
-          stroke = 'rgba(254,215,170,0.9)';
-          glow   = 'rgba(249,115,22,0.9)';
-        } else if (t && t.indexOf('online') === 0) {
-          fill = new echarts.graphic.RadialGradient(0.5, 0.3, 1, [
-            { offset: 0,   color: '#7dd3fc' },
-            { offset: 0.7, color: '#38bdf8' },
-            { offset: 1,   color: '#0f766e' }
-          ]);
-          stroke = 'rgba(191,219,254,0.9)';
-          glow   = 'rgba(56,189,248,0.8)';
-        } else if (t && t.indexOf('offline') === 0) {
-          fill = new echarts.graphic.RadialGradient(0.5, 0.3, 1, [
-            { offset: 0,   color: '#bbf7d0' },
-            { offset: 0.7, color: '#4ade80' },
-            { offset: 1,   color: '#166534' }
-          ]);
-          stroke = 'rgba(220,252,231,0.9)';
-          glow   = 'rgba(34,197,94,0.75)';
-        } else {
-          fill   = 'rgba(15,23,42,0.92)';
-          stroke = 'rgba(148,163,184,0.6)';
-          glow   = 'rgba(15,23,42,0.9)';
+          return (
+            '<div style="font-weight:600;font-size:12px;margin-bottom:3px;">' +
+              d.name.replace('\\n', ' · ') +
+            '</div>' +
+            (line2
+              ? '<div style="color:#9ca3af;">' + line2 + '</div>'
+              : ''
+            ) +
+            (d.link
+              ? '<div style="margin-top:4px;color:#93c5fd;">点击进入下一级页面</div>'
+              : ''
+            )
+          );
         }
-
-        const baseOpacity = d === 0 ? 0.98 : d === 1 ? 0.93 : 0.88;
-
-        return { fill, stroke, glow, opacity: baseOpacity };
-      }
-
-      function render(nodes) {
-        const option = {
-          backgroundColor: 'transparent',
-          hoverLayerThreshold: Infinity,
-          tooltip: {
-            trigger: 'item',
-            backgroundColor: 'rgba(15,23,42,0.95)',
-            borderColor: 'rgba(148,163,184,0.6)',
-            borderWidth: 1,
-            padding: 10,
-            textStyle: {
-              fontFamily: 'Barlow, system-ui, -apple-system, BlinkMacSystemFont',
-              fontSize: 11,
-              color: '#e5e7eb'
-            },
-            formatter: function (p) {
-              const d = p.data;
-              return (
-                '<div style="font-weight:600;font-size:12px;margin-bottom:2px;">' +
-                d.name +
-                '</div>' +
-                (d.type === 'spatial'
-                  ? '<div style="color:#bbf7d0;">空间生态位 · 渠道 / 触点</div>'
-                  : d.type === 'market'
-                  ? '<div style="color:#fed7aa;">市场生态位 · 竞品 / 定价 / 包型</div>'
-                  : ''
-                ) +
-                (d.link
-                  ? '<div style="margin-top:4px;color:#93c5fd;">点击可进入下一级页面</div>'
-                  : ''
-                )
-              );
-            }
+      },
+      series: [
+        {
+          type: 'custom',
+          coordinateSystem: 'none',
+          data: nodes,
+          renderItem: renderItem,
+          emphasis: {
+            focus: 'self',
+            blurScope: 'global'
           },
-          series: [{
-            type: 'custom',
-            coordinateSystem: 'none',
-            data: nodes,
-            zlevel: 1,
-            emphasis: {
-              focus: 'self',
-              blurScope: 'global'
-            },
-            blur: {
-              itemStyle: { opacity: 0.15 }
-            },
-            renderItem: function (params, api) {
-              var node = params.data;
-              if (!node) return;
-              var styleCfg = getNodeStyle(node);
-              var isLeaf = node.depth >= 2;
-
-              return {
-                type: 'group',
-                children: [
-                  {
-                    type: 'circle',
-                    shape: {
-                      cx: node.x,
-                      cy: node.y,
-                      r: node.r
-                    },
-                    style: {
-                      fill: styleCfg.fill,
-                      stroke: styleCfg.stroke,
-                      lineWidth: node.depth === 0 ? 3 : 1.5,
-                      shadowBlur: node.depth === 0 ? 80 : 40,
-                      shadowColor: styleCfg.glow,
-                      opacity: styleCfg.opacity
-                    }
-                  },
-                  {
-                    type: 'text',
-                    style: {
-                      text: isLeaf
-                        ? node.name.split('·')[0]
-                        : node.name,
-                      x: node.x,
-                      y: node.y,
-                      fontFamily: 'Barlow Condensed, system-ui',
-                      fontSize:
-                        node.depth === 0
-                          ? Math.max(node.r / 4, 22)
-                          : node.depth === 1
-                          ? Math.max(node.r / 4.2, 16)
-                          : Math.max(node.r / 4.4, 11),
-                      textAlign: 'center',
-                      textVerticalAlign: 'middle',
-                      lineHeight: 1.2,
-                      fill: '#f9fafb'
-                    }
-                  }
-                ]
-              };
+          blur: {
+            itemStyle: {
+              opacity: 0.18
             }
-          }]
-        };
-
-        chart.setOption(option, true);
-      }
-
-      var nodes = buildPackedNodes();
-      render(nodes);
-
-      chart.on('click', function (p) {
-        if (p.data && p.data.link) {
-          window.location.href = p.data.link;
+          }
         }
-      });
+      ]
+    };
 
-      window.addEventListener('resize', function () {
-        chart.resize();
-        nodes = buildPackedNodes();
-        chart.setOption({
-          series: [{ data: nodes }]
-        });
-      });
+    nicheChart.setOption(option);
+
+    // 点击大节点跳转
+    nicheChart.on('click', function (params) {
+      if (params && params.data && params.data.link) {
+        window.location.href = params.data.link;
+      }
+    });
+
+    // 自适应
+    window.addEventListener('resize', function () {
+      nicheChart.resize();
     });
   </script>
 </body>
