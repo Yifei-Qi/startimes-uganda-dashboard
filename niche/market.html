@@ -41,7 +41,6 @@
       font-family: var(--font-din);
       background: var(--bg-dark);
       color: var(--text-main);
-      /* 星云背景 */
       background-image:
         radial-gradient(circle at 15% 10%, rgba(56,189,248,0.18) 0, transparent 45%),
         radial-gradient(circle at 85% 80%, rgba(168,85,247,0.18) 0, transparent 50%),
@@ -49,7 +48,7 @@
       position: relative;
     }
 
-    /* 顶部导航，与 ecology / niche 对齐 */
+    /* 顶部导航 */
     .top-bar {
       position: fixed;
       inset: 0 0 auto 0;
@@ -129,7 +128,7 @@
       transform:translateY(-2px);
     }
 
-    /* 主布局：左文案 + 右图表 */
+    /* 主布局 */
     .page-layout {
       position:absolute;
       left:0; right:0; top:72px; bottom:0;
@@ -198,7 +197,6 @@
       color:rgba(148,163,184,0.9);
     }
 
-    /* 信息卡片：不会盖住图表，固定在左列 */
     .info-card {
       pointer-events:auto;
       margin-top:8px;
@@ -579,7 +577,6 @@
         color: '#e5e7eb'
       },
       formatter: function (params) {
-        // 内圈：市场份额
         if (params.seriesName === 'Market Share') {
           const b = brandMap[params.name] || {};
           return [
@@ -592,7 +589,6 @@
           ].join('');
         }
 
-        // 外圈：结构维度
         if (params.seriesName === 'Structure') {
           const path = params.treePathInfo || [];
           const brandName = path.length >= 2 ? path[1].name : null;
@@ -617,7 +613,7 @@
         id: 'share',
         name: 'Market Share',
         type: 'pie',
-        radius: [0, 0],      // 布局由 updateLayout 统一计算
+        radius: [0, 0],
         center: [0, 0],
         roseType: 'area',
         itemStyle: {
@@ -628,7 +624,7 @@
           color: '#e5e7eb',
           fontFamily: 'Barlow Condensed, sans-serif',
           fontWeight: 600,
-          fontSize: 13,               // 放大文字
+          fontSize: 13,
           formatter: '{b}\n{d}%'
         },
         labelLine: {
@@ -639,8 +635,7 @@
           name: d.name,
           value: d.value,
           itemStyle: { color: brandColors[d.name] }
-        })
-        )
+        }))
       },
       {
         id: 'structure',
@@ -657,24 +652,58 @@
           color: '#f9fafb',
           fontFamily: 'Barlow Condensed, sans-serif'
         },
-        levels: []  // 具体 r0 / r 在布局函数里设置
+        levels: []
       }
     ]
   };
 
   chart.setOption(baseOption);
 
-  // 根据当前 viewState + 画布大小，重新计算 center / radius / levels
+  // 根据当前视图状态，重新计算布局，避免被画布裁切
   function updateLayout() {
     const w = chart.getWidth();
     const h = chart.getHeight();
     const minSide = Math.min(w, h);
-    const baseR = minSide * 0.42 * viewState.scale;
+    const margin = 24;                  // 画布四周保留的安全边距
 
-    const baseCx = w * 0.62;
-    const baseCy = h * 0.50;
-    const cx = baseCx + viewState.offsetX;
-    const cy = baseCy + viewState.offsetY;
+    // 基准半径（未缩放时）
+    const baseR0 = minSide * 0.40;
+
+    // 理论中心点：不加偏移量
+    const baseCx0 = w * 0.62;
+    const baseCy0 = h * 0.50;
+
+    // 当前可用空间（以理论中心为基准）
+    const maxSpace = Math.min(
+      baseCx0 - margin,
+      baseCy0 - margin,
+      w - baseCx0 - margin,
+      h - baseCy0 - margin
+    );
+
+    // 在不超出画布的前提下允许的最大缩放
+    const maxScaleAllowed = Math.max(0.6, (maxSpace) / (baseR0 * 1.05));
+    if (viewState.scale > maxScaleAllowed) {
+      viewState.scale = maxScaleAllowed;
+    }
+    if (viewState.scale < 0.7) {
+      viewState.scale = 0.7;
+    }
+
+    const baseR = baseR0 * viewState.scale;
+    const outerR = baseR * 1.05;
+
+    // 计算当前半径下，offset 能取的最大范围，保证外圈不越界
+    const maxOffsetRight = w - margin - outerR - baseCx0;
+    const maxOffsetLeft  = margin + outerR - baseCx0;
+    const maxOffsetDown  = h - margin - outerR - baseCy0;
+    const maxOffsetUp    = margin + outerR - baseCy0;
+
+    viewState.offsetX = Math.min(Math.max(viewState.offsetX, maxOffsetLeft),  maxOffsetRight);
+    viewState.offsetY = Math.min(Math.max(viewState.offsetY, maxOffsetUp),    maxOffsetDown);
+
+    const cx = baseCx0 + viewState.offsetX;
+    const cy = baseCy0 + viewState.offsetY;
 
     chart.setOption({
       series: [
@@ -682,7 +711,7 @@
           id: 'share',
           center: [cx, cy],
           radius: [baseR * 0.23, baseR * 0.37],
-          label: { fontSize: 13 }   // 再次保证字体大小
+          label: { fontSize: 13 }
         },
         {
           id: 'structure',
@@ -690,7 +719,7 @@
           radius: [baseR * 0.45, baseR * 1.05],
           label: { fontSize: 12 },
           levels: [
-            {}, // root
+            {},
             {
               r0: baseR * 0.45,
               r:  baseR * 0.65,
@@ -699,7 +728,7 @@
                 borderColor: 'rgba(15,23,42,0.85)'
               },
               label: {
-                fontSize: 18,         // 品牌名更大
+                fontSize: 18,
                 fontWeight: 600,
                 color: '#e5e7eb'
               }
@@ -711,9 +740,7 @@
                 borderWidth: 1,
                 borderColor: 'rgba(15,23,42,0.7)'
               },
-              label: {
-                fontSize: 12
-              }
+              label: { fontSize: 12 }
             }
           ]
         }
@@ -762,19 +789,15 @@
     viewState.offsetX += dx;
     viewState.offsetY += dy;
 
-    const limit = Math.min(chart.getWidth(), chart.getHeight()) * 0.25;
-    viewState.offsetX = Math.max(-limit, Math.min(limit, viewState.offsetX));
-    viewState.offsetY = Math.max(-limit, Math.min(limit, viewState.offsetY));
-
-    updateLayout();
+    updateLayout();      // 在这里做约束，防止被截断
   });
 
   // 滚轮缩放
   chartDom.addEventListener('wheel', function (e) {
     e.preventDefault();
     const delta = e.deltaY > 0 ? -0.08 : 0.08;
-    viewState.scale = Math.max(0.8, Math.min(1.8, viewState.scale + delta));
-    updateLayout();
+    viewState.scale += delta;
+    updateLayout();      // 重新计算半径 + offset 限制
   }, { passive: false });
 
   // 自适应窗口
