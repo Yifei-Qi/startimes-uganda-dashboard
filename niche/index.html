@@ -2,300 +2,556 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <title>生态位 · Niche · StarTimes Uganda</title>
+  <title>Niche · Spatial & Market · StarTimes Uganda</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <!-- 字体：Barlow / JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
   <style>
+    :root {
+      --bg-dark: #050816;
+      --glass-bg: rgba(20, 25, 40, 0.78);
+      --glass-border: rgba(255, 255, 255, 0.18);
+      --glass-shadow: 0 18px 48px rgba(0,0,0,0.9);
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+
+      --c-core:   #38bdf8;
+      --c-space:  #22c55e;
+      --c-market: #f97316;
+
+      --font-din:  'Barlow', sans-serif;
+      --font-cond: 'Barlow Condensed', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont,"SF Pro Text",
-        "Segoe UI", Roboto,"Helvetica Neue", Arial,"Noto Sans SC",sans-serif;
-      background:
-        radial-gradient(circle at top left, rgba(56,189,248,0.26), transparent 55%),
-        radial-gradient(circle at bottom right, rgba(236,72,153,0.32), transparent 55%),
-        #020617;
-      color: #e5e7eb;
-      min-height: 100vh;
+      font-family: var(--font-din);
+      background: var(--bg-dark);
+      color: var(--text-main);
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+      background-image:
+        radial-gradient(circle at 50% 60%, rgba(15,23,42,1) 0%, transparent 80%),
+        radial-gradient(circle at 15% 10%, rgba(56,189,248,0.16) 0%, transparent 45%),
+        radial-gradient(circle at 80% 85%, rgba(249,115,22,0.16) 0%, transparent 50%);
+    }
+
+    /* 顶栏：与 Ecology / Content 保持一致 */
+    .top-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      z-index: 20;
+      background: linear-gradient(to bottom, rgba(5,8,22,0.96), transparent);
+      pointer-events: none;
+    }
+    .brand {
+      pointer-events: auto;
       display: flex;
       flex-direction: column;
     }
-
-    header {
-      padding: 18px 32px 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid rgba(30,64,175,0.5);
-      backdrop-filter: blur(20px);
-      background: linear-gradient(
-        to bottom,
-        rgba(15,23,42,0.96),
-        rgba(15,23,42,0.82),
-        rgba(15,23,42,0.65)
-      );
-    }
-    .brand { display: flex; flex-direction: column; gap: 4px; }
-    .brand-label {
+    .brand-path {
+      font-family: var(--font-cond);
       font-size: 11px;
-      letter-spacing: 0.18em;
+      letter-spacing: 1.5px;
       text-transform: uppercase;
-      color: #64748b;
+      color: #38bdf8;
+      opacity: 0.9;
+      margin-bottom: 4px;
+      font-weight: 600;
     }
     .brand-title {
-      font-size: 22px;
+      font-family: var(--font-cond);
+      font-size: 18px;
       font-weight: 600;
-    }
-    .brand-tagline {
-      font-size: 12px;
-      color: #9ca3af;
-      max-width: 480px;
-    }
-    .back-link {
-      font-size: 12px;
-      color: #e5e7eb;
-      text-decoration: none;
-      padding: 7px 16px;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.55);
-      background: radial-gradient(circle at top left, rgba(56,189,248,0.85), rgba(15,23,42,0.96));
-      box-shadow: 0 0 18px rgba(15,23,42,0.9);
-    }
-
-    main {
-      flex: 1;
-      padding: 20px 28px 24px;
-      display: grid;
-      grid-template-columns: minmax(0, 2.2fr) minmax(0, 1.5fr);
-      gap: 20px;
-    }
-
-    .hero-card {
-      border-radius: 26px;
-      padding: 22px 24px;
-      border: 1px solid rgba(148,163,184,0.45);
-      background:
-        radial-gradient(circle at top right, rgba(56,189,248,0.35), transparent 60%),
-        linear-gradient(135deg, rgba(15,23,42,0.96), rgba(15,23,42,0.86));
-      box-shadow:
-        0 28px 80px rgba(15,23,42,0.95),
-        0 0 0 1px rgba(15,23,42,0.9) inset;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      position: relative;
-      overflow: hidden;
-    }
-    .hero-tag {
-      font-size: 11px;
-      color: #7dd3fc;
+      letter-spacing: 0.6px;
       text-transform: uppercase;
-      letter-spacing: 0.18em;
+      color: #fff;
+    }
+    .top-actions {
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .breadcrumb {
+      pointer-events: auto;
+      font-family: var(--font-cond);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      color: rgba(148,163,184,0.9);
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 12px;
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .crumb-sep    { opacity: 0.6; }
+    .crumb-active { color: #e5e7eb; }
+
+    .back-btn {
+      font-family: var(--font-cond);
+      font-size: 14px;
+      font-weight: 600;
+      padding: 8px 24px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      color: var(--text-main);
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.2);
+      backdrop-filter: blur(12px);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+    }
+    .back-btn:hover {
+      background: #38bdf8;
+      color: #000;
+      border-color: #38bdf8;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(56,189,248,0.45);
+    }
+
+    /* 图表 */
+    #chart-container {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+    }
+
+    /* 浮动文字层 */
+    .panel-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      pointer-events: none;
+      padding: 40px;
+    }
+
+    .hero-text {
+      position: absolute;
+      top: 96px;
+      left: 50px;
+      max-width: 420px;
+      pointer-events: auto;
+      user-select: none;
+      text-shadow: 0 4px 32px rgba(0,0,0,0.9);
+    }
+    .hero-label {
+      font-family: var(--font-cond);
+      font-size: 12px;
+      font-weight: 700;
+      color: #38bdf8;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
     }
     .hero-title {
-      font-size: 24px;
-      font-weight: 600;
-      letter-spacing: 0.04em;
+      font-family: var(--font-cond);
+      font-size: 46px;
+      font-weight: 700;
+      line-height: 0.9;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: -0.5px;
+      background: linear-gradient(180deg, #fff 0%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
     .hero-desc {
-      font-size: 13px;
-      color: #cbd5f5;
-      max-width: 540px;
+      font-size: 14px;
       line-height: 1.7;
+      font-weight: 300;
+      color: var(--text-muted);
+      position: relative;
+      padding-left: 20px;
+      margin-bottom: 20px;
     }
-    .hero-actions {
+    .hero-desc::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 4px;
+      bottom: 4px;
+      width: 4px;
+      background: rgba(148,163,184,0.7);
+      border-radius: 4px;
+    }
+    .hero-tags {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 4px;
-    }
-    .hero-btn {
-      font-size: 12px;
-      padding: 7px 14px;
-      border-radius: 999px;
-      text-decoration: none;
-      border: 1px solid rgba(56,189,248,0.95);
-      color: #0f172a;
-      background: radial-gradient(circle at top left, #38bdf8, #0ea5e9);
-      box-shadow: 0 10px 35px rgba(56,189,248,0.22);
-    }
-    .hero-btn.secondary {
-      border-color: rgba(148,163,184,0.75);
-      background: rgba(15,23,42,0.9);
-      color: #e5e7eb;
-      box-shadow: none;
-    }
-
-    #chart-niche {
-      width: 100%;
-      height: 260px;
-      margin-top: 10px;
-      border-radius: 20px;
-      border: 1px solid rgba(30,64,175,0.6);
-      background: radial-gradient(circle at top, rgba(15,23,42,0.2), rgba(15,23,42,0.95));
-      overflow: hidden;
-    }
-
-    .side-card {
-      border-radius: 26px;
-      padding: 18px 20px;
-      border: 1px solid rgba(148,163,184,0.45);
-      background:
-        radial-gradient(circle at bottom right, rgba(236,72,153,0.26), transparent 60%),
-        linear-gradient(145deg, rgba(15,23,42,0.96), rgba(15,23,42,0.86));
-      box-shadow: 0 22px 70px rgba(15,23,42,0.96);
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .side-title {
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-    .side-section-title {
-      font-size: 12px;
-      font-weight: 600;
-      margin-top: 8px;
-      margin-bottom: 4px;
-      color: #e0f2fe;
-    }
-    .side-text {
-      font-size: 12px;
-      color: #9ca3af;
-      line-height: 1.6;
-    }
-    .side-list {
-      font-size: 12px;
-      color: #cbd5f5;
-      list-style: none;
-      margin-top: 4px;
-    }
-    .side-list li::before {
-      content: '';
-      display: inline-block;
-      width: 5px;
-      height: 5px;
-      border-radius: 999px;
-      margin-right: 6px;
-      background: rgba(56,189,248,0.9);
-    }
-
-    footer {
-      padding: 10px 28px 14px;
+      gap: 8px;
       font-size: 11px;
-      color: #6b7280;
-      border-top: 1px solid rgba(15,23,42,0.95);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .hero-tag {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.92);
+      color: #e5e7eb;
+    }
+
+    /* 右侧毛玻璃卡片 */
+    .glass-card {
+      position: absolute;
+      width: 320px;
+      padding: 26px;
+      border-radius: 28px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: var(--glass-shadow);
+      pointer-events: auto;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.35s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+    .glass-card.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .pos-right {
+      top: 110px;
+      right: 40px;
+    }
+    .card-header {
+      font-family: var(--font-cond);
+      font-size: 13px;
+      font-weight: 700;
+      color: rgba(148,163,184,0.9);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .card-title {
+      font-family: var(--font-cond);
+      font-size: 22px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .card-body {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+    .badge {
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.9);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+    .pill-small {
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.5);
+      background: rgba(15,23,42,0.9);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .card-footer {
+      border-top: 1px solid rgba(148,163,184,0.35);
+      padding-top: 10px;
+      font-size: 11px;
+      color: rgba(148,163,184,0.9);
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    @media (max-width: 960px) {
-      main { grid-template-columns: minmax(0,1fr); padding: 16px 16px 22px; }
-      header { padding: 14px 16px 10px; flex-direction: column; align-items: flex-start; gap: 6px; }
-      .brand-tagline { max-width: none; }
-      #chart-niche { height: 240px; }
+    @media (max-width: 1024px) {
+      body { overflow: auto; }
+      #chart-container { height: 60vh; }
+      .panel-layer { padding: 20px; }
+      .hero-text {
+        position: relative;
+        top: 76px;
+        left: 20px;
+        max-width: none;
+        margin-right: 20px;
+      }
+      .glass-card {
+        position: relative;
+        right: auto;
+        top: auto;
+        margin: 16px 20px 0;
+        width: auto;
+      }
+      .breadcrumb { display: none; }
     }
   </style>
 </head>
 <body>
-  <header>
+
+  <!-- 顶栏 -->
+  <div class="top-bar">
     <div class="brand">
-      <div class="brand-label">MODULE · NICHE</div>
-      <div class="brand-title">生态位 · Niche</div>
-      <div class="brand-tagline">
-        在既有生态之下，定位 StarTimes 在乌干达的空间生态位（渠道触点）与市场生态位（竞品关系）。
-      </div>
+      <div class="brand-path">STARTIMES / UGANDA / NICHE</div>
+      <div class="brand-title">Ecological Niche · 生态位</div>
     </div>
-    <a class="back-link" href="../index.html">返回首页 · DATA SPACE</a>
-  </header>
+    <div class="top-actions">
+      <!-- 返回到宇宙首页（根目录 index.html） -->
+      <a class="back-btn" href="../index.html">Back to Universe</a>
+    </div>
 
-  <main>
-    <section class="hero-card">
-      <div class="hero-tag">SPATIAL & MARKET NICHES</div>
-      <div class="hero-title">从“触点”到“位置”的两层解析</div>
+    <div class="breadcrumb">
+      <span>Data Space</span><span class="crumb-sep">/</span>
+      <span class="crumb-active">Niche</span>
+    </div>
+  </div>
+
+  <!-- 图表 -->
+  <div id="chart-container"></div>
+
+  <!-- 文本与说明层 -->
+  <div class="panel-layer">
+    <section class="hero-text">
+      <div class="hero-label">NICHE · UGANDA</div>
+      <h1 class="hero-title">生态位<br>Niche</h1>
       <p class="hero-desc">
-        空间生态位（Spatial niche）用一张简单的平面把所有渠道放到
-        “线上 / 线下 × 视觉 / 听觉”的坐标系中；市场生态位（Market niche）
-        则把 DSTV、GoTV、AzamTV、ZukuTV 与 StarTimes 关联在同一竞争空间里。
-        两者叠加，你就能看到四达在乌干达真实占据的“位置”。
+        「生态位」回答的问题是：StarTimes 在乌干达整个媒体与娱乐生态里的
+        <strong>位置</strong> 在哪里？这一页拆成两条主线：
+        <strong>空间生态位</strong> 关注触点和渠道布局，
+        <strong>市场生态位</strong> 关注竞争格局与产品对比。
+        点击任意子星球可以进入对应的下一级页面。
       </p>
-
-      <div class="hero-actions">
-        <a class="hero-btn" href="spatial/index.html">空间生态位 · Spatial niche</a>
-        <a class="hero-btn secondary" href="market/index.html">市场生态位 · Market niche</a>
+      <div class="hero-tags">
+        <span class="hero-tag">Spatial Niche · 渠道 / 触点</span>
+        <span class="hero-tag">Market Niche · 竞品 / 定价 / 包型</span>
       </div>
-
-      <div id="chart-niche"></div>
     </section>
 
-    <aside class="side-card">
-      <div class="side-title">空间生态位 · Spatial niche</div>
-      <p class="side-text">
-        用“线上 / 线下 × 视觉 / 听觉”做成一个四象限：
-      </p>
-      <ul class="side-list">
-        <li>线下视觉：户外大牌、灯杆、营业厅代理商、纸媒网媒</li>
-        <li>线上视觉：EPG 开机 / 切台 / 音量条、OTT 开屏、mini banner</li>
-        <li>线上听觉：广播、呼叫中心</li>
-        <li>线上视+听：TVC、社媒、WhatsApp</li>
-        <li>线下视+听：路演、发布会</li>
-      </ul>
-
-      <div class="side-section-title">市场生态位 · Market niche</div>
-      <p class="side-text">
-        这里关注 StarTimes 相对于 DSTV / GoTV / AzamTV / ZukuTV 的竞争位置：
-        市场占有率、产品属性、频道与价格结构，以及各自的渠道设计与社媒声量。
-      </p>
+    <!-- 右侧毛玻璃卡片 -->
+    <aside class="glass-card pos-right" id="detail-panel">
+      <div class="card-header">
+        <span id="p-layer">Niche · Overview</span>
+        <span class="badge" id="p-type">CORE NODE</span>
+      </div>
+      <div class="card-title" id="p-name">生态位 · Niche</div>
+      <div class="card-body" id="p-desc">
+        中心节点代表 StarTimes 在乌干达整体媒体生态中的「位置问题」：
+        一方面，我们通过空间生态位梳理所有线上 / 线下触点；另一方面，
+        通过市场生态位对 DSTV / GOTV / AzamTV / ZukuTV 等进行产品与价格对比。
+      </div>
+      <div class="pill-row" id="p-tags">
+        <span class="pill-small">Touchpoints Map</span>
+        <span class="pill-small">Competitive Landscape</span>
+      </div>
+      <div class="card-footer">
+        <span id="p-hint">提示：点击绿色或橙色节点可跳转。</span>
+        <span id="p-link-label">Target: Spatial & Market</span>
+      </div>
     </aside>
-  </main>
+  </div>
 
-  <footer>
-    <span>StarTimes Uganda · Niche Module</span>
-    <span>Spatial &amp; Market Niches · Channels · Competitors</span>
-  </footer>
-
-  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+  <!-- ECharts -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
   <script>
-    var chart = echarts.init(document.getElementById('chart-niche'));
+    var chart = echarts.init(document.getElementById('chart-container'));
+
+    // 节点元数据
+    var nodesMeta = [
+      {
+        id: 'core',
+        name: '生态位 · Niche',
+        x: 0, y: 0,
+        size: 110,
+        color: 'var(--c-core)',
+        type: 'CORE NODE',
+        layer: 'Niche · Overview',
+        title: '生态位 · Niche',
+        desc: '核心节点：统一思考 StarTimes 在乌干达的「位置问题」。向下拆分为空间生态位（渠道 / 触点）与市场生态位（竞品 / 价格 / 包型）。',
+        tags: ['Positioning', 'Spatial + Market'],
+        link: null
+      },
+      {
+        id: 'spatial',
+        name: '空间生态位 · Spatial niche',
+        x: -260, y: 220,
+        size: 80,
+        color: 'var(--c-space)',
+        type: 'SPATIAL',
+        layer: '2.1 Spatial Niche',
+        title: '空间生态位 · Spatial niche',
+        desc: '围绕「线下 / 线上 × 视觉 / 听觉」四象限梳理 StarTimes 能触达的所有媒介与渠道：户外大牌、灯杆、EPG、TVC、Radio、Roadshow、WhatsApp 群发等。',
+        tags: ['Offline / Online', 'Visual / Audio', 'Touchpoints Map'],
+        link: './spatial.html'
+      },
+      {
+        id: 'market',
+        name: '市场生态位 · Market niche',
+        x: 260, y: 220,
+        size: 80,
+        color: 'var(--c-market)',
+        type: 'MARKET',
+        layer: '2.2 Market Niche',
+        title: '市场生态位 · Market niche',
+        desc: '主要对 DSTV / GOTV / AzamTV / ZukuTV 等竞品做对比：市场占有率、SWOT、节目包与价格、频道数量与结构、最有竞争力的产品及渠道对比等。',
+        tags: ['DSTV / GOTV / Azam / Zuku', 'Bouquets & Pricing', 'SWOT & Share'],
+        link: './market.html'   // 预留，后续你建好页面即可生效
+      }
+    ];
+
+    function cssVar(name) {
+      return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || '#38bdf8';
+    }
+
+    var graphNodes = nodesMeta.map(function(n) {
+      return {
+        id: n.id,
+        name: n.name,
+        x: n.x,
+        y: n.y,
+        fixed: true,
+        symbolSize: n.size,
+        value: 1,
+        itemStyle: {
+          color: cssVar(n.color),
+          shadowBlur: 30,
+          shadowColor: cssVar(n.color),
+          borderColor: 'rgba(15,23,42,0.9)',
+          borderWidth: 2
+        },
+        label: {
+          show: true,
+          position: n.id === 'core' ? 'inside' : 'bottom',
+          distance: n.id === 'core' ? 0 : 12,
+          color: '#f9fafb',
+          fontFamily: 'Barlow Condensed',
+          fontSize: n.id === 'core' ? 20 : 14,
+          fontWeight: 700,
+          lineHeight: 18
+        },
+        meta: n
+      };
+    });
+
+    var links = [
+      { source: 'core', target: 'spatial' },
+      { source: 'core', target: 'market' }
+    ];
+
     var option = {
       backgroundColor: 'transparent',
-      tooltip: { trigger: 'axis' },
-      grid: { left: '10%', right: '6%', top: '10%', bottom: '18%' },
-      xAxis: {
-        type: 'category',
-        data: ['线下视觉','线上视觉','线上听觉','线上视+听','线下视+听'],
-        axisLabel: { color: '#9ca3af', fontSize: 11 },
-        axisLine: { lineStyle: { color: 'rgba(148,163,184,0.6)' } }
-      },
-      yAxis: {
-        type: 'value',
-        name: '示意 · 渠道权重',
-        nameTextStyle: { color: '#9ca3af', fontSize: 11 },
-        axisLabel: { color: '#9ca3af', fontSize: 11 },
-        splitLine: { lineStyle: { color: 'rgba(31,41,55,0.9)' } }
-      },
-      legend: {
-        bottom: 0,
-        textStyle: { color: '#9ca3af', fontSize: 10 }
-      },
       series: [
         {
-          name: 'StarTimes 触点强度（示意）',
-          type: 'bar',
-          data: [88, 92, 60, 80, 72],
-          itemStyle: {
-            borderRadius: [7,7,0,0],
-            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-              { offset: 0, color: 'rgba(56,189,248,0.95)' },
-              { offset: 1, color: 'rgba(56,189,248,0.25)' }
-            ])
+          type: 'graph',
+          layout: 'none',
+          roam: true,
+          focusNodeAdjacency: true,
+          animationDuration: 900,
+          animationEasing: 'cubicOut',
+          data: graphNodes,
+          links: links,
+          lineStyle: {
+            color: 'rgba(148,163,184,0.6)',
+            width: 1.6,
+            curveness: 0.15
+          },
+          emphasis: {
+            lineStyle: {
+              width: 2.2,
+              color: '#e5e7eb'
+            }
           }
         }
       ]
     };
+
     chart.setOption(option);
-    window.addEventListener('resize', function(){ chart.resize(); });
+
+    // 右侧说明面板
+    var panel     = document.getElementById('detail-panel');
+    var elLayer   = document.getElementById('p-layer');
+    var elType    = document.getElementById('p-type');
+    var elName    = document.getElementById('p-name');
+    var elDesc    = document.getElementById('p-desc');
+    var elTagsBox = document.getElementById('p-tags');
+    var elHint    = document.getElementById('p-hint');
+    var elLinkLbl = document.getElementById('p-link-label');
+
+    function updatePanel(meta) {
+      if (!meta) return;
+      elLayer.textContent = meta.layer;
+      elType.textContent  = meta.type;
+      elName.textContent  = meta.title;
+      elDesc.textContent  = meta.desc;
+
+      // tags
+      elTagsBox.innerHTML = '';
+      (meta.tags || []).forEach(function(t) {
+        var span = document.createElement('span');
+        span.className = 'pill-small';
+        span.textContent = t;
+        elTagsBox.appendChild(span);
+      });
+
+      if (meta.link) {
+        elHint.textContent = '点击该节点可跳转到下一级详情页。';
+        elLinkLbl.textContent = 'Link: ' + meta.link;
+      } else {
+        elHint.textContent = '提示：绿色 / 橙色节点为下一级入口。';
+        elLinkLbl.textContent = 'Core: Spatial + Market';
+      }
+
+      panel.classList.add('active');
+    }
+
+    // 默认显示核心节点
+    updatePanel(nodesMeta[0]);
+
+    chart.on('mouseover', function (params) {
+      if (params.data && params.data.meta) {
+        updatePanel(params.data.meta);
+      }
+    });
+
+    chart.on('click', function (params) {
+      if (params.data && params.data.meta && params.data.meta.link) {
+        window.location.href = params.data.meta.link;
+      }
+    });
+
+    window.addEventListener('resize', function () {
+      chart.resize();
+    });
   </script>
 </body>
 </html>
