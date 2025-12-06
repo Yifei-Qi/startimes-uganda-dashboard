@@ -13,17 +13,20 @@
   <style>
     :root {
       --bg-dark: #050816;
-      --glass-bg: rgba(20, 25, 40, 0.78);
+      --glass-bg: rgba(20, 25, 40, 0.80);
       --glass-border: rgba(255, 255, 255, 0.16);
-      --glass-shadow: 0 16px 48px rgba(0, 0, 0, 0.8);
+      --glass-shadow: 0 18px 50px rgba(0, 0, 0, 0.85);
+
       --text-main: #f1f5f9;
       --text-muted: #94a3b8;
 
-      --c-rights:  #38bdf8;
-      --c-local:   #22c55e;
-      --c-sports:  #f97316;
-      --c-kids:    #eab308;
-      --c-bouquet: #ec4899;
+      --c-branch-core:   #38bdf8;
+      --c-branch-rights: #f97316;
+      --c-branch-local:  #22c55e;
+      --c-branch-ott:    #eab308;
+      --c-branch-movie:  #fb7185;
+      --c-branch-kids:   #a855f7;
+      --c-branch-other:  #94a3b8;
 
       --font-din:  'Barlow', sans-serif;
       --font-cond: 'Barlow Condensed', sans-serif;
@@ -41,11 +44,11 @@
       width: 100vw;
       background-image:
         radial-gradient(circle at 50% 60%, rgba(15, 23, 42, 1) 0%, transparent 80%),
-        radial-gradient(circle at 80% 20%, rgba(56, 189, 248, 0.16) 0%, transparent 40%),
-        radial-gradient(circle at 20% 80%, rgba(236, 72, 153, 0.12) 0%, transparent 45%);
+        radial-gradient(circle at 80% 20%, rgba(56, 189, 248, 0.14) 0%, transparent 45%),
+        radial-gradient(circle at 20% 80%, rgba(34, 197, 94, 0.12) 0%, transparent 40%);
     }
 
-    /* 顶栏：与 DVB 页面保持统一 */
+    /* 顶栏：与 DVB 页统一 */
     .top-bar {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -129,7 +132,7 @@
       box-shadow: 0 6px 20px rgba(56,189,248,0.45);
     }
 
-    /* 中心图表容器 */
+    /* 图表容器 */
     #chart-container {
       position: absolute;
       inset: 0;
@@ -140,19 +143,20 @@
     .panel-layer {
       position: absolute;
       inset: 0;
-      padding: 40px;
       z-index: 10;
       pointer-events: none;
+      padding: 40px;
     }
 
-    /* 左上文案 */
+    /* 左侧标题区 */
     .hero-text {
       position: absolute;
       top: 96px;
       left: 50px;
-      max-width: 460px;
+      max-width: 520px;
       pointer-events: auto;
-      text-shadow: 0 4px 30px rgba(0,0,0,0.8);
+      user-select: none;
+      text-shadow: 0 8px 30px rgba(0,0,0,0.9);
     }
     .hero-label {
       font-family: var(--font-cond);
@@ -160,17 +164,20 @@
       font-weight: 700;
       color: #38bdf8;
       margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
       letter-spacing: 1.5px;
       text-transform: uppercase;
     }
     .hero-title {
       font-family: var(--font-cond);
-      font-size: 48px;
+      font-size: 52px;
       font-weight: 700;
-      line-height: 0.92;
+      line-height: 0.9;
+      margin-bottom: 24px;
       text-transform: uppercase;
       letter-spacing: -0.5px;
-      margin-bottom: 18px;
       background: linear-gradient(180deg, #fff 0%, #94a3b8 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -178,9 +185,11 @@
     .hero-desc {
       font-size: 14px;
       line-height: 1.7;
+      font-weight: 300;
       color: var(--text-muted);
       position: relative;
-      padding-left: 18px;
+      padding-left: 22px;
+      margin-bottom: 18px;
     }
     .hero-desc::before {
       content: '';
@@ -188,157 +197,178 @@
       left: 0;
       top: 4px;
       bottom: 4px;
-      width: 3px;
-      border-radius: 999px;
-      background: rgba(148,163,184,0.8);
+      width: 4px;
+      background: rgba(148,163,184,0.7);
+      border-radius: 4px;
     }
 
+    /* 话题标签 / 分栏按钮 */
     .hero-tags {
-      margin-top: 16px;
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-    }
-    .hero-tag {
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 1px;
-      padding: 4px 10px;
+    }
+    .tag-pill {
+      padding: 5px 14px;
       border-radius: 999px;
       border: 1px solid rgba(148,163,184,0.7);
       background: rgba(15,23,42,0.92);
       color: #e5e7eb;
+      pointer-events: auto;
     }
 
-    /* 右侧内容引擎说明卡（毛玻璃） */
+    /* 右侧说明卡：毛玻璃 */
     .glass-card {
       position: absolute;
-      right: 40px;
-      top: 104px;
-      width: 320px;
-      padding: 24px 24px 20px;
+      width: 360px;
+      padding: 26px;
       border-radius: 28px;
       background: var(--glass-bg);
       border: 1px solid var(--glass-border);
-      backdrop-filter: blur(26px);
-      -webkit-backdrop-filter: blur(26px);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
       box-shadow: var(--glass-shadow);
       pointer-events: auto;
+      opacity: 1;
+      right: 40px;
+      top: 110px;
     }
     .card-header {
       font-family: var(--font-cond);
       font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
+      font-weight: 700;
       color: rgba(148,163,184,0.9);
-      margin-bottom: 10px;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
     .card-title {
       font-family: var(--font-cond);
-      font-size: 22px;
+      font-size: 24px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 12px;
       text-transform: uppercase;
-      margin-bottom: 10px;
       letter-spacing: 0.5px;
     }
     .card-body {
-      font-size: 13px;
+      font-size: 12px;
       line-height: 1.6;
       color: var(--text-muted);
-      margin-bottom: 10px;
+      margin-bottom: 14px;
     }
-    .card-pill-row {
-      margin-top: 10px;
+    .card-tags {
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
-      font-size: 11px;
+      gap: 8px;
+      margin-top: 4px;
     }
-    .card-pill {
-      padding: 3px 8px;
+    .card-tag {
+      font-family: var(--font-cond);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 3px 10px;
       border-radius: 999px;
       border: 1px solid rgba(148,163,184,0.7);
       background: rgba(15,23,42,0.95);
+      color: #e5e7eb;
     }
 
-    /* 左下节目包缩略图区：不会遮挡主图 */
-    
-   /* 左下节目包缩略图区：小型毛玻璃卡片，不遮挡主图 */
-.bouquet-strip {
-  position: absolute;
-  left: 40px;
-  bottom: 24px;
-  pointer-events: auto;
-  max-width: 520px;
-}
+    /* 套餐区：两行，DTT / DTH */
+    .bouquet-panel {
+      position: absolute;
+      left: 40px;
+      right: 40px;
+      bottom: 32px;
+      max-width: 760px;
+      pointer-events: auto;
+    }
 
-.bouquet-inner {
-  padding: 10px 14px;
-  border-radius: 22px;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  box-shadow: var(--glass-shadow);
-  display: flex;
-  gap: 16px;
-}
+    .bouquet-row {
+      margin-top: 10px;
+      padding: 10px 14px 12px;
+      border-radius: 24px;
+      background: rgba(15,23,42,0.92);
+      border: 1px solid rgba(148,163,184,0.45);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: 0 14px 40px rgba(0,0,0,0.85);
+    }
 
-.bouquet-column {
-  flex: 1;
-  min-width: 0;
-}
+    .bouquet-row-title {
+      font-family: var(--font-cond);
+      font-size: 11px;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      color: rgba(148,163,184,0.9);
+      margin-bottom: 6px;
+    }
 
-.bouquet-title {
-  font-family: var(--font-cond);
-  font-size: 11px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: rgba(148,163,184,0.9);
-  margin-bottom: 6px;
-}
+    .bouquet-row-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
 
-.bouquet-row {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
+    .bouquet-item {
+      border-radius: 18px;
+      overflow: hidden;
+      background: #020617;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-.bouquet-card {
-  padding: 2px;
-  border-radius: 14px;
-  background: rgba(15,23,42,0.96);
-  border: 1px solid rgba(148,163,184,0.35);
-  box-shadow: 0 6px 18px rgba(0,0,0,0.75);
-}
+    .bouquet-item img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transform: scale(0.9);
+      transform-origin: center;
+    }
 
-.bouquet-card img {
-  display: block;
-  width: 88px;     /* 显著缩小，不再遮住主图 */
-  height: auto;
-  border-radius: 12px;
-}
-
-/* 小屏：节目包排成一列，仍保持小尺寸 */
-@media (max-width: 1024px) {
-  .bouquet-strip {
-    position: relative;
-    left: 0;
-    bottom: 0;
-    margin-top: 18px;
-    max-width: none;
-  }
-  .bouquet-inner {
-    flex-direction: column;
-    gap: 12px;
-  }
-  .bouquet-card img {
-    width: 96px;
-  }
-}
-
+    @media (max-width: 1024px) {
+      body { overflow: auto; }
+      #chart-container { height: 60vh; }
+      .panel-layer {
+        position: relative;
+        inset: auto;
+        padding: 16px 16px 24px;
+      }
+      .hero-text {
+        position: relative;
+        top: auto;
+        left: auto;
+        max-width: none;
+        margin-bottom: 18px;
+      }
+      .glass-card {
+        position: relative;
+        right: auto;
+        top: auto;
+        width: auto;
+        margin-top: 12px;
+      }
+      .bouquet-panel {
+        position: relative;
+        left: auto;
+        right: auto;
+        bottom: auto;
+        max-width: none;
+        margin-top: 16px;
+      }
+      .bouquet-row-grid {
+        grid-template-columns: repeat(2, minmax(0,1fr));
+      }
+      .breadcrumb { display: none; }
+    }
   </style>
 </head>
 <body>
@@ -360,32 +390,31 @@
     </div>
   </div>
 
-  <!-- 背景 ECharts -->
+  <!-- 背景树状图 -->
   <div id="chart-container"></div>
 
-  <!-- 浮动内容层 -->
+  <!-- 文案与前景层 -->
   <div class="panel-layer">
-    <!-- 左上文案 -->
+    <!-- 左侧标题区 -->
     <section class="hero-text">
       <div class="hero-label">CONTENT ENGINE · UGANDA</div>
-      <h1 class="hero-title">From Rights to<br>Local Storytelling</h1>
+      <h1 class="hero-title">FROM RIGHTS TO<br>LOCAL STORYTELLING</h1>
       <p class="hero-desc">
-        这一页不是简单列频道，而是拆解乌干达四达的内容生产链：从
-        <strong>国际版权与本地赛事</strong> 的采购，到
-        <strong>多语种配音、本地化包装</strong>，再到
-        <strong>自办频道与 OTT · Ads 变现</strong>。
-        径向树上的每一层，代表内容从「权利」走向
-        「Luganda 家庭客厅」的一个环节。
+        这一页不是简单列频道，而是拆解乌干达四达的内容生产链：
+        从 <strong>国际版权与本地赛事的采购</strong>，到多语种配音、本地化包装，
+        再到自办频道与 OTT · Ads 变现。径向树上的每一层，代表内容从「权利」走向
+        「Uganda 家庭客厅」的一个环节。
       </p>
+
       <div class="hero-tags">
-        <span class="hero-tag">Luganda / English / Swahili Dubbing</span>
-        <span class="hero-tag">Local Drama &amp; Telenovela</span>
-        <span class="hero-tag">Sports · Kids · News · Religion</span>
-        <span class="hero-tag">DTT / DTH Bouquets · StarTimes ON</span>
+        <span class="tag-pill">Luganda / English / Swahili Dubbing</span>
+        <span class="tag-pill">Local Drama &amp; Telenovela</span>
+        <span class="tag-pill">Sports · Kids · News · Religion</span>
+        <span class="tag-pill">DTT / DTH Bouquets · StarTimes ON</span>
       </div>
     </section>
 
-    <!-- 右侧内容引擎说明 -->
+    <!-- 右侧栈说明卡 -->
     <aside class="glass-card">
       <div class="card-header">
         <span>CONTENT LAYERS</span>
@@ -393,250 +422,275 @@
       </div>
       <div class="card-title">Local Storytelling Stack</div>
       <div class="card-body">
-        树根「Content Engine」代表集团统一的内容中台：上游对接体育、影视、
-        动画等版权，下游拆分到乌干达本地的
-        <strong>自办频道 · 授权频道 · OTT App · 广告位</strong>。
-        中间一圈是本地化工厂：配音、剪辑、包装与播出编排，使内容真正变成
+        树根「Content Engine」代表集团统一的内容中台：
+        上游对接体育、影视、动画等权益，下游拆分到乌干达本地的自办频道·授权频道·OTT
+        App·广告位。中间一圈是本地化工厂：配音、剪辑、包装与排出编排，使内容真正变成
         Luganda 观众听得懂、看得爽的故事。
-      </div>
-      <div class="card-pill-row">
-        <span class="card-pill" style="border-color:var(--c-rights);color:var(--c-rights);">International Rights</span>
-        <span class="card-pill" style="border-color:var(--c-local);color:var(--c-local);">Local Originals &amp; Luganda</span>
-        <span class="card-pill" style="border-color:var(--c-sports);color:var(--c-sports);">Sports Hub</span>
-        <span class="card-pill" style="border-color:var(--c-bouquet);color:var(--c-bouquet);">DTT / DTH / OTT Bouquets</span>
+        <div class="card-tags">
+          <span class="card-tag">International Rights</span>
+          <span class="card-tag">Local Originals &amp; Luganda</span>
+          <span class="card-tag">Sports Hub</span>
+          <span class="card-tag">DTT / DTH / OTT Bouquets</span>
+        </div>
       </div>
     </aside>
 
-    <!-- 左下节目包缩略图 -->
-    <section class="bouquet-strip">
-  <div class="bouquet-inner">
-    <!-- DTT Bouquets 一行小图标 -->
-    <div class="bouquet-column">
-      <div class="bouquet-title">DTT Bouquets · Antenna</div>
+    <!-- 套餐展示：DTT & DTH 各一行，按价格从低到高 -->
+    <section class="bouquet-panel">
+      <!-- DTT 行：14k → 16k → 21k → 36k -->
       <div class="bouquet-row">
-        <!-- 注意：src 路径按你仓库实际路径改 -->
-        <div class="bouquet-card">
-          <img src="../assets/bouquets/dtt-copa-16000.png" alt="DTT Copa 16,000/-">
-        </div>
-        <div class="bouquet-card">
-          <img src="../assets/bouquets/dtt-nova-14000.png" alt="DTT Nova 14,000/-">
-        </div>
-        <div class="bouquet-card">
-          <img src="../assets/bouquets/dtt-basic-21000.png" alt="DTT Basic 21,000/-">
-        </div>
-        <div class="bouquet-card">
-          <img src="../assets/bouquets/dtt-classic-36000.png" alt="DTT Classic 36,000/-">
+        <div class="bouquet-row-title">DTT BOUQUETS · ANTENNA</div>
+        <div class="bouquet-row-grid">
+          <div class="bouquet-item">
+            <img src="../assets/bouquets/dtt-nova-14000.png" alt="DTT Nova 14,000/-">
+          </div>
+          <div class="bouquet-item">
+            <img src="../assets/bouquets/dtt-copa-16000.png" alt="DTT Copa 16,000/-">
+          </div>
+          <div class="bouquet-item">
+            <img src="../assets/bouquets/dtt-basic-21000.png" alt="DTT Basic 21,000/-">
+          </div>
+          <div class="bouquet-item">
+            <img src="../assets/bouquets/dtt-classic-36000.png" alt="DTT Classic 36,000/-">
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- DTH Bouquets 一行小图标 -->
-    <div class="bouquet-column">
-      <div class="bouquet-title">DTH Bouquets · Dish</div>
+      <!-- DTH 行：16k → 21k → 36k → 60k -->
       <div class="bouquet-row">
-        <div class="bouquet-card">
-          <img src="../assets/bouquets/dth-nova-16000.png" alt="DTH Nova 16,000/-">
-        </div>
-        <div class="bouquet-card">
-          <img src="../assets/bouquets/dth-smart-36000.png" alt="DTH Smart 36,000/-">
-        </div>
-        <div class="bouquet-card">
-          <img src="../assets/bouquets/dth-super-60000.png" alt="DTH Super 60,000/-">
-        </div>
-        <div class="bouquet-card">
-          <img src="../assets/bouquets/dth-special-21000.png" alt="DTH Special 21,000/-">
+        <div class="bouquet-row-title">DTH BOUQUETS · DISH</div>
+        <div class="bouquet-row-grid">
+          <div class="bouquet-item">
+            <img src="../assets/bouquets/dth-nova-16000.png" alt="DTH Nova 16,000/-">
+          </div>
+          <div class="bouquet-item">
+            <img src="../assets/bouquets/dth-special-21000.png" alt="DTH Special 21,000/-">
+          </div>
+          <div class="bouquet-item">
+            <img src="../assets/bouquets/dth-smart-36000.png" alt="DTH Smart 36,000/-">
+          </div>
+          <div class="bouquet-item">
+            <img src="../assets/bouquets/dth-super-60000.png" alt="DTH Super 60,000/-">
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-</section>
-
+    </section>
   </div>
 
-  <!-- ECharts：径向内容树 -->
-<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
-<script>
-  // ===== 1. init =====
-  var chart = echarts.init(document.getElementById('chart-container'));
+  <!-- ECharts -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  <script>
+    var chart = echarts.init(document.getElementById('chart-container'));
 
-  // ===== 2. 内容树数据 =====
-  var contentTree = {
-    name: 'Content Engine',
-    desc: '统一处理版权采购、自制、本地化与频道编排的内容中枢。',
-    children: [
-      {
-        name: 'Distribution & Monetisation',
-        desc: '通过 DVB / DTT / DTH / OTT / App 等渠道，把内容变成收视与收入。',
-        children: [
-          {
-            name: 'DTT / DTH / OTT Bouquets',
-            desc: '把多维内容组合成不同价位与定位的节目包：Copa / Nova / Basic / Classic 以及 Nova / Smart / Super / Special 等。'
-          },
-          {
-            name: 'StarTimes ON · OTT',
-            desc: '移动端 OTT 平台，与线性频道联动，支持点播、回看和付费专区。'
-          },
-          {
-            name: 'Ads Inventory',
-            desc: '频道时段、赞助位、开机画面、StarTimes ON 开屏等广告库存。'
-          }
-        ]
-      },
-      {
-        name: 'International Rights',
-        desc: '从国际市场采购体育、影视、少儿等版权作为“上游内容源”。',
-        children: [
-          {
-            name: 'Top Leagues & Global Sports',
-            desc: '五大联赛等高价值体育版权，主要服务体育频道与赛事专栏。'
-          },
-          {
-            name: 'Movies & Series',
-            desc: '国际电影与剧集，用于电影台与综合台编排。'
-          },
-          {
-            name: 'Kids & Animation',
-            desc: '儿童与家庭向的动画、教育内容，为少儿频道提供节目。'
-          }
-        ]
-      },
-      {
-        name: 'African & Local Leagues',
-        desc: '非洲区域与本地联赛资源，构成“非洲体育矩阵”。',
-        children: [
-          {
-            name: 'Ugandan Leagues',
-            desc: '乌干达本地联赛与杯赛，是本地体育内容和球迷粘性的基础。'
-          },
-          {
-            name: 'CECAFA / AFCON Qualifiers',
-            desc: '东中非赛事与国家队预选赛，提升区域影响力。'
-          },
-          {
-            name: 'Other African Domestic Leagues',
-            desc: '其他非洲国家联赛，用于补全 StarTimes 非洲体育布局。'
-          }
-        ]
-      },
-      {
-        name: 'Owned & Local Channels',
-        desc: '乌干达自办频道 + 深度合作频道，把内容打造成“可识别品牌”。',
-        children: [
-          {
-            name: 'Movie / Series Channel',
-            desc: '以非洲与国际剧集为主的电影/连续剧频道，可搭配 Luganda 配音。'
-          },
-          {
-            name: 'Sports Hub (Local + Intl)',
-            desc: '集合本地联赛与国际版权的体育频道，是体育用户的主入口。'
-          }
-        ]
-      },
-      {
-        name: 'Localisation Factory',
-        desc: '把国际内容加工成乌干达本地观众“听得懂、看得爽”的版本。',
-        children: [
-          {
-            name: 'Dubbing & Voice',
-            desc: 'Luganda / English / Swahili 等多语种配音和旁白。'
-          },
-          {
-            name: 'Editing & Packaging',
-            desc: '本地化剪辑、包装、片头片花，让频道风格统一。'
-          },
-          {
-            name: 'Scheduling',
-            desc: '根据收视习惯与分级做排期，衔接节目包和广告资源。'
-          }
-        ]
+    // ===== 分支颜色映射 =====
+    var branchColors = {
+      core:   getComputedStyle(document.documentElement).getPropertyValue('--c-branch-core')   || '#38bdf8',
+      rights: getComputedStyle(document.documentElement).getPropertyValue('--c-branch-rights') || '#f97316',
+      local:  getComputedStyle(document.documentElement).getPropertyValue('--c-branch-local')  || '#22c55e',
+      ott:    getComputedStyle(document.documentElement).getPropertyValue('--c-branch-ott')    || '#eab308',
+      movie:  getComputedStyle(document.documentElement).getPropertyValue('--c-branch-movie')  || '#fb7185',
+      kids:   getComputedStyle(document.documentElement).getPropertyValue('--c-branch-kids')   || '#a855f7',
+      other:  getComputedStyle(document.documentElement).getPropertyValue('--c-branch-other')  || '#94a3b8'
+    };
+
+    // ===== 内容树数据（带 branch 字段） =====
+    var treeData = {
+      name: 'Content Engine',
+      branch: 'core',
+      tooltip: '集团内容中台：聚合国际版权、本地频道与 OTT 资源。',
+      children: [
+        {
+          name: 'Distribution & Monetisation',
+          branch: 'core',
+          tooltip: '内容分发与变现：频道编排、版权售卖、打包成不同套餐。',
+          children: [
+            {
+              name: 'International Rights',
+              branch: 'rights',
+              tooltip: '国际顶级赛事与热门影视剧版权池。',
+              children: [
+                {
+                  name: 'Top Leagues & Global Sports',
+                  branch: 'rights',
+                  tooltip: '欧冠、欧联、WCQ 等高价值体育资产。'
+                },
+                {
+                  name: 'Movies & Series',
+                  branch: 'movie',
+                  tooltip: '海外电影与剧集，补充综合娱乐节目。'
+                },
+                {
+                  name: 'Kids & Animation',
+                  branch: 'kids',
+                  tooltip: '少儿与动漫内容，支撑亲子家庭收视。'
+                }
+              ]
+            },
+            {
+              name: 'Owned & Local Channels',
+              branch: 'local',
+              tooltip: '乌干达本地自办频道与联营频道。',
+              children: [
+                {
+                  name: 'Movie / Series Channel',
+                  branch: 'movie',
+                  tooltip: '以电影和剧集为主的主题频道。'
+                },
+                {
+                  name: 'Sports Hub (Local + Intl)',
+                  branch: 'rights',
+                  tooltip: '本地联赛 + 国际赛事综合体育枢纽频道。'
+                }
+              ]
+            }
+          ]
+        },
+        {
+          name: 'African & Local Leagues',
+          branch: 'local',
+          tooltip: '非洲与本地联赛的整体组合。',
+          children: [
+            {
+              name: 'Uganda League',
+              branch: 'local',
+              tooltip: '乌干达本地足球联赛。'
+            },
+            {
+              name: 'CECAFA / AFCON Qualifiers',
+              branch: 'rights',
+              tooltip: '区域杯赛和非洲杯预选赛。'
+            },
+            {
+              name: 'Other African Domestic Leagues',
+              branch: 'local',
+              tooltip: '其他非洲国家顶级联赛资源。'
+            }
+          ]
+        },
+        {
+          name: 'Localisation Factory',
+          branch: 'core',
+          tooltip: '本地化工厂：配音、剪辑、排期等工作在这里完成。',
+          children: [
+            {
+              name: 'Scheduling',
+              branch: 'core',
+              tooltip: '频道排期与窗口期规划。'
+            },
+            {
+              name: 'Editing & Packaging',
+              branch: 'core',
+              tooltip: '节目的剪辑、包装、版式统一。'
+            },
+            {
+              name: 'Dubbing & Voice',
+              branch: 'core',
+              tooltip: 'Luganda / English / Swahili 多语种配音与本地化旁白。'
+            }
+          ]
+        },
+        {
+          name: 'OTT Bouquets & Ads',
+          branch: 'ott',
+          tooltip: '线上内容分发与广告库存。',
+          children: [
+            {
+              name: 'StarTimes ON · OTT',
+              branch: 'ott',
+              tooltip: 'StarTimes ON App，聚合直播、点播与回放。'
+            },
+            {
+              name: 'Ads Inventory',
+              branch: 'ott',
+              tooltip: 'OTT 广告库存：开机、贴片、Banner 等位。'
+            },
+            {
+              name: 'DTT / DTH / OTT Bouquets',
+              branch: 'rights',
+              tooltip: '将频道打包成 COPA / NOVA / SMART / SUPER 等不同价位套餐。'
+            }
+          ]
+        }
+      ]
+    };
+
+    // 递归为每个节点附加样式（分支颜色 + label 水平）
+    function decorate(node) {
+      var col = branchColors[node.branch] || branchColors.other;
+      node.itemStyle = { color: col };
+      node.lineStyle = { color: col, width: 1.2 };
+      node.label = {
+        position: 'right',
+        verticalAlign: 'middle',
+        align: 'left',
+        rotate: 0,
+        color: '#e5e7eb',
+        fontFamily: 'Barlow Condensed',
+        fontSize: 12
+      };
+      if (node.children && node.children.length) {
+        node.children.forEach(decorate);
       }
-    ]
-  };
+    }
+    decorate(treeData);
 
-  // ===== 3. 配置 =====
-  var option = {
-    backgroundColor: 'transparent',
-    tooltip: {
-      trigger: 'item',
-      confine: true,
-      backgroundColor: 'rgba(15,23,42,0.95)',
-      borderWidth: 0,
-      textStyle: {
-        fontFamily: 'Barlow',
-        fontSize: 12,
-        color: '#e5e7eb'
+    var option = {
+      backgroundColor: 'transparent',
+      tooltip: {
+        trigger: 'item',
+        formatter: function (params) {
+          var d = params.data || {};
+          var name = echarts.format.encodeHTML(d.name || '');
+          var tip  = echarts.format.encodeHTML(d.tooltip || '');
+          if (tip) {
+            return '<strong>' + name + '</strong><br/>' + tip;
+          }
+          return name;
+        }
       },
-      formatter: function (p) {
-        var d = p.data || {};
-        var name = d.name || '';
-        var desc = d.desc || '';
-        if (!name) return '';
-        if (!desc) return name;
-        return name + '<br/>' +
-          '<span style="color:#94a3b8;font-size:11px;line-height:1.6;">' +
-          desc + '</span>';
-      }
-    },
-    series: [
-      {
-        type: 'tree',
-        data: [contentTree],
-
-        layout: 'radial',
-        top: '14%',      // 树整体往上提
-        bottom: '26%',   // 给底部节目包留空间
-        left: '18%',
-        right: '24%',
-
-        roam: true,              // 支持拖拽 + 缩放
-        nodeClick: 'zoomToNode', // 点击节点聚焦
-        initialTreeDepth: 2,
-        animationDuration: 800,
-        animationEasing: 'cubicOut',
-
-        symbol: 'circle',
-        symbolSize: function (value, params) {
-          // 根节点稍大，叶子略小
-          var depth = params.dataIndexPath ? params.dataIndexPath.length : 1;
-          if (depth <= 1) return 12;
-          if (depth === 2) return 10;
-          return 8;
-        },
-        itemStyle: {
-          color: '#38bdf8',
-          borderColor: 'rgba(15,23,42,0.9)',
-          borderWidth: 1.5,
-          shadowBlur: 12,
-          shadowColor: 'rgba(15,23,42,0.9)'
-        },
-        lineStyle: {
-          color: 'rgba(148,163,184,0.7)',
-          width: 1.2,
-          curveness: 0.25
-        },
-        label: {
-          show: true,
-          fontFamily: 'Barlow Condensed',
-          fontSize: 13,
-          color: '#e5e7eb',
-          distance: 8
-        },
-        leaves: {
+      series: [
+        {
+          type: 'tree',
+          layout: 'radial',
+          data: [treeData],
+          top: '10%',
+          bottom: '10%',
+          left: '18%',
+          right: '26%',
+          symbol: 'circle',
+          symbolSize: 6,
+          roam: true,                 // 允许拖拽缩放
+          initialTreeDepth: 3,
+          expandAndCollapse: true,
+          animationDuration: 800,
+          animationEasing: 'cubicOut',
           label: {
-            fontSize: 12,
-            distance: 10
+            rotate: 0,
+            position: 'right',
+            verticalAlign: 'middle',
+            align: 'left',
+            color: '#e5e7eb',
+            fontFamily: 'Barlow Condensed',
+            fontSize: 12
+          },
+          leaves: {
+            label: {
+              rotate: 0,
+              fontSize: 11
+            }
+          },
+          lineStyle: {
+            width: 1.1,
+            curveness: 0.35
           }
         }
-      }
-    ]
-  };
+      ]
+    };
 
-  chart.setOption(option);
-  window.addEventListener('resize', function () {
-    chart.resize();
-  });
-</script>
-
-
+    chart.setOption(option);
+    window.addEventListener('resize', function () {
+      chart.resize();
+    });
+  </script>
 </body>
 </html>
