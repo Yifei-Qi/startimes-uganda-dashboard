@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>Ecology · Content · OTT & Ads · StarTimes Uganda</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- 字体：Barlow / JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: #050816;
+      --glass-bg: rgba(20, 25, 40, 0.68);
+      --glass-border: rgba(255, 255, 255, 0.16);
+      --glass-shadow: 0 14px 46px rgba(0, 0, 0, 0.8);
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+
+      --c-source: #38bdf8;       /* 内容来源层 */
+      --c-local:  #22c55e;       /* 本地化 & 自制层 */
+      --c-dist:   #f97316;       /* 分发 & 节目包层 */
+
+      --font-din:  'Barlow', sans-serif;
+      --font-cond: 'Barlow Condensed', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-din);
+      background: var(--bg-dark);
+      color: var(--text-main);
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+      background-image:
+        radial-gradient(circle at 50% 60%, rgba(15, 23, 42, 1) 0%, transparent 80%),
+        radial-gradient(circle at 80% 20%, rgba(56, 189, 248, 0.14) 0%, transparent 45%),
+        radial-gradient(circle at 20% 80%, rgba(34, 197, 94, 0.12) 0%, transparent 40%);
+    }
+
+    /* 顶栏：与 DVB / Solar 统一 */
+    .top-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      z-index: 20;
+      background: linear-gradient(to bottom, rgba(5,8,22,0.96), transparent);
+      pointer-events: none;
+    }
+    .brand {
+      pointer-events: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .brand-path {
+      font-family: var(--font-cond);
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #38bdf8;
+      opacity: 0.9;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+    .brand-title {
+      font-family: var(--font-cond);
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      color: #fff;
+    }
+
+    .top-actions {
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .breadcrumb {
+      pointer-events: auto;
+      font-family: var(--font-cond);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      color: rgba(148,163,184,0.9);
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 12px;
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .crumb-sep    { opacity: 0.6; }
+    .crumb-active { color: #e5e7eb; }
+
+    .back-btn {
+      font-family: var(--font-cond);
+      font-size: 14px;
+      font-weight: 600;
+      padding: 8px 24px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      color: var(--text-main);
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.2);
+      backdrop-filter: blur(12px);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+    }
+    .back-btn:hover {
+      background: #38bdf8;
+      color: #000;
+      border-color: #38bdf8;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(56,189,248,0.45);
+    }
+
+    /* 中心图表容器 */
+    #chart-container {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+    }
+
+    /* 文本与卡片层 */
+    .panel-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      pointer-events: none;
+      padding: 40px;
+    }
+
+    /* 左侧说明 */
+    .hero-text {
+      position: absolute;
+      top: 96px;
+      left: 50px;
+      max-width: 420px;
+      pointer-events: none;
+      user-select: none;
+      text-shadow: 0 4px 30px rgba(0,0,0,0.8);
+    }
+    .hero-label {
+      font-family: var(--font-cond);
+      font-size: 12px;
+      font-weight: 700;
+      color: #38bdf8;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: 1.5px;
+    }
+    .hero-title {
+      font-family: var(--font-cond);
+      font-size: 46px;
+      font-weight: 700;
+      line-height: 0.9;
+      margin-bottom: 22px;
+      text-transform: uppercase;
+      letter-spacing: -0.5px;
+      background: linear-gradient(180deg, #fff 0%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-desc {
+      font-size: 14px;
+      line-height: 1.6;
+      font-weight: 300;
+      color: var(--text-muted);
+      position: relative;
+      padding-left: 20px;
+      margin-bottom: 20px;
+    }
+    .hero-desc::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 4px;
+      bottom: 4px;
+      width: 4px;
+      background: rgba(148,163,184,0.7);
+      border-radius: 4px;
+    }
+
+    .legend-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.92);
+      color: #e5e7eb;
+    }
+    .pill.source  { border-color: var(--c-source); color: var(--c-source); }
+    .pill.local   { border-color: var(--c-local);  color: var(--c-local);  }
+    .pill.dist    { border-color: var(--c-dist);   color: var(--c-dist);   }
+
+    /* 右侧详情毛玻璃卡片 */
+    .glass-card {
+      position: absolute;
+      width: 320px;
+      padding: 26px 24px 22px;
+      border-radius: 28px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: var(--glass-shadow);
+      pointer-events: auto;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.35s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+    .glass-card.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .pos-right {
+      top: 96px;
+      right: 40px;
+    }
+
+    .card-header {
+      font-family: var(--font-cond);
+      font-size: 13px;
+      font-weight: 700;
+      color: rgba(148,163,184,0.9);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .card-title {
+      font-family: var(--font-cond);
+      font-size: 22px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .metric-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 6px;
+      margin-bottom: 12px;
+      font-size: 12px;
+    }
+    .metric-label {
+      font-family: var(--font-cond);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: rgba(148,163,184,0.9);
+    }
+    .metric-val {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: #e5e7eb;
+    }
+    .card-note {
+      font-size: 12px;
+      line-height: 1.6;
+      color: var(--text-muted);
+      border-top: 1px solid rgba(148,163,184,0.4);
+      padding-top: 10px;
+    }
+
+    /* 底部节目包展示区（毛玻璃） */
+    .bouquet-section {
+      position: absolute;
+      left: 40px;
+      right: 40px;
+      bottom: 26px;
+      pointer-events: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .bouquet-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: rgba(148,163,184,0.8);
+      margin-bottom: 2px;
+    }
+    .bouquet-head span strong {
+      font-family: var(--font-cond);
+      font-size: 13px;
+      color: #e5e7eb;
+      margin-right: 6px;
+    }
+
+    .bouquet-row {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap: 10px;
+    }
+    .bouquet-card {
+      background: var(--glass-bg);
+      border-radius: 18px;
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.8);
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+    .bouquet-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(148,163,184,0.35);
+      box-shadow: 0 16px 40px rgba(15,23,42,0.9);
+    }
+    .bouquet-card img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    @media (max-width: 1024px) {
+      body { overflow: auto; }
+      #chart-container { height: 60vh; }
+      .panel-layer {
+        padding: 24px 16px 120px;
+      }
+      .hero-text {
+        position: relative;
+        top: 76px;
+        left: 0;
+        max-width: none;
+        margin-bottom: 16px;
+      }
+      .hero-title { font-size: 34px; }
+
+      .glass-card.pos-right {
+        position: relative;
+        top: auto; right: auto;
+        width: auto;
+        margin-top: 12px;
+        border-radius: 24px;
+      }
+
+      .bouquet-section {
+        position: relative;
+        left: 0; right: 0; bottom: 0;
+        margin-top: 18px;
+      }
+      .bouquet-row {
+        grid-template-columns: repeat(2, minmax(0,1fr));
+      }
+
+      .breadcrumb { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 顶栏 -->
+  <div class="top-bar">
+    <div class="brand">
+      <div class="brand-path">STARTIMES / UGANDA / ECOLOGY / CONTENT</div>
+      <div class="brand-title">Content · OTT & Ads Ecosystem</div>
+    </div>
+    <div class="top-actions">
+      <a class="back-btn" href="./index.html">Back to Ecology</a>
+    </div>
+
+    <div class="breadcrumb">
+      <span>Data Space</span><span class="crumb-sep">/</span>
+      <span>Ecology</span><span class="crumb-sep">/</span>
+      <span class="crumb-active">Content · OTT & Ads</span>
+    </div>
+  </div>
+
+  <!-- 中心星图 -->
+  <div id="chart-container"></div>
+
+  <!-- 文本与卡片 -->
+  <div class="panel-layer">
+    <!-- 左侧说明 -->
+    <section class="hero-text">
+      <div class="hero-label">CONTENT ENGINE · UGANDA</div>
+      <h1 class="hero-title">From Rights to<br>Local Storytelling</h1>
+      <p class="hero-desc">
+        这一页不是做频道表格，而是拆解乌干达四达的
+        <strong>内容产业生态链</strong>：上游从全球体育版权、电影剧集、少儿、
+        纪录片等内容池采买，中游通过卢干达语配音、本地自制节目和演播室
+        制作，把抽象的版权资产变成「会说 Luganda 的节目 IP」；
+        下游再通过三条乌干达本地频道、DTT/DTH 节目包、OTT 和广告招商
+        等方式分发和变现。
+        悬停星点可以看到每一个环节在这条链条里的功能。
+      </p>
+
+      <div class="legend-pills">
+        <span class="pill source">Global Rights & Input</span>
+        <span class="pill local">Localization & Production</span>
+        <span class="pill dist">Bouquets · Channels · Ads</span>
+      </div>
+    </section>
+
+    <!-- 右侧详情毛玻璃卡片 -->
+    <aside class="glass-card pos-right" id="detail-panel">
+      <div class="card-header">
+        <span id="p-layer">LAYER</span>
+        <span id="p-role">ROLE</span>
+      </div>
+      <div class="card-title" id="p-name">Node Name</div>
+      <div class="metric-row">
+        <div>
+          <div class="metric-label">Key Function / 关键作用</div>
+          <div class="metric-val" id="p-metric">—</div>
+        </div>
+        <div>
+          <div class="metric-label">Notes / 场景说明</div>
+          <div class="metric-val" id="p-extra">—</div>
+        </div>
+      </div>
+      <div class="card-note" id="p-note">
+        悬停或点击星点查看该环节的更多描述；可以拖拽、缩放整张星图理解整体结构。
+      </div>
+    </aside>
+
+    <!-- 底部节目包展示 -->
+    <section class="bouquet-section">
+      <div class="bouquet-head">
+        <span><strong>DTT Bouquets</strong> 乌干达地面数字电视节目包</span>
+        <span>Click for more details · 后续可跳转到 content-bouquets.html</span>
+      </div>
+      <div class="bouquet-row">
+        <!-- 把 src 换成你实际的图片路径和文件名 -->
+        <div class="bouquet-card" onclick="openBouquets()">
+          <img src="../assets/bouquets/dtt-copa-16000.png" alt="COPA 16,000/- DTT">
+        </div>
+        <div class="bouquet-card" onclick="openBouquets()">
+          <img src="../assets/bouquets/dtt-nova-14000.png" alt="NOVA 14,000/- DTT">
+        </div>
+        <div class="bouquet-card" onclick="openBouquets()">
+          <img src="../assets/bouquets/dtt-basic-21000.png" alt="Basic 21,000/- DTT">
+        </div>
+        <div class="bouquet-card" onclick="openBouquets()">
+          <img src="../assets/bouquets/dtt-classic-36000.png" alt="Classic 36,000/- DTT">
+        </div>
+      </div>
+
+      <div class="bouquet-head" style="margin-top:8px;">
+        <span><strong>DTH Bouquets</strong> 卫星节目包</span>
+        <span>Nova / Smart / Super / Special</span>
+      </div>
+      <div class="bouquet-row">
+        <div class="bouquet-card" onclick="openBouquets()">
+          <img src="../assets/bouquets/dth-nova-16000.png" alt="Nova 16,000/- DTH">
+        </div>
+        <div class="bouquet-card" onclick="openBouquets()">
+          <img src="../assets/bouquets/dth-smart-36000.png" alt="Smart 36,000/- DTH">
+        </div>
+        <div class="bouquet-card" onclick="openBouquets()">
+          <img src="../assets/bouquets/dth-super-60000.png" alt="Super 60,000/- DTH">
+        </div>
+        <div class="bouquet-card" onclick="openBouquets()">
+          <img src="../assets/bouquets/dth-special-21000.png" alt="Special 21,000/- DTH">
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ECharts -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  <script>
+    var chart = echarts.init(document.getElementById('chart-container'));
+
+    // 三个层级：内容来源 / 本地化与自制 / 分发与节目包
+    var categories = [
+      { name: 'Global Rights & Input', color: 'var(--c-source)' },
+      { name: 'Localization & Production', color: 'var(--c-local)' },
+      { name: 'Distribution & Monetization', color: 'var(--c-dist)' }
+    ];
+
+    // 节点：这里先做一个结构图，后面你要补充可以继续加节点
+    var nodes = [
+      // 中心枢纽
+      {
+        id: 'contentCore',
+        name: 'Content Engine',
+        category: 1,
+        value: 100,
+        symbolSize: 80,
+        layer: 'Core Hub',
+        role: 'End-to-end Content Engine',
+        metric: '把全球内容资产 → 乌干达本地节目 → 不同节目包/渠道',
+        extra: '规划、采购、编排、营销一体化',
+        note: '乌干达四达内容业务的中枢，统筹版权采购、本地化制作、频道编排、节目包设计与广告资源。'
+      },
+
+      // 上游：内容来源
+      {
+        id: 'sportsRights',
+        name: 'Sports Rights',
+        category: 0,
+        value: 70,
+        symbolSize: 48,
+        layer: 'Source',
+        role: 'Pan-Africa Sports Rights Pool',
+        metric: 'AFCON / 德甲 / 西甲 / CAF & Local Leagues',
+        extra: '统一采购 → 再分发到各国、各频道',
+        note: '体育版权中心统一采购顶级联赛与杯赛，再根据乌干达市场需求编排到 World Football、Sports Premium、Sanyuka Prime 等频道。'
+      },
+      {
+        id: 'moviesSeries',
+        name: 'Movies & Series',
+        category: 0,
+        value: 60,
+        symbolSize: 44,
+        layer: 'Source',
+        role: 'International Movies & Drama',
+        metric: '非洲 / 亚洲 / 拉美长剧 & 电影库',
+        extra: '为 Luganda 配音与本地化提供素材',
+        note: '引进多区域电影和长剧库，部分按地区语言复用，部分进入乌干达本地配音流程，服务 Makula KiKa 等本地频道。'
+      },
+      {
+        id: 'kidsAnimation',
+        name: 'Kids & Animation',
+        category: 0,
+        value: 50,
+        symbolSize: 38,
+        layer: 'Source',
+        role: 'Kids, Education & Animation',
+        metric: '卡通 / 教育节目 / 假期特别编排',
+        extra: '与圣诞档、假期促销联动',
+        note: '面向家庭与儿童的内容资产，用于假期编排和家庭向节目包的价值提升。'
+      },
+
+      // 中游：本地化与自制
+      {
+        id: 'lugandaDub',
+        name: 'Luganda Dubbing',
+        category: 1,
+        value: 65,
+        symbolSize: 46,
+        layer: 'Localization',
+        role: 'Language & Voice Adaptation',
+        metric: '多轨配音：Luganda / English',
+        extra: '国际剧 + 本地配音团队',
+        note: '通过卢干达语配音，把国际剧、电影变成本地观众听得懂、愿意追的内容，是内容差异化的关键。'
+      },
+      {
+        id: 'localProduction',
+        name: 'Local Drama & Shows',
+        category: 1,
+        value: 60,
+        symbolSize: 42,
+        layer: 'Production',
+        role: 'In-house & Co-produced Shows',
+        metric: 'Ugandan drama / talk shows / reality',
+        extra: '如 Makula KiKa 新剧与综艺',
+        note: '本地自制/联制节目（家庭剧、喜剧、女性话题、真人秀等），提升 Ugandan storytelling 比重。'
+      },
+      {
+        id: 'studioSports',
+        name: 'Studio & Live Sports',
+        category: 1,
+        value: 55,
+        symbolSize: 40,
+        layer: 'Production',
+        role: 'UPL + Studio Shows',
+        metric: '本地演播室 + 乌超制作合作',
+        extra: 'Sanyuka Prime / UPL 冠名资源',
+        note: '依托乌干达超级联赛和演播室节目，把本地体育做成频道品牌资产和广告资源。'
+      },
+
+      // 下游：分发与节目包
+      {
+        id: 'makulaKika',
+        name: 'Makula KiKa',
+        category: 2,
+        value: 60,
+        symbolSize: 44,
+        layer: 'Channel',
+        role: 'Luganda Family & Drama Channel',
+        metric: '本地剧 + 新综艺 + 圣诞档新节目',
+        extra: 'X-Mas 新节目：Akajegere / Pink Room / Best Friend',
+        note: '面向城市与城郊家庭的卢干达语本地频道，是自制、本地化剧集与家庭娱乐内容的主阵地。'
+      },
+      {
+        id: 'sanyukaPrime',
+        name: 'Sanyuka Prime',
+        category: 2,
+        value: 58,
+        symbolSize: 42,
+        layer: 'Channel',
+        role: 'Exclusive UPL Sports Channel',
+        metric: '乌干达超级联赛 + 国际足球 + 影视',
+        extra: '卢干达语解说 / 本地男性向',
+        note: '四达独家体育频道，主打乌干达超级联赛和国际足球，配合卢干达语解说和男性向电影纪录片内容。'
+      },
+      {
+        id: 'local3',
+        name: 'Other UG Focused Channels',
+        category: 2,
+        value: 52,
+        symbolSize: 38,
+        layer: 'Channel',
+        role: '3x Uganda-focused Local Brands',
+        metric: '自办/合作本地频道矩阵',
+        extra: '新闻 / 综艺 / 地方文化',
+        note: '乌干达市场的本地向频道组合，与 Makula KiKa、Sanyuka Prime 共同构成「看得到自己」的内容矩阵。'
+      },
+      {
+        id: 'dttBouquets',
+        name: 'DTT Bouquets',
+        category: 2,
+        value: 65,
+        symbolSize: 46,
+        layer: 'Packaging',
+        role: 'COPA / NOVA / BASIC / CLASSIC',
+        metric: '价格梯度 + 频道组合',
+        extra: '与解码器、X-Mas 升包活动绑定',
+        note: '地面数字电视节目包，通过价格带和频道组合覆盖入门到中高端家庭，是内容变现的主力产品形态之一。'
+      },
+      {
+        id: 'dthBouquets',
+        name: 'DTH Bouquets',
+        category: 2,
+        value: 65,
+        symbolSize: 46,
+        layer: 'Packaging',
+        role: 'NOVA / SMART / SUPER / SPECIAL',
+        metric: '偏远地区 + 多家庭电视',
+        extra: '与卫星解码器、促销活动绑定',
+        note: '卫星节目包覆盖更广区域，搭配体育和电影内容，服务农村与跨区域家庭与小商户。'
+      },
+      {
+        id: 'ottAds',
+        name: 'OTT & Ads',
+        category: 2,
+        value: 58,
+        symbolSize: 42,
+        layer: 'Monetization',
+        role: 'StarTimes ON · Sponsorship & Ads',
+        metric: '直播 + 点播 + 品牌赞助',
+        extra: '体育赞助 / 标版 / 植入等',
+        note: '通过 StarTimes ON、频道广告、赞助冠名等方式，把内容进一步拆分为广告位和品牌资产。'
+      }
+    ];
+
+    // 边：大致表示从来源 → 本地化 → 分发的流向
+    var links = [
+      { source: 'sportsRights', target: 'contentCore' },
+      { source: 'moviesSeries', target: 'contentCore' },
+      { source: 'kidsAnimation', target: 'contentCore' },
+
+      { source: 'contentCore', target: 'lugandaDub' },
+      { source: 'contentCore', target: 'localProduction' },
+      { source: 'contentCore', target: 'studioSports' },
+
+      { source: 'lugandaDub', target: 'makulaKika' },
+      { source: 'localProduction', target: 'makulaKika' },
+      { source: 'studioSports', target: 'sanyukaPrime' },
+
+      { source: 'makulaKika', target: 'dttBouquets' },
+      { source: 'sanyukaPrime', target: 'dttBouquets' },
+      { source: 'local3', target: 'dttBouquets' },
+
+      { source: 'makulaKika', target: 'dthBouquets' },
+      { source: 'sanyukaPrime', target: 'dthBouquets' },
+      { source: 'contentCore', target: 'ottAds' },
+      { source: 'dttBouquets', target: 'ottAds' },
+      { source: 'dthBouquets', target: 'ottAds' }
+    ];
+
+    var option = {
+      backgroundColor: 'transparent',
+      series: [
+        {
+          type: 'graph',
+          layout: 'circular',
+          circular: { rotateLabel: true },
+          roam: true,              // 支持拖拽 + 缩放（2.5D 空间感）
+          focusNodeAdjacency: true,
+          animationDuration: 900,
+          animationEasing: 'cubicOut',
+          data: nodes.map(function (n) {
+            var catColor;
+            if (n.category === 0)
+              catColor = getComputedStyle(document.documentElement).getPropertyValue('--c-source') || '#38bdf8';
+            if (n.category === 1)
+              catColor = getComputedStyle(document.documentElement).getPropertyValue('--c-local') || '#22c55e';
+            if (n.category === 2)
+              catColor = getComputedStyle(document.documentElement).getPropertyValue('--c-dist') || '#f97316';
+
+            return Object.assign({}, n, {
+              itemStyle: {
+                color: catColor,
+                borderColor: 'rgba(15,23,42,0.9)',
+                borderWidth: 2,
+                shadowBlur: 24,
+                shadowColor: 'rgba(15,23,42,0.9)'
+              },
+              label: {
+                show: true,
+                color: '#e5e7eb',
+                fontFamily: 'Barlow Condensed',
+                fontWeight: 600,
+                fontSize: 12
+              }
+            });
+          }),
+          links: links,
+          categories: categories.map(function (c) { return { name: c.name }; }),
+          lineStyle: {
+            color: 'rgba(148,163,184,0.6)',
+            width: 1.2,
+            curveness: 0.25
+          },
+          emphasis: {
+            lineStyle: {
+              width: 2,
+              color: '#e5e7eb'
+            }
+          }
+        }
+      ]
+    };
+
+    chart.setOption(option);
+
+    // 右侧详情卡联动
+    var panel   = document.getElementById('detail-panel');
+    var elLayer = document.getElementById('p-layer');
+    var elRole  = document.getElementById('p-role');
+    var elName  = document.getElementById('p-name');
+    var elMet   = document.getElementById('p-metric');
+    var elExt   = document.getElementById('p-extra');
+    var elNote  = document.getElementById('p-note');
+
+    function updatePanel(data) {
+      if (!data) return;
+      elLayer.textContent = (data.layer || 'Layer');
+      elRole.textContent  = data.role || 'Role';
+      elName.textContent  = data.name || 'Node';
+      elMet.textContent   = data.metric || '—';
+      elExt.textContent   = data.extra || '—';
+      elNote.textContent  = data.note || '';
+      panel.classList.add('active');
+    }
+
+    chart.on('click', function (params) {
+      if (params.data && params.data.metric) {
+        updatePanel(params.data);
+      }
+    });
+    chart.on('mouseover', function (params) {
+      if (params.data && params.data.metric) {
+        updatePanel(params.data);
+      }
+    });
+
+    window.addEventListener('resize', function () {
+      chart.resize();
+    });
+
+    // 节目包卡片点击：预留到下一级（比如 content-bouquets.html）
+    function openBouquets() {
+      // 如果后面你单独做一个节目包详情页，把下面这一行改成实际路径即可
+      // location.href = './content-bouquets.html';
+    }
+  </script>
+</body>
+</html>
