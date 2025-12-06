@@ -14,7 +14,6 @@
     :root {
       --bg-dark: #050816;
 
-      /* 与 Ecology 统一的玻璃卡片样式 */
       --glass-bg: rgba(15, 23, 42, 0.88);
       --glass-border: rgba(148, 163, 184, 0.4);
       --glass-shadow: 0 18px 60px rgba(0, 0, 0, 0.85);
@@ -22,10 +21,9 @@
       --text-main: #f9fafb;
       --text-muted: #94a3b8;
 
-      /* 主色与分支色 */
-      --c-root:    #38bdf8; /* 顶部路径、标签、按钮高亮 */
-      --c-spatial: #10b981; /* Spatial Niche */
-      --c-market:  #a855f7; /* Market Niche */
+      --c-root:    #38bdf8;
+      --c-spatial: #10b981;
+      --c-market:  #a855f7;
 
       --font-din:  'Barlow', sans-serif;
       --font-cond: 'Barlow Condensed', sans-serif;
@@ -51,7 +49,7 @@
       position: relative;
     }
 
-    /* 顶部导航栏，与 Ecology 保持一致 */
+    /* 顶部导航栏 */
     .top-bar {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -128,7 +126,6 @@
       transform: translateY(-2px);
     }
 
-    /* 图表容器 */
     #niche-chart {
       position: absolute;
       inset: 0;
@@ -137,7 +134,6 @@
       z-index: 1;
     }
 
-    /* UI 层 */
     .panel-layer {
       position: absolute;
       inset: 0;
@@ -146,7 +142,6 @@
       pointer-events: none;
     }
 
-    /* 左上 Hero 文案，样式对齐 Ecology */
     .hero-text {
       position: absolute;
       top: 110px;
@@ -191,7 +186,6 @@
     }
     .hero-desc strong { color: #f9fafb; font-weight: 500; }
 
-    /* 下级导航 chips，与 Ecology 的 sector-chip 统一风格 */
     .nav-chips { display: flex; gap: 12px; pointer-events: auto; }
     .nav-chip {
       display: inline-flex;
@@ -215,7 +209,6 @@
       width: 8px;
       height: 8px;
       border-radius: 999px;
-      background: #6b7280;
     }
     .nav-chip.spatial .chip-dot { background: var(--c-spatial); }
     .nav-chip.market  .chip-dot { background: var(--c-market); }
@@ -226,7 +219,6 @@
       box-shadow: 0 8px 22px rgba(15,23,42,0.9);
     }
 
-    /* 右下动态详情面板，与 Ecology 统一 */
     .glass-card {
       position: absolute;
       bottom: 50px;
@@ -325,7 +317,7 @@
         图谱分为两大星域：<strong style="color:var(--c-spatial)">Spatial Niche</strong>（空间生态位）关注物理渠道与触点分布；
         <strong style="color:var(--c-market)">Market Niche</strong>（市场生态位）关注竞争格局与产品包型。
         <span style="font-size:12px;opacity:0.6;margin-top:10px;display:block;">
-          * 鼠标悬停查看节点说明，点击核心节点可进入下一级页面。
+          * 鼠标悬停查看节点说明（Niche 根节点除外），点击带链接的节点进入下一级页面。
         </span>
       </div>
       <div class="nav-chips">
@@ -338,7 +330,6 @@
       </div>
     </div>
 
-    <!-- 右下：动态说明卡片 -->
     <div class="glass-card" id="detail-card">
       <div class="card-header">
         <span id="p-role">NODE TYPE</span>
@@ -388,13 +379,11 @@
         fx: 0.34, fy: 0.08, fr: 0.58,
         depth: 1
       },
-      // Spatial 子层
       { id: 's-1', name: 'Offline\nVisual', role: 'spatial-sub', desc: '线下视觉触点：海报、墙体广告、单页等。', fx: -0.60, fy: 0.32, fr: 0.20, depth: 2 },
       { id: 's-2', name: 'Offline\nAudio', role: 'spatial-sub', desc: '线下听觉触点：广播广告、路演活动。', fx: -0.40, fy: 0.45, fr: 0.18, depth: 2 },
       { id: 's-3', name: 'Online\nVisual', role: 'spatial-sub', desc: '线上视觉：社媒图文、App Banner。', fx: -0.23, fy: -0.10, fr: 0.18, depth: 2 },
       { id: 's-4', name: 'Online\nAudio', role: 'spatial-sub', desc: '线上听觉：流媒体音频广告。', fx: -0.48, fy: -0.25, fr: 0.18, depth: 2 },
       { id: 's-5', name: 'Visual+\nAudio', role: 'spatial-sub', desc: '视听融合：电视广告、视频号内容。', fx: -0.12, fy: 0.20, fr: 0.18, depth: 2 },
-      // Market 子层
       { id: 'm-1', name: 'Market\nShare', role: 'market-sub', desc: '市场占有率分析：DTT / DTH 不同区域占比。', fx: 0.18, fy: -0.22, fr: 0.18, depth: 2 },
       { id: 'm-2', name: 'SWOT', role: 'market-sub', desc: '优势、劣势、机会与威胁分析。', fx: 0.52, fy: -0.18, fr: 0.18, depth: 2 },
       { id: 'm-3', name: 'Product\nPrice', role: 'market-sub', desc: '硬件产品线及其定价策略。', fx: 0.15, fy: 0.33, fr: 0.18, depth: 2 },
@@ -409,10 +398,11 @@
       stars.push([Math.random() * 100, Math.random() * 100, Math.random()]);
     }
 
-    // 全局视图状态：实现拖拽位移（初始向右偏移）
+    // 视图状态：拖拽偏移 + 入场进度
     const viewState = {
-      offsetX: 80,  // 初始向右挪一些像素
-      offsetY: 0
+      offsetX: 80,
+      offsetY: 0,
+      enter: 0 // 0~1 入场缩放进度
     };
 
     function getNodeStyle(node) {
@@ -429,8 +419,8 @@
       else if (node.role.includes('market')) baseColor = colors.market;
       else baseColor = colors.dark;
 
-      let opacity = 0.9;
-      if (node.depth === 0) opacity = 0.2;
+      let opacity;
+      if (node.depth === 0) opacity = 0.20;
       else if (node.depth === 1) opacity = 0.6;
       else opacity = 0.85;
 
@@ -455,15 +445,18 @@
 
       const cx = finalCx0 + node.fx * baseR + viewState.offsetX;
       const cy = finalCy0 + node.fy * baseR + viewState.offsetY;
-      const r  = baseR * node.fr * (isMobile ? 0.85 : 1);
+
+      const enter = viewState.enter || 0.001;
+      const rBase = baseR * node.fr * (isMobile ? 0.85 : 1);
+      const r = rBase * enter;
 
       const style = getNodeStyle(node);
 
       let fontSize;
-      if (node.role === 'root') fontSize = r / 3.5;
-      else if (node.role.includes('main')) fontSize = r / 4;
-      else fontSize = r / 4.5;
-      fontSize = Math.max(fontSize, 10);
+      if (node.role === 'root') fontSize = rBase / 3.5;
+      else if (node.role.includes('main')) fontSize = rBase / 4;
+      else fontSize = rBase / 4.5;
+      fontSize = Math.max(fontSize * enter, 10 * enter);
 
       return {
         type: 'group',
@@ -473,19 +466,11 @@
             shape: { cx: cx, cy: cy, r: r },
             style: {
               fill: style.baseColor,
-              fillOpacity: style.opacity * 0.5,
+              fillOpacity: style.opacity * enter,
               stroke: style.baseColor,
               lineWidth: 1.5,
               shadowBlur: 0,
               shadowColor: 'transparent'
-            },
-            emphasis: {
-              style: {
-                fillOpacity: 0.8,
-                lineWidth: 3,
-                shadowBlur: 20,
-                shadowColor: style.baseColor
-              }
             }
           },
           {
@@ -493,7 +478,7 @@
             shape: { cx: cx, cy: cy, r: r * 0.92 },
             style: {
               fill: 'none',
-              stroke: 'rgba(255,255,255,0.12)',
+              stroke: 'rgba(255,255,255,0.12 * enter)',
               lineWidth: 1
             },
             silent: true
@@ -511,6 +496,7 @@
               textVerticalAlign: 'middle',
               lineHeight: fontSize * 1.1,
               fill: '#ffffff',
+              opacity: enter,
               shadowBlur: 2,
               shadowColor: 'rgba(0,0,0,0.85)'
             }
@@ -543,23 +529,29 @@
           coordinateSystem: 'none',
           data: nodes,
           renderItem: renderItem,
-          animationEasing: 'elasticOut',
-          animationDelay: function (idx) { return 80 + idx * 80; },
-          z: 2,
-          emphasis: {
-            focus: 'self',
-            blurScope: 'coordinateSystem'
-          },
-          blur: {
-            itemStyle: {
-              opacity: 0.12
-            }
-          }
+          z: 2
         }
       ]
     };
 
     nicheChart.setOption(option);
+
+    // 入场动效：节点从小到大缩放出现
+    (function runEnterAnimation() {
+      const start = Date.now();
+      const duration = 1100;
+      function frame() {
+        const now = Date.now();
+        let t = (now - start) / duration;
+        if (t > 1) t = 1;
+        viewState.enter = t;
+        nicheChart.setOption({
+          series: [{ id: 'nicheNodes', data: nodes }]
+        }, false);
+        if (t < 1) requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    })();
 
     // 详情面板交互
     const detailCard = document.getElementById('detail-card');
@@ -571,9 +563,17 @@
       statusText: document.getElementById('p-status-text')
     };
 
+    // 悬停：忽略根节点 Niche
     nicheChart.on('mouseover', { seriesIndex: 1 }, function(params) {
       const node = nodes[params.dataIndex];
       if (!node) return;
+
+      if (node.role === 'root') {
+        // 对根节点，移除高亮和信息展示
+        detailCard.classList.remove('active');
+        nicheChart.dispatchAction({ type: 'downplay', seriesIndex: 1 });
+        return;
+      }
 
       els.name.innerText = node.name.replace('\n',' ');
       els.desc.innerText = node.desc || 'No description available.';
@@ -581,8 +581,7 @@
       let roleText = 'SUB NODE';
       let color = '#94a3b8';
 
-      if (node.role === 'root') { roleText = 'CORE NODE';  color = '#06b6d4'; }
-      else if (node.role.includes('spatial')) { roleText = 'SPATIAL'; color = '#10b981'; }
+      if (node.role.includes('spatial')) { roleText = 'SPATIAL'; color = '#10b981'; }
       else if (node.role.includes('market'))  { roleText = 'MARKET';  color = '#a855f7'; }
 
       els.role.innerText = roleText;
@@ -593,15 +592,14 @@
       detailCard.classList.add('active');
     });
 
-    // 点击空白处收起卡片
+    // 点击空白收起
     nicheChart.getZr().on('click', function(e) {
       if (!e.target) {
         detailCard.classList.remove('active');
-        nicheChart.dispatchAction({ type: 'downplay' });
       }
     });
 
-    // 点击节点跳转
+    // 点击节点跳转：根节点无链接
     nicheChart.on('click', { seriesIndex: 1 }, function (params) {
       const node = nodes[params.dataIndex];
       if (node && node.link) {
@@ -609,7 +607,7 @@
       }
     });
 
-    // 背景图表拖拽（移动整个生态位图）
+    // 背景拖拽（移动图）
     (function enableDragging() {
       const zr = nicheChart.getZr();
       let dragging = false;
@@ -635,7 +633,6 @@
         viewState.offsetX += dx;
         viewState.offsetY += dy;
 
-        // 触发重绘（数据不变，只是重新 renderItem）
         nicheChart.setOption({
           series: [{ id: 'nicheNodes', data: nodes }]
         }, false);
