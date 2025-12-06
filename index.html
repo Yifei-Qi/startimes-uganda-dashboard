@@ -308,10 +308,10 @@
         label: {
           show: true,
           fontFamily: 'Barlow Condensed, sans-serif',
-          fontSize: 60,          // 比顶部标题更大
+          fontSize: 40,          // 比顶部标题更大
           fontWeight: 700,
           color: '#ffffff',
-          lineHeight: 120
+          lineHeight: 60
         },
         tooltip: {
           formatter: 'StarTimes Uganda · Market System<br/>整合 Ecology 与 Niche 两大系统的总览入口'
@@ -347,7 +347,7 @@
           name: n.name,
           x: x,
           y: y,
-          symbolSize: minSide * 0.6,   // 略放大
+          symbolSize: minSide * 0.16,   // 略放大
           itemStyle: {
             color: n.color,
             shadowBlur: 40,
@@ -361,7 +361,7 @@
             fontSize: 26,              // 放大标签字号
             fontWeight: 600,
             color: '#ffffff',          // 文字改为白色
-            lineHeight: 40
+            lineHeight: 26
           },
           link: n.link,
           tooltip: { formatter: n.tip },
@@ -549,7 +549,7 @@
     });
 
     window.addEventListener('resize', function () {
-      chart.resize();
+      chart.resize(1.2);
       chart.setOption(buildOption(), true);
     });
   </script>
