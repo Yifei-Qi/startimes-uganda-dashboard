@@ -41,6 +41,7 @@
       font-family: var(--font-din);
       background: var(--bg-dark);
       color: var(--text-main);
+      /* 星云背景 */
       background-image:
         radial-gradient(circle at 15% 10%, rgba(56,189,248,0.18) 0, transparent 45%),
         radial-gradient(circle at 85% 80%, rgba(168,85,247,0.18) 0, transparent 50%),
@@ -48,6 +49,7 @@
       position: relative;
     }
 
+    /* 顶部导航，与 ecology / niche 对齐 */
     .top-bar {
       position: fixed;
       inset: 0 0 auto 0;
@@ -127,6 +129,7 @@
       transform:translateY(-2px);
     }
 
+    /* 主布局：左文案 + 右图表 */
     .page-layout {
       position:absolute;
       left:0; right:0; top:72px; bottom:0;
@@ -195,6 +198,7 @@
       color:rgba(148,163,184,0.9);
     }
 
+    /* 信息卡片：不会盖住图表，固定在左列 */
     .info-card {
       pointer-events:auto;
       margin-top:8px;
@@ -299,6 +303,7 @@
 </head>
 <body>
 
+  <!-- 顶部导航 -->
   <div class="top-bar">
     <div class="brand">
       <div class="brand-path">STARTIMES / UGANDA / NICHE / MARKET</div>
@@ -314,7 +319,9 @@
     <a class="back-btn" href="./index.html">Back to Niche</a>
   </div>
 
+  <!-- 主内容 -->
   <main class="page-layout">
+    <!-- 左侧文案 + 信息卡 -->
     <section class="panel-left">
       <div>
         <div class="hero-label">2.2 MARKET NICHE · PAY TV</div>
@@ -332,6 +339,7 @@
         </ul>
       </div>
 
+      <!-- 动态信息卡 -->
       <div class="info-card" id="info-card">
         <div class="info-header">
           <span id="card-segment">VALUE / MASS MARKET</span>
@@ -361,6 +369,7 @@
       </div>
     </section>
 
+    <!-- 右侧图表 -->
     <section class="panel-right">
       <div id="market-chart"></div>
       <div class="axis-hint">FROM MARKET SHARE → PRODUCT → CHANNELS</div>
@@ -369,6 +378,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
 <script>
+  // ---------- 数据 ----------
   const shareData = [
     { name: 'StarTimes', value: 55 },
     { name: 'GOtv',      value: 16 },
@@ -515,6 +525,7 @@
   const brandMap = {};
   brandStruct.forEach(b => { brandMap[b.name] = b; });
 
+  // 左侧信息卡元素
   const els = {
     seg: document.getElementById('card-segment'),
     pos: document.getElementById('card-position'),
@@ -541,8 +552,10 @@
       els.swot.appendChild(li);
     });
   }
+
   updateCard('StarTimes');
 
+  // 视图状态：缩放 + 平移
   const viewState = {
     scale: 1.15,
     offsetX: 0,
@@ -553,6 +566,7 @@
     backgroundColor: 'transparent',
     animationDuration: 1100,
     animationEasing: 'cubicOut',
+
     tooltip: {
       trigger: 'item',
       backgroundColor: 'rgba(15,23,42,0.96)',
@@ -565,6 +579,7 @@
         color: '#e5e7eb'
       },
       formatter: function (params) {
+        // 内圈：市场份额
         if (params.seriesName === 'Market Share') {
           const b = brandMap[params.name] || {};
           return [
@@ -576,6 +591,8 @@
             '内容 / 频道结构：', b.contentProfile || '--'
           ].join('');
         }
+
+        // 外圈：结构维度
         if (params.seriesName === 'Structure') {
           const path = params.treePathInfo || [];
           const brandName = path.length >= 2 ? path[1].name : null;
@@ -590,15 +607,17 @@
             '定位：', b.position || '--'
           ].join('');
         }
+
         return params.name;
       }
     },
+
     series: [
       {
         id: 'share',
         name: 'Market Share',
         type: 'pie',
-        radius: [0, 0],
+        radius: [0, 0],      // 布局由 updateLayout 统一计算
         center: [0, 0],
         roseType: 'area',
         itemStyle: {
@@ -609,15 +628,19 @@
           color: '#e5e7eb',
           fontFamily: 'Barlow Condensed, sans-serif',
           fontWeight: 600,
-          fontSize: 13,
+          fontSize: 13,               // 放大文字
           formatter: '{b}\n{d}%'
         },
-        labelLine: { length: 10, length2: 10 },
+        labelLine: {
+          length: 10,
+          length2: 10
+        },
         data: shareData.map(d => ({
           name: d.name,
           value: d.value,
           itemStyle: { color: brandColors[d.name] }
-        }))
+        })
+        )
       },
       {
         id: 'structure',
@@ -634,30 +657,24 @@
           color: '#f9fafb',
           fontFamily: 'Barlow Condensed, sans-serif'
         },
-        levels: []
+        levels: []  // 具体 r0 / r 在布局函数里设置
       }
     ]
   };
+
   chart.setOption(baseOption);
 
-  // 放大不再受上限限制，只做一个非常宽松的 offset 限制
+  // 根据当前 viewState + 画布大小，重新计算 center / radius / levels
   function updateLayout() {
     const w = chart.getWidth();
     const h = chart.getHeight();
     const minSide = Math.min(w, h);
+    const baseR = minSide * 0.42 * viewState.scale;
 
-    const baseR0 = minSide * 0.40;        // 基准半径
-    let baseR = baseR0 * viewState.scale;
-    if (baseR < baseR0 * 0.4) baseR = baseR0 * 0.4;   // 只限制缩得不要太小
-
-    // offset 限制与半径无关，只是防止拖得离页面太远
-    const limitX = w;    // 允许平移到画布宽度的范围
-    const limitY = h;
-    viewState.offsetX = Math.max(-limitX, Math.min(limitX, viewState.offsetX));
-    viewState.offsetY = Math.max(-limitY, Math.min(limitY, viewState.offsetY));
-
-    const cx = w * 0.62 + viewState.offsetX;
-    const cy = h * 0.50 + viewState.offsetY;
+    const baseCx = w * 0.62;
+    const baseCy = h * 0.50;
+    const cx = baseCx + viewState.offsetX;
+    const cy = baseCy + viewState.offsetY;
 
     chart.setOption({
       series: [
@@ -665,7 +682,7 @@
           id: 'share',
           center: [cx, cy],
           radius: [baseR * 0.23, baseR * 0.37],
-          label: { fontSize: 13 }
+          label: { fontSize: 13 }   // 再次保证字体大小
         },
         {
           id: 'structure',
@@ -673,7 +690,7 @@
           radius: [baseR * 0.45, baseR * 1.05],
           label: { fontSize: 12 },
           levels: [
-            {},
+            {}, // root
             {
               r0: baseR * 0.45,
               r:  baseR * 0.65,
@@ -682,7 +699,7 @@
                 borderColor: 'rgba(15,23,42,0.85)'
               },
               label: {
-                fontSize: 18,
+                fontSize: 18,         // 品牌名更大
                 fontWeight: 600,
                 color: '#e5e7eb'
               }
@@ -694,26 +711,35 @@
                 borderWidth: 1,
                 borderColor: 'rgba(15,23,42,0.7)'
               },
-              label: { fontSize: 12 }
+              label: {
+                fontSize: 12
+              }
             }
           ]
         }
       ]
     }, false);
   }
+
   updateLayout();
 
+  // 悬停更新左侧信息卡
   chart.on('mouseover', function (params) {
     let brandName = null;
+
     if (params.seriesName === 'Market Share') {
       brandName = params.name;
     } else if (params.seriesName === 'Structure') {
       const path = params.treePathInfo || [];
       if (path.length >= 2) brandName = path[1].name;
     }
-    if (brandName && brandMap[brandName]) updateCard(brandName);
+
+    if (brandName && brandMap[brandName]) {
+      updateCard(brandName);
+    }
   });
 
+  // 拖动平移
   const zr = chart.getZr();
   let isDragging = false;
   let lastX = 0, lastY = 0;
@@ -732,18 +758,26 @@
     const dy = e.offsetY - lastY;
     lastX = e.offsetX;
     lastY = e.offsetY;
+
     viewState.offsetX += dx;
     viewState.offsetY += dy;
+
+    const limit = Math.min(chart.getWidth(), chart.getHeight()) * 0.25;
+    viewState.offsetX = Math.max(-limit, Math.min(limit, viewState.offsetX));
+    viewState.offsetY = Math.max(-limit, Math.min(limit, viewState.offsetY));
+
     updateLayout();
   });
 
+  // 滚轮缩放
   chartDom.addEventListener('wheel', function (e) {
     e.preventDefault();
     const delta = e.deltaY > 0 ? -0.08 : 0.08;
-    viewState.scale = Math.max(0.4, viewState.scale + delta);  // 只设下限
+    viewState.scale = Math.max(0.8, Math.min(1.8, viewState.scale + delta));
     updateLayout();
   }, { passive: false });
 
+  // 自适应窗口
   window.addEventListener('resize', function () {
     chart.resize();
     updateLayout();
