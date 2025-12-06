@@ -565,6 +565,7 @@
   const baseOption = {
     backgroundColor: 'transparent',
     animationDuration: 1100,
+    animationEasing: 'cubicOut',
 
     tooltip: {
       trigger: 'item',
@@ -665,6 +666,15 @@
 
   // 根据当前 viewState + 画布大小，重新计算 center / radius / levels
   function updateLayout() {
+    const w = chart.getWidth();
+    const h = chart.getHeight();
+    const minSide = Math.min(w, h);
+    const baseR = minSide * 0.42 * viewState.scale;
+
+    const baseCx = w * 0.62;
+    const baseCy = h * 0.50;
+    const cx = baseCx + viewState.offsetX;
+    const cy = baseCy + viewState.offsetY;
 
     chart.setOption({
       series: [
@@ -773,6 +783,7 @@
     updateLayout();
   });
 </script>
+
 
 </body>
 </html>
