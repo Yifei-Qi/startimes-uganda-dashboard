@@ -5,7 +5,7 @@
   <title>Spatial Niche · Touchpoint Map · StarTimes Uganda</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- 字体，与其它页面统一 -->
+  <!-- 字体 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -30,7 +30,6 @@
       overflow: hidden;
     }
 
-    /* 顶部导航 */
     .top-bar {
       position: fixed;
       inset: 0 0 auto 0;
@@ -113,7 +112,6 @@
       transform:translateY(-2px);
     }
 
-    /* 布局 */
     #touch-chart {
       position:absolute;
       inset:0;
@@ -274,31 +272,41 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
-  <script>
-    // 注意：这里的 ID 必须和上面的 div 一致 —— 'touch-chart'
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<script>
+  window.addEventListener('DOMContentLoaded', function () {
     var chartDom = document.getElementById('touch-chart');
+    if (!chartDom) {
+      console.error('ECharts 容器 #touch-chart 未找到');
+      return;
+    }
     var chart = echarts.init(chartDom);
 
+    // 触点坐标：略微拉开，减少文字互相遮挡
     var touchpoints = [
-      { name: '户外大牌\nOutdoor billboard',     cat: 'offline-visual',   x: -0.75, y: -0.6 },
-      { name: '灯杆广告\nLight pole banners',    cat: 'offline-visual',   x: -0.6,  y: -0.55 },
-      { name: '营业厅 / 代理商\nFlyers & posters', cat: 'offline-visual', x: -0.55, y: -0.7 },
-      { name: '纸媒 & 网媒\nPrint & online media', cat: 'offline-visual', x: -0.4,  y: -0.5 },
+      // 线下视觉：Offline · Visual（绿色）
+      { name: '户外大牌\nOutdoor billboard',         cat: 'offline-visual',   x: -0.8,  y: -0.55 },
+      { name: '灯杆广告\nLight pole banners',        cat: 'offline-visual',   x: -0.65, y: -0.65 },
+      { name: '营业厅 / 代理商\nFlyers & posters',   cat: 'offline-visual',   x: -0.55, y: -0.45 },
+      { name: '纸媒 & 网媒\nPrint & online media',   cat: 'offline-visual',   x: -0.35, y: -0.55 },
 
-      { name: '路演\nRoadshow',                 cat: 'offline-av',       x: -0.15, y:  0.02 },
-      { name: '发布会\nPress conference',       cat: 'offline-av',       x: -0.03, y:  0.02 },
+      // 线下视觉 + 听觉：Offline · Visual + Audio（橙色），放在横轴稍微错开
+      { name: '路演\nRoadshow',                     cat: 'offline-av',       x: -0.15, y:  0.03 },
+      { name: '发布会\nPress conference',           cat: 'offline-av',       x:  0.02,  y: -0.03 },
 
-      { name: '广播节目\nRadio spots',          cat: 'offline-audio',    x: -0.25, y:  0.55 },
-      { name: '呼叫中心\nCall center / IVR',    cat: 'offline-audio',    x: -0.1,  y:  0.65 },
+      // 线下听觉：Offline · Audio（紫色）
+      { name: '广播节目\nRadio spots',              cat: 'offline-audio',    x: -0.3,  y:  0.55 },
+      { name: '呼叫中心\nCall center / IVR',        cat: 'offline-audio',    x: -0.1,  y:  0.7  },
 
+      // 线上视觉：Online · Visual（蓝色）
       { name: 'EPG 广告\nOpening / zapping / volume bar', cat: 'online-visual', x: 0.55, y: -0.45 },
-      { name: 'OTT 开屏广告\nApp splash',       cat: 'online-visual',    x: 0.7,  y: -0.35 },
-      { name: 'Mini banner\n小尺寸横幅',         cat: 'online-visual',    x: 0.8,  y: -0.25 },
+      { name: 'OTT 开屏广告\nApp splash',           cat: 'online-visual',    x: 0.72, y: -0.35 },
+      { name: 'Mini banner\n小尺寸横幅',             cat: 'online-visual',    x: 0.85, y: -0.25 },
 
-      { name: 'TVC\nPromo spots',               cat: 'online-av',        x: 0.35, y:  0.02 },
-      { name: '社媒\nSocial / Facebook / X',     cat: 'online-av',        x: 0.55, y:  0.02 },
-      { name: 'WhatsApp 群发\nBroadcast list',   cat: 'online-av',        x: 0.8,  y:  0.02 }
+      // 线上视觉 + 听觉：Online · Visual + Audio（粉红），同样在横轴附近稍错开
+      { name: 'TVC\nPromo spots',                   cat: 'online-av',        x: 0.32, y:  0.04 },
+      { name: '社媒\nSocial / Facebook / X',         cat: 'online-av',        x: 0.55, y: -0.04 },
+      { name: 'WhatsApp 群发\nBroadcast list',       cat: 'online-av',        x: 0.8,  y:  0.05 }
     ];
 
     var catStyle = {
@@ -378,8 +386,8 @@
 
           var pos = [];
           pos.push(x < 0 ? 'Offline' : 'Online');
-          if (y > 0.2) pos.push('Audio');
-          else if (y < -0.2) pos.push('Visual');
+          if (y > 0.25) pos.push('Audio');
+          else if (y < -0.25) pos.push('Visual');
           else pos.push('Audio + Visual');
 
           return (
@@ -395,6 +403,7 @@
         }
       },
       series: [
+        // 坐标轴 + 四个箭头 + 端点文字
         {
           type: 'custom',
           coordinateSystem: 'cartesian2d',
@@ -402,25 +411,28 @@
           silent: true,
           zlevel: 1,
           renderItem: function (params, api) {
-            var xLeft  = api.coord([-1, 0]);
-            var xRight = api.coord([ 1, 0]);
-            var yBottom= api.coord([ 0,-1]);
-            var yTop   = api.coord([ 0, 1]);
-            var arrow = 10;
+            var xLeft   = api.coord([-1, 0]);
+            var xRight  = api.coord([ 1, 0]);
+            var yBottom = api.coord([ 0,-1]);
+            var yTop    = api.coord([ 0, 1]);
+            var arrow   = 10;
 
             return {
               type: 'group',
               children: [
+                // 横轴
                 {
                   type: 'line',
                   shape: { x1: xLeft[0], y1: xLeft[1], x2: xRight[0], y2: xRight[1] },
                   style: { stroke: 'rgba(148,163,184,0.9)', lineWidth: 1.3 }
                 },
+                // 纵轴
                 {
                   type: 'line',
                   shape: { x1: yBottom[0], y1: yBottom[1], x2: yTop[0], y2: yTop[1] },
                   style: { stroke: 'rgba(148,163,184,0.9)', lineWidth: 1.3 }
                 },
+                // 右箭头（Online）
                 {
                   type: 'polygon',
                   shape: {
@@ -432,6 +444,19 @@
                   },
                   style: { fill: 'rgba(148,163,184,0.9)' }
                 },
+                // 左箭头（Offline）
+                {
+                  type: 'polygon',
+                  shape: {
+                    points: [
+                      [xLeft[0], xLeft[1]],
+                      [xLeft[0] + arrow, xLeft[1] - arrow * 0.5],
+                      [xLeft[0] + arrow, xLeft[1] + arrow * 0.5]
+                    ]
+                  },
+                  style: { fill: 'rgba(148,163,184,0.9)' }
+                },
+                // 上箭头（Audio）
                 {
                   type: 'polygon',
                   shape: {
@@ -443,12 +468,25 @@
                   },
                   style: { fill: 'rgba(148,163,184,0.9)' }
                 },
+                // 下箭头（Visual）
+                {
+                  type: 'polygon',
+                  shape: {
+                    points: [
+                      [yBottom[0], yBottom[1]],
+                      [yBottom[0] - arrow * 0.5, yBottom[1] - arrow],
+                      [yBottom[0] + arrow * 0.5, yBottom[1] - arrow]
+                    ]
+                  },
+                  style: { fill: 'rgba(148,163,184,0.9)' }
+                },
+                // 轴端文字
                 {
                   type: 'text',
                   style: {
                     text: 'OFFLINE',
                     x: xLeft[0] - 6,
-                    y: xLeft[1] + 18,
+                    y: xLeft[1] + 20,
                     textAlign: 'right',
                     textVerticalAlign: 'middle',
                     fontFamily: 'Barlow Condensed',
@@ -462,7 +500,7 @@
                   style: {
                     text: 'ONLINE',
                     x: xRight[0] + 6,
-                    y: xRight[1] + 18,
+                    y: xRight[1] + 20,
                     textAlign: 'left',
                     textVerticalAlign: 'middle',
                     fontFamily: 'Barlow Condensed',
@@ -476,7 +514,7 @@
                   style: {
                     text: 'VISUAL',
                     x: yBottom[0] - 6,
-                    y: yBottom[1] + 18,
+                    y: yBottom[1] + 22,
                     textAlign: 'right',
                     textVerticalAlign: 'middle',
                     fontFamily: 'Barlow Condensed',
@@ -490,7 +528,7 @@
                   style: {
                     text: 'AUDIO',
                     x: yTop[0] - 6,
-                    y: yTop[1] - 18,
+                    y: yTop[1] - 20,
                     textAlign: 'right',
                     textVerticalAlign: 'middle',
                     fontFamily: 'Barlow Condensed',
@@ -503,34 +541,54 @@
             };
           }
         },
+        // 触点：行星扩散光晕 + 更大的文字
         {
-          type: 'scatter',
+          type: 'effectScatter',
           data: scatterData,
-          symbolSize: 14,
+          symbolSize: 16,
           zlevel: 2,
+          rippleEffect: {
+            scale: 2.3,
+            brushType: 'stroke',
+            period: 10
+          },
           label: {
             show: true,
-            position: 'right',
-            formatter: '{b}',
             color: '#e5e7eb',
             fontFamily: 'Barlow, -apple-system, system-ui',
-            fontSize: 11
+            fontSize: 13,
+            formatter: '{b}',
+            // 文字位置：根据是否落在横轴 / 纵轴上自动调整
+            position: function (param) {
+              var v = param.data.value || [];
+              var x = v[0], y = v[1];
+              // 接近横轴
+              if (Math.abs(y) < 0.03) {
+                return x >= 0 ? 'top' : 'bottom';
+              }
+              // 接近纵轴
+              if (Math.abs(x) < 0.03) {
+                return y >= 0 ? 'right' : 'left';
+              }
+              // 其他情况：默认靠右
+              return 'right';
+            }
           },
           itemStyle: {
             borderWidth: 0,
-            shadowBlur: 10,
-            shadowColor: 'rgba(15,23,42,0.9)'
+            shadowBlur: 18,
+            shadowColor: 'rgba(15,23,42,0.95)'
           }
         }
       ]
     };
 
     chart.setOption(option);
-
     window.addEventListener('resize', function () {
       chart.resize();
     });
-  </script>
+  });
+</script>
 
 </body>
 </html>
