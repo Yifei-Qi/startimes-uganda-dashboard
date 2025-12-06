@@ -1,3 +1,503 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>Niche · Spatial Touchpoints · StarTimes Uganda</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- 字体统一：Barlow / JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: #050816;
+      --glass-bg: rgba(20, 25, 40, 0.78);
+      --glass-border: rgba(255, 255, 255, 0.16);
+      --glass-shadow: 0 18px 48px rgba(0,0,0,0.85);
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+
+      --c-offline: #22c55e;
+      --c-online:  #38bdf8;
+      --c-av:      #f97316;
+      --c-audio:   #eab308;
+
+      --font-din:  'Barlow', sans-serif;
+      --font-cond: 'Barlow Condensed', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-din);
+      background: var(--bg-dark);
+      color: var(--text-main);
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+      background-image:
+        radial-gradient(circle at 50% 60%, rgba(15, 23, 42, 1) 0%, transparent 80%),
+        radial-gradient(circle at 20% 10%, rgba(56, 189, 248, 0.18) 0%, transparent 45%),
+        radial-gradient(circle at 80% 85%, rgba(34, 197, 94, 0.16) 0%, transparent 50%);
+    }
+
+    /* 顶栏：同 DVB / CONTENT 风格 */
+    .top-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      z-index: 20;
+      background: linear-gradient(to bottom, rgba(5,8,22,0.96), transparent);
+      pointer-events: none;
+    }
+    .brand {
+      pointer-events: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .brand-path {
+      font-family: var(--font-cond);
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #38bdf8;
+      opacity: 0.9;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+    .brand-title {
+      font-family: var(--font-cond);
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      color: #fff;
+    }
+    .top-actions {
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .breadcrumb {
+      pointer-events: auto;
+      font-family: var(--font-cond);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      color: rgba(148,163,184,0.9);
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 12px;
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .crumb-sep    { opacity: 0.6; }
+    .crumb-active { color: #e5e7eb; }
+
+    .back-btn {
+      font-family: var(--font-cond);
+      font-size: 14px;
+      font-weight: 600;
+      padding: 8px 24px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      color: var(--text-main);
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.2);
+      backdrop-filter: blur(12px);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+    }
+    .back-btn:hover {
+      background: #38bdf8;
+      color: #000;
+      border-color: #38bdf8;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(56,189,248,0.45);
+    }
+
+    /* 中心图表 */
+    #chart-container {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+    }
+
+    /* 文本与面板层 */
+    .panel-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      pointer-events: none;
+      padding: 40px;
+    }
+
+    .hero {
+      position: absolute;
+      top: 96px;
+      left: 50px;
+      max-width: 420px;
+      pointer-events: auto;
+      user-select: none;
+      text-shadow: 0 4px 32px rgba(0,0,0,0.9);
+    }
+    .hero-label {
+      font-family: var(--font-cond);
+      font-size: 12px;
+      font-weight: 700;
+      color: #38bdf8;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: 1.5px;
+    }
+    .hero-title {
+      font-family: var(--font-cond);
+      font-size: 46px;
+      font-weight: 700;
+      line-height: 0.9;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: -0.5px;
+      background: linear-gradient(180deg, #fff 0%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-desc {
+      font-size: 14px;
+      line-height: 1.7;
+      font-weight: 300;
+      color: var(--text-muted);
+      position: relative;
+      padding-left: 20px;
+      margin-bottom: 20px;
+    }
+    .hero-desc::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 4px;
+      bottom: 4px;
+      width: 4px;
+      background: rgba(148,163,184,0.7);
+      border-radius: 4px;
+    }
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .hero-tag {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.92);
+      color: #e5e7eb;
+    }
+
+    /* 右侧详情毛玻璃 */
+    .glass-card {
+      position: absolute;
+      width: 320px;
+      padding: 26px;
+      border-radius: 28px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: var(--glass-shadow);
+      pointer-events: auto;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.35s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+    .glass-card.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .pos-right {
+      top: 110px;
+      right: 40px;
+    }
+    .card-header {
+      font-family: var(--font-cond);
+      font-size: 13px;
+      font-weight: 700;
+      color: rgba(148,163,184,0.9);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .card-title {
+      font-family: var(--font-cond);
+      font-size: 22px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .card-body {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+    .badge {
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.9);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .card-footer {
+      border-top: 1px solid rgba(148,163,184,0.35);
+      padding-top: 10px;
+      font-size: 11px;
+      color: rgba(148,163,184,0.9);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* 轴标签 overlay */
+    .axis-label {
+      position: absolute;
+      pointer-events: none;
+      font-family: var(--font-cond);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1.6px;
+      color: rgba(148,163,184,0.9);
+    }
+    .axis-label.x-left  { left: 50%; transform: translateX(-220px); bottom: 72px; }
+    .axis-label.x-right { right: 50%; transform: translateX(220px); bottom: 72px; text-align:right; }
+    .axis-label.y-bottom { left: calc(50% + 6px); bottom: 60px; transform-origin: left bottom; transform: rotate(-90deg); }
+    .axis-label.y-top    { left: calc(50% + 6px); top: 88px; transform-origin: left top; transform: rotate(-90deg); }
+
+    @media (max-width: 1024px) {
+      body { overflow: auto; }
+      #chart-container { height: 60vh; }
+      .panel-layer { padding: 20px; }
+      .hero { position: relative; top: 76px; left: 20px; max-width: none; margin-right: 20px; }
+      .glass-card {
+        position: relative;
+        top: auto;
+        right: auto;
+        margin: 16px 20px 0;
+        width: auto;
+      }
+      .axis-label { display:none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 顶栏 -->
+  <div class="top-bar">
+    <div class="brand">
+      <div class="brand-path">STARTIMES / UGANDA / NICHE / SPATIAL</div>
+      <div class="brand-title">Spatial Niche · Touchpoint Map</div>
+    </div>
+    <div class="top-actions">
+      <a class="back-btn" href="./index.html">Back to Niche</a>
+    </div>
+
+    <div class="breadcrumb">
+      <span>Data Space</span><span class="crumb-sep">/</span>
+      <span>Niche</span><span class="crumb-sep">/</span>
+      <span class="crumb-active">Spatial Niche</span>
+    </div>
+  </div>
+
+  <!-- 图表容器 -->
+  <div id="chart-container"></div>
+
+  <!-- 文本与面板 -->
+  <div class="panel-layer">
+    <section class="hero">
+      <div class="hero-label">SPATIAL NICHE · UGANDA</div>
+      <h1 class="hero-title">From Screen<br>to Street</h1>
+      <p class="hero-desc">
+        「空间生态位」不是单一广告渠道，而是把乌干达市场上 StarTimes 可触达的
+        <strong>线上 / 线下</strong> 与 <strong>视觉 / 听觉</strong> 触点放在同一张坐标图里：
+        左右代表从线下场景到线上场景，上下代表从纯视觉到纯听觉。
+        每一个点，是我们可以叠加内容与品牌叙事的一个位置。
+      </p>
+      <div class="hero-tags">
+        <span class="hero-tag">Offline · Billboard / Roadshow</span>
+        <span class="hero-tag">On-screen · EPG / Opening Ads</span>
+        <span class="hero-tag">Audio · Radio / Call Center</span>
+        <span class="hero-tag">Digital · TVC / Social / WhatsApp</span>
+      </div>
+    </section>
+
+    <!-- 右侧详情卡 -->
+    <aside class="glass-card pos-right" id="detail-panel">
+      <div class="card-header">
+        <span id="p-quadrant">Offline · Visual</span>
+        <span class="badge" id="p-layer">LINEAR TV</span>
+      </div>
+      <div class="card-title" id="p-name">Outdoor Billboard</div>
+      <div class="card-body" id="p-desc">
+        主干道路和社区周边的大牌，用于承载长期品牌主张或大档期活动，可与 EPG / TVC 的视觉锚点统一。
+      </div>
+      <div class="card-footer">
+        <span>Axis: <span id="p-coords">Offline · Visual</span></span>
+        <span id="p-next">后续可点击进入渠道详情页</span>
+      </div>
+    </aside>
+
+    <!-- 轴标签 -->
+    <div class="axis-label x-left">OFFLINE</div>
+    <div class="axis-label x-right">ONLINE</div>
+    <div class="axis-label y-bottom">VISUAL</div>
+    <div class="axis-label y-top">AUDIO</div>
+  </div>
+
+  <!-- ECharts -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  <script>
+    const chart = echarts.init(document.getElementById('chart-container'));
+
+    // 触点数据：x=0-100 Offline→Online, y=0-100 Visual→Audio
+   // ========= 触点数据：严格按文档分类命名 =========
+const touchpoints = [
+  // 线下 · 视觉
+  {
+    id: 'billboard',
+    name: '户外大牌 · Outdoor billboard',
+    category: 'Offline · Visual',
+    x: -0.85, y: -0.8,
+    note: '线下视觉：户外大牌，主干道与城市核心位置的大幅广告牌。'
+  },
+  {
+    id: 'lightpoles',
+    name: '灯杆广告 · Light pole banners',
+    category: 'Offline · Visual',
+    x: -0.7, y: -0.75,
+    note: '线下视觉：灯杆、路灯旗帜等街道级曝光。'
+  },
+  {
+    id: 'dealers',
+    name: '营业厅 / 代理商 · Flyers & posters',
+    category: 'Offline · Visual',
+    x: -0.55, y: -0.7,
+    note: '线下视觉：营业厅与代理商（flyer、poster、roll-up stand 等物料）。'
+  },
+  {
+    id: 'print',
+    name: '纸媒 / 网媒 · Print & online media',
+    category: 'Offline · Visual',
+    x: -0.4, y: -0.85,
+    note: '线下视觉：报纸杂志、当地网站 banner 等。'
+  },
+
+  // 线下 · 听觉
+  {
+    id: 'radio',
+    name: '广播广告 · Radio spots',
+    category: 'Offline · Audio',
+    x: -0.75, y: 0.8,
+    note: '线下听觉：广播广告，覆盖驾车与家庭收听场景。'
+  },
+  {
+    id: 'callcenter',
+    name: '呼叫中心 · Call center / IVR',
+    category: 'Offline · Audio',
+    x: -0.55, y: 0.8,
+    note: '线下听觉：客服热线 / IVR 语音，负责续费提醒与活动推广。'
+  },
+
+  // 线下 · 视觉 + 听觉（必须在坐标轴上：y=0）
+  {
+    id: 'roadshow',
+    name: '路演 · Roadshow',
+    category: 'Offline · Audio + Visual',
+    x: -0.75, y: 0,
+    note: '线下视觉+听觉：路演活动，音响+舞台+车队巡游等。'
+  },
+  {
+    id: 'press',
+    name: '发布会 · Press conference',
+    category: 'Offline · Audio + Visual',
+    x: -0.6, y: 0,
+    note: '线下视觉+听觉：媒体发布会 / 品牌活动。'
+  },
+
+  // 线上 · 视觉
+  {
+    id: 'epg',
+    name: 'EPG 广告 · Opening / zapping / volume bar',
+    category: 'Online · Visual',
+    x: 0.55, y: -0.8,
+    note: '线上视觉：EPG（开机广告、频道切换广告、音量条广告）。'
+  },
+  {
+    id: 'ott-splash',
+    name: 'OTT 开屏广告 · App splash',
+    category: 'Online · Visual',
+    x: 0.75, y: -0.75,
+    note: '线上视觉：OTT App 开屏与首页主视觉位。'
+  },
+  {
+    id: 'minibanner',
+    name: 'Mini banner · 小尺寸横幅',
+    category: 'Online · Visual',
+    x: 0.9, y: -0.65,
+    note: '线上视觉：OTT / Web 端各类 mini banner。'
+  },
+
+  // 线上 · 视觉 + 听觉（必须在坐标轴上：y=0）
+  {
+    id: 'tvc',
+    name: 'TVC · Promo spots',
+    category: 'Online · Audio + Visual',
+    x: 0.55, y: 0,
+    note: '线上视觉+听觉：频道内 TVC / promo，统一画面与旁白。'
+  },
+  {
+    id: 'social',
+    name: '社媒 · Social (Facebook / X)',
+    category: 'Online · Audio + Visual',
+    x: 0.75, y: 0,
+    note: '线上视觉+听觉：带配音视频帖、短视频广告等社媒内容。'
+  },
+  {
+    id: 'whatsapp',
+    name: 'WhatsApp · Broadcast list',
+    category: 'Online · Audio + Visual',
+    x: 0.9, y: 0,
+    note: '线上视觉+听觉：WhatsApp 广播，结合语音消息与图片 / 海报。'
+  }
+];
+
+
+    function cssVar(name) {
+      return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || '#38bdf8';
+    }
+
 const colorMap = {
   'Offline · Visual': '#22c55e',
   'Offline · Audio': '#0ea5e9',
@@ -125,3 +625,41 @@ const option = {
 };
 
 chart.setOption(option);
+
+
+    // 右侧详情卡交互
+    const panel = document.getElementById('detail-panel');
+    const elQuad = document.getElementById('p-quadrant');
+    const elLayer = document.getElementById('p-layer');
+    const elName  = document.getElementById('p-name');
+    const elDesc  = document.getElementById('p-desc');
+    const elCoords = document.getElementById('p-coords');
+
+    function updatePanel(meta) {
+      if (!meta) return;
+      elQuad.textContent = meta.quadrant;
+      elLayer.textContent = meta.layer;
+      elName.textContent  = meta.name;
+      elDesc.textContent  = meta.desc;
+      elCoords.textContent = meta.quadrant;
+      panel.classList.add('active');
+    }
+
+    // 默认选中第一个点
+    updatePanel(points[0]);
+
+    chart.on('click', params => {
+      if (params.data && params.data.meta) {
+        updatePanel(params.data.meta);
+      }
+    });
+    chart.on('mouseover', params => {
+      if (params.data && params.data.meta) {
+        updatePanel(params.data.meta);
+      }
+    });
+
+    window.addEventListener('resize', () => chart.resize());
+  </script>
+</body>
+</html>
