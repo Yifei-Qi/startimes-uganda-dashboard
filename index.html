@@ -37,14 +37,14 @@
 
     body {
       font-family:var(--font-din);
-      color:var(--text-main);
       background:var(--bg-dark);
-      /* 稍加强的星云背景 */
+      color:var(--text-main);
+      /* 更柔和的宇宙背景 + 虚化圆形 */
       background-image:
-        radial-gradient(circle at 50% 55%, #020617 0, #020617 55%, #000 100%),
-        radial-gradient(circle at 18% 20%, rgba(56,189,248,0.28) 0, transparent 60%),
-        radial-gradient(circle at 82% 82%, rgba(250,204,21,0.24) 0, transparent 60%),
-        radial-gradient(circle at 10% 90%, rgba(168,85,247,0.18) 0, transparent 55%);
+        radial-gradient(circle at 50% 55%, rgba(15,23,42,1) 0, rgba(15,23,42,0.95) 35%, rgba(15,23,42,0.6) 55%, transparent 80%),
+        radial-gradient(circle at 15% 15%, rgba(56,189,248,0.16) 0, transparent 55%),
+        radial-gradient(circle at 85% 80%, rgba(250,204,21,0.18) 0, transparent 55%),
+        radial-gradient(circle at 20% 80%, rgba(34,197,94,0.14) 0, transparent 45%);
     }
 
     #app {
@@ -221,7 +221,7 @@
     <div class="top-bar">
       <div class="brand">
         <div class="brand-path">STARTIMES / UGANDA / MARKET SYSTEM</div>
-        <div class="brand-title">StarTimes Uganda · Market System</div>
+        <div class="brand-title">StarTimes Uganda · 市场体系</div>
       </div>
       <div class="top-actions">
         <a class="nav-chip ecology" href="ecology/index.html">
@@ -245,9 +245,9 @@
       <div class="info-left">
         <div class="info-left-label">INTERACTIVE OVERVIEW</div>
         <p>
-          本页是 <strong>StarTimes Uganda 市场体系</strong> 的总览星图：中心是整体 Market System，
+          本页是 <strong>StarTimes Uganda 市场体系</strong> 的总览星图：中心是整体市场系统，
           第一圈是两个一级模块 <strong>Ecology 业务生态</strong> 与 <strong>Niche 生态位体系</strong>，
-          外圈则进一步展开 DVB、Solar、OTT、渠道、受众、竞争等子结构。<br><br>
+          外圈则进一步展开 DVB、Solar、OTT、渠道、受众等子结构。<br><br>
           可以拖动画布、滚轮缩放，点击两颗主星进入对应系统的详情页面，其余节点仅用于呈现结构关系。
         </p>
       </div>
@@ -272,39 +272,12 @@
 
       var rCore = minSide * 0.09;
       var r1    = minSide * 0.22;
-      var r2    = minSide * 0.33;
-      var rMid  = minSide * 0.38;  // 新增中间系统层
+      var r2    = minSide * 0.35;
       var r3    = minSide * 0.46;
 
       var nodes = [];
 
-      /* ---------- 核心虚化背景圆 (halo) ---------- */
-      nodes.push({
-        id: 'core-halo',
-        name: '',
-        x: cx,
-        y: cy,
-        z: -1,
-        silent: true,
-        symbolSize: rCore * 2.6,
-        itemStyle: {
-          color: {
-            type: 'radial',
-            x: 0.5, y: 0.5, r: 0.5,
-            colorStops: [
-              { offset: 0,   color: 'rgba(56,189,248,0.32)' },
-              { offset: 0.6, color: 'rgba(56,189,248,0.12)' },
-              { offset: 1,   color: 'rgba(15,23,42,0.0)' }
-            ]
-          },
-          shadowBlur: 70,
-          shadowColor: 'rgba(56,189,248,0.8)',
-          borderWidth: 0
-        },
-        label: { show: false }
-      });
-
-      /* ---------- 核心节点 ---------- */
+      // 中心虚化光晕用 custom 系列画，这里只放纯文本星核
       nodes.push({
         id: 'core',
         name: 'StarTimes Uganda\nMarket System',
@@ -312,30 +285,33 @@
         y: cy,
         symbolSize: rCore,
         itemStyle: {
-          color: '#0ea5e9',
-          shadowBlur: 42,
-          shadowColor: 'rgba(56,189,248,0.95)',
-          borderColor: 'rgba(15,23,42,0.95)',
-          borderWidth: 3
+          color: new echarts.graphic.RadialGradient(0.5, 0.3, 1, [
+            { offset: 0,   color: 'rgba(248,250,252,0.98)' },
+            { offset: 0.45,color: 'rgba(148,163,184,0.45)' },
+            { offset: 1,   color: 'rgba(15,23,42,0.0)' }
+          ]),
+          borderWidth: 0,
+          shadowBlur: 40,
+          shadowColor: 'rgba(248,250,252,0.65)'
         },
         label: {
           show: true,
           fontFamily: 'Barlow Condensed, sans-serif',
-          fontSize: 18,
-          fontWeight: 600,
-          color: '#e0f2fe',
-          lineHeight: 16
+          fontSize: 26,             // 放大主标题
+          fontWeight: 700,
+          color: '#f9fafb',
+          lineHeight: 22
         },
         tooltip: {
           formatter: 'StarTimes Uganda Market System<br/>整合 Ecology 与 Niche 两大系统的总览入口'
         }
       });
 
-      /* ---------- 第一圈：两个一级目录 + 光晕 ---------- */
+      // 第一圈：Ecology / Niche 主星
       var ring1 = [
         {
           id: 'eco',
-          name: 'Ecology\nBusiness System',
+          name: 'Ecology\nBusiness Ecosystem',
           angle: -35 * Math.PI / 180,
           color: '#facc15',
           link: 'ecology/index.html',
@@ -343,77 +319,53 @@
         },
         {
           id: 'niche',
-          name: 'Niche\nPositioning System',
-          angle: (180 + 35) * Math.PI / 180,
+          name: 'Niche\nMarket & Spatial',
+          angle: (180+35) * Math.PI / 180,
           color: '#22c55e',
           link: 'niche/index.html',
           tip: 'Niche · 生态位体系：空间生态位、市场生态位、渠道与受众结构'
         }
       ];
 
-      ring1.forEach(function (n, idx) {
+      ring1.forEach(function (n) {
         var x = cx + r1 * Math.cos(n.angle);
         var y = cy + r1 * Math.sin(n.angle);
-
-        // 每个一级目录的发光 halo
-        nodes.push({
-          id: n.id + '-halo',
-          name: '',
-          x: x,
-          y: y,
-          silent: true,
-          z: 0,
-          symbolSize: minSide * 0.11,
-          itemStyle: {
-            color: {
-              type: 'radial',
-              x: 0.5, y: 0.5, r: 0.5,
-              colorStops: [
-                { offset: 0,   color: idx === 0 ? 'rgba(250,204,21,0.32)' : 'rgba(34,197,94,0.32)' },
-                { offset: 0.6, color: idx === 0 ? 'rgba(250,204,21,0.12)' : 'rgba(34,197,94,0.12)' },
-                { offset: 1,   color: 'rgba(15,23,42,0.0)' }
-              ]
-            },
-            shadowBlur: 50,
-            shadowColor: idx === 0 ? 'rgba(250,204,21,0.85)' : 'rgba(34,197,94,0.85)',
-            borderWidth: 0
-          },
-          label: { show: false }
-        });
-
         nodes.push({
           id: n.id,
           name: n.name,
           x: x,
           y: y,
-          symbolSize: minSide * 0.085,   // 放大一级目录
+          symbolSize: minSide * 0.09,   // 加大一级节点半径
           itemStyle: {
-            color: n.color,
-            shadowBlur: 26,
-            shadowColor: 'rgba(0,0,0,0.8)',
-            borderColor: 'rgba(15,23,42,0.95)',
-            borderWidth: 3
+            color: new echarts.graphic.RadialGradient(0.5, 0.3, 1, [
+              { offset: 0,   color: 'rgba(255,255,255,1)' },
+              { offset: 0.45,color: n.color },
+              { offset: 1,   color: 'rgba(15,23,42,0)' }
+            ]),
+            borderWidth: 0,
+            shadowBlur: 55,
+            shadowColor: n.color
           },
           label: {
             show: true,
             fontFamily: 'Barlow Condensed, sans-serif',
-            fontSize: 16,
+            fontSize: 18,          // 一级标题字体更大
             fontWeight: 600,
-            color: '#f9fafb',   // 一级标题全部白字
-            lineHeight: 14
+            color: '#ffffff',      // 一级标题用纯白
+            lineHeight: 16
           },
           link: n.link,
           tooltip: { formatter: n.tip }
         });
       });
 
-      /* ---------- 第二圈：围绕 Ecology 的子层级 ---------- */
+      // 第二圈：围绕 Ecology 的子层级
       var ecoChildren = [
-        { id:'eco-dvb',   name:'DVB\nLinear TV',          angleDeg: -5  },
-        { id:'eco-solar', name:'Solar\nOff-grid',        angleDeg: -55 },
-        { id:'eco-ott',   name:'OTT App\nStarTimes ON',  angleDeg: 20  },
-        { id:'eco-dev',   name:'Devices\nSTB / Dish / TV',angleDeg: -95},
-        { id:'eco-adv',   name:'Advertising\n& Media',   angleDeg: 45  }
+        { id:'eco-dvb',   name:'DVB\nLinear TV',           angleDeg: -5  },
+        { id:'eco-solar', name:'Solar\nOff-grid',         angleDeg: -50 },
+        { id:'eco-ott',   name:'OTT App\nStarTimes ON',   angleDeg: 15  },
+        { id:'eco-dev',   name:'Devices\nSTB / Dish / TV', angleDeg: -90},
+        { id:'eco-adv',   name:'Advertising\n& Media',    angleDeg: 40  }
       ];
       ecoChildren.forEach(function (c) {
         var angle = c.angleDeg * Math.PI / 180;
@@ -424,13 +376,16 @@
           name: c.name,
           x: x,
           y: y,
-          symbolSize: minSide * 0.05,
+          symbolSize: minSide * 0.055,
           itemStyle: {
-            color: '#f97316',
-            shadowBlur: 24,
-            shadowColor: 'rgba(249,115,22,0.9)',
-            borderColor: 'rgba(15,23,42,0.9)',
-            borderWidth: 2
+            color: new echarts.graphic.RadialGradient(0.5,0.3,1,[
+              {offset:0,  color:'rgba(255,255,255,0.96)'},
+              {offset:0.45,color: '#f97316'},
+              {offset:1,  color:'rgba(15,23,42,0)'}
+            ]),
+            borderWidth: 0,
+            shadowBlur: 32,
+            shadowColor: 'rgba(249,115,22,0.9)'
           },
           label: {
             show: true,
@@ -440,17 +395,17 @@
             lineHeight: 12
           },
           tooltip: {
-            formatter: 'Ecology · ' + c.name.replace('\n',' ')
+            formatter: 'Ecology · ' + c.name.replace('\\n',' ')
           }
         });
       });
 
-      /* ---------- 第二圈：围绕 Niche 的子层级 ---------- */
+      // 第二圈：围绕 Niche 的子层级
       var nicheChildren = [
-        { id:'niche-spatial',  name:'Spatial\nNiche',   angleDeg: 180+10  },
-        { id:'niche-market',   name:'Market\nNiche',    angleDeg: 180+55  },
-        { id:'niche-audience', name:'Audience\nNiche',  angleDeg: 180-15  },
-        { id:'niche-channel',  name:'Channel\nNiche',   angleDeg: 180+100 }
+        { id:'niche-spatial',  name:'Spatial\nNiche',  angleDeg: 180+15  },
+        { id:'niche-market',   name:'Market\nNiche',   angleDeg: 180+60  },
+        { id:'niche-audience', name:'Audience\nNiche', angleDeg: 180-20  },
+        { id:'niche-channel',  name:'Channel\nNiche',  angleDeg: 180+100 }
       ];
       nicheChildren.forEach(function (c) {
         var angle = c.angleDeg * Math.PI / 180;
@@ -461,13 +416,16 @@
           name: c.name,
           x: x,
           y: y,
-          symbolSize: minSide * 0.048,
+          symbolSize: minSide * 0.052,
           itemStyle: {
-            color: '#a855f7',
-            shadowBlur: 24,
-            shadowColor: 'rgba(168,85,247,0.9)',
-            borderColor: 'rgba(15,23,42,0.9)',
-            borderWidth: 2
+            color: new echarts.graphic.RadialGradient(0.5,0.3,1,[
+              {offset:0,  color:'rgba(255,255,255,0.96)'},
+              {offset:0.45,color: '#a855f7'},
+              {offset:1,  color:'rgba(15,23,42,0)'}
+            ]),
+            borderWidth: 0,
+            shadowBlur: 30,
+            shadowColor: 'rgba(168,85,247,0.9)'
           },
           label: {
             show: true,
@@ -477,51 +435,12 @@
             lineHeight: 12
           },
           tooltip: {
-            formatter: 'Niche · ' + c.name.replace('\n',' ')
+            formatter: 'Niche · ' + c.name.replace('\\n',' ')
           }
         });
       });
 
-      /* ---------- 新增中间系统层：System Layer ---------- */
-      var systemLayer = [
-        { id:'sys-customer', name:'Customer\nSegments', angleDeg: -130 },
-        { id:'sys-content',  name:'Content\nPortfolio', angleDeg: -160 },
-        { id:'sys-channel',  name:'Channel\nNetwork',   angleDeg: -200 },
-        { id:'sys-infra',    name:'Infrastructure\nFootprint', angleDeg: 40 },
-        { id:'sys-data',     name:'Data &\nInsights',   angleDeg: 10 },
-        { id:'sys-brand',    name:'Brand &\nPositioning', angleDeg: 220 }
-      ];
-      systemLayer.forEach(function (c) {
-        var angle = c.angleDeg * Math.PI / 180;
-        var x = cx + rMid * Math.cos(angle);
-        var y = cy + rMid * Math.sin(angle);
-        nodes.push({
-          id: c.id,
-          name: c.name,
-          x: x,
-          y: y,
-          symbolSize: minSide * 0.043,
-          itemStyle: {
-            color: 'rgba(148,163,184,0.95)',
-            shadowBlur: 20,
-            shadowColor: 'rgba(15,23,42,0.9)',
-            borderColor: 'rgba(15,23,42,0.9)',
-            borderWidth: 2
-          },
-          label: {
-            show: true,
-            fontFamily: 'Barlow Condensed, sans-serif',
-            fontSize: 11,
-            color: '#e5e7eb',
-            lineHeight: 11
-          },
-          tooltip: {
-            formatter: 'System Layer · ' + c.name.replace('\n',' ')
-          }
-        });
-      });
-
-      /* ---------- 第三圈：外围环境层 ---------- */
+      // 第三圈：外围“卫星层”
       var outer = [
         { id:'env-competition', name:'Competition\nDSTv / GOTv / Azam', angleDeg: -120 },
         { id:'env-economy',     name:'Macro\nEconomy',                  angleDeg: -160 },
@@ -539,13 +458,16 @@
           name: c.name,
           x: x,
           y: y,
-          symbolSize: minSide * 0.04,
+          symbolSize: minSide * 0.042,
           itemStyle: {
-            color: 'rgba(75,85,99,0.95)',
-            shadowBlur: 18,
-            shadowColor: 'rgba(15,23,42,0.9)',
-            borderColor: 'rgba(15,23,42,0.9)',
-            borderWidth: 2
+            color: new echarts.graphic.RadialGradient(0.5,0.4,1,[
+              {offset:0,  color:'rgba(248,250,252,0.95)'},
+              {offset:0.5,color:'rgba(148,163,184,0.8)'},
+              {offset:1,  color:'rgba(15,23,42,0)'}
+            ]),
+            borderWidth: 0,
+            shadowBlur: 24,
+            shadowColor: 'rgba(148,163,184,0.9)'
           },
           label: {
             show: true,
@@ -555,34 +477,24 @@
             lineHeight: 11
           },
           tooltip: {
-            formatter: 'External · ' + c.name.replace('\n',' ')
+            formatter: '外部环境 · ' + c.name.replace('\\n',' ')
           }
         });
       });
 
-      /* ---------- 连线 ---------- */
+      // 连线
       var links = [];
-      // 核心到一级
       links.push({ source:'core', target:'eco' });
       links.push({ source:'core', target:'niche' });
-
-      // 一级到各自子层
       ecoChildren.forEach(function (c){ links.push({source:'eco', target:c.id}); });
       nicheChildren.forEach(function (c){ links.push({source:'niche', target:c.id}); });
-
-      // 一级到 System Layer（映射关系）
-      systemLayer.forEach(function (c, idx){
-        // 前三个挂在 Ecology，后三个挂在 Niche
-        if (idx < 3) {
-          links.push({ source:'eco', target:c.id });
-        } else {
-          links.push({ source:'niche', target:c.id });
-        }
-      });
-
-      // System Layer 到 外圈
       outer.forEach(function (c, idx){
-        var anchor = systemLayer[idx % systemLayer.length].id;
+        var anchor;
+        if (idx <= 2) {
+          anchor = ecoChildren[idx % ecoChildren.length].id;
+        } else {
+          anchor = nicheChildren[idx % nicheChildren.length].id;
+        }
         links.push({ source: anchor, target: c.id });
       });
 
@@ -590,15 +502,50 @@
         backgroundColor: 'transparent',
         animationDuration: 1100,
         animationEasing: 'cubicOut',
-        tooltip: {
-          formatter: function (params) {
-            if (params.data && params.data.tooltip) {
-              return params.data.tooltip.formatter;
-            }
-            return params.name || '';
-          }
-        },
+        tooltip: { formatter: function (p){ return p.data && p.data.tooltip ? p.data.tooltip.formatter : (p.name || ''); } },
         series: [
+          // 中心柔光 halo（虚化圆形，没有黑边）
+          {
+            type: 'custom',
+            coordinateSystem: 'none',
+            data: [0],
+            silent: true,
+            zlevel: 0,
+            renderItem: function (params, api) {
+              var cx = api.getWidth() * 0.5;
+              var cy = api.getHeight() * 0.56;
+              var maxR = Math.min(api.getWidth(), api.getHeight()) * 0.55;
+              var inner = maxR * 0.15;
+              var outer = maxR * 0.32;
+              return {
+                type: 'group',
+                children: [
+                  {
+                    type: 'circle',
+                    shape: { cx: cx, cy: cy, r: outer },
+                    style: {
+                      fill: new echarts.graphic.RadialGradient(0.5, 0.45, 1, [
+                        { offset: 0,   color: 'rgba(148,163,184,0.26)' },
+                        { offset: 0.45,color: 'rgba(15,23,42,0.0)' },
+                        { offset: 1,   color: 'rgba(15,23,42,0.0)' }
+                      ]),
+                      stroke: 'none',
+                      shadowBlur: 80,
+                      shadowColor: 'rgba(15,23,42,0.9)'
+                    }
+                  },
+                  {
+                    type:'circle',
+                    shape:{ cx:cx, cy:cy, r:inner },
+                    style:{
+                      fill:'rgba(15,23,42,0.85)',
+                      stroke:'none'
+                    }
+                  }
+                ]
+              };
+            }
+          },
           {
             type: 'graph',
             layout: 'none',
@@ -609,9 +556,9 @@
             edgeSymbol: ['none', 'circle'],
             edgeSymbolSize: 3,
             lineStyle: {
-              color: 'rgba(148,163,184,0.55)',
+              color: 'rgba(148,163,184,0.45)',
               width: 1.2,
-              curveness: 0.26
+              curveness: 0.25
             },
             emphasis: {
               lineStyle: { width: 2, color: '#e5e7eb' },
@@ -624,7 +571,7 @@
 
     chart.setOption(buildOption());
 
-    // 只有 Ecology / Niche 两个主节点可点击跳转
+    // 点击跳转：仅 Ecology / Niche 两个主节点有链接
     chart.on('click', function (params) {
       var d = params.data || {};
       if (d.link) {
@@ -639,4 +586,3 @@
   </script>
 </body>
 </html>
-
