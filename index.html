@@ -1,3 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>StarTimes Uganda · 市场体系 Market System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: #050816;
+      --text-main: #f9fafb;
+      --text-muted: #94a3b8;
+
+      --c-core:   #38bdf8;
+      --c-eco:    #facc15;
+      --c-niche:  #22c55e;
+      --c-eco-sub:#f97316;
+      --c-niche-sub:#a855f7;
+
+      --font-din:  'Barlow', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font-cond: 'Barlow Condensed', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    html, body {
+      width:100%;
+      height:100%;
+      overflow:hidden;
+    }
+
+    body {
+      font-family:var(--font-din);
+      background:var(--bg-dark);
+      color:var(--text-main);
+      background-image:
+        radial-gradient(circle at 50% 55%, #020617 0, #020617 55%, #000 100%),
+        radial-gradient(circle at 18% 20%, rgba(56,189,248,0.24) 0, transparent 55%),
+        radial-gradient(circle at 82% 85%, rgba(250,204,21,0.22) 0, transparent 55%);
+    }
+
+    #app {
+      position:relative;
+      width:100%;
+      height:100%;
+    }
+
+    /* 顶栏 */
+    .top-bar {
+      position:fixed;
+      inset:0 0 auto 0;
+      height:72px;
+      padding:0 40px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      background:linear-gradient(to bottom, rgba(5,8,22,0.96), transparent);
+      z-index:20;
+      pointer-events:none;
+    }
+    .brand {
+      pointer-events:auto;
+      display:flex;
+      flex-direction:column;
+      text-shadow:0 0 18px rgba(15,23,42,0.9);
+    }
+    .brand-path {
+      font-family:var(--font-cond);
+      font-size:11px;
+      letter-spacing:1.6px;
+      text-transform:uppercase;
+      color:var(--c-core);
+      opacity:.95;
+      margin-bottom:4px;
+      font-weight:600;
+    }
+    .brand-title {
+      font-family:var(--font-cond);
+      font-size:19px;
+      font-weight:600;
+      letter-spacing:.6px;
+      text-transform:uppercase;
+      color:#e5e7eb;
+    }
+
+    .top-actions {
+      pointer-events:auto;
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+    .nav-chip {
+      font-family:var(--font-cond);
+      font-size:11px;
+      letter-spacing:1px;
+      text-transform:uppercase;
+      padding:6px 16px;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.6);
+      background:rgba(15,23,42,0.9);
+      color:#e5e7eb;
+      text-decoration:none;
+      display:flex;
+      gap:6px;
+      align-items:center;
+      box-shadow:0 6px 16px rgba(0,0,0,0.35);
+      backdrop-filter:blur(10px);
+      transition:all .2s ease;
+    }
+    .nav-chip-dot {
+      width:8px;
+      height:8px;
+      border-radius:999px;
+      background:#6b7280;
+    }
+    .nav-chip.ecology .nav-chip-dot { background:var(--c-eco); }
+    .nav-chip.niche   .nav-chip-dot { background:var(--c-niche); }
+    .nav-chip:hover {
+      transform:translateY(-1px);
+      border-color:rgba(248,250,252,0.95);
+      background:rgba(15,23,42,0.98);
+      box-shadow:0 8px 22px rgba(15,23,42,0.9);
+    }
+
+    .breadcrumb {
+      pointer-events:auto;
+      font-family:var(--font-cond);
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:1.4px;
+      color:rgba(148,163,184,0.9);
+      position:absolute;
+      left:50%;
+      transform:translateX(-50%);
+      top:12px;
+      display:flex;
+      gap:6px;
+      align-items:center;
+    }
+    .crumb-sep { opacity:.6; }
+    .crumb-active { color:#e5e7eb; }
+
+    /* 图表 */
+    #galaxy {
+      position:absolute;
+      inset:0;
+      z-index:1;
+    }
+
+    /* 文字层 */
+    .info-layer {
+      position:absolute;
+      inset:72px 0 0 0;
+      padding:28px 40px 24px;
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-end;
+      pointer-events:none;
+      z-index:5;
+    }
+    .info-left {
+      max-width:340px;
+      text-shadow:0 0 20px rgba(15,23,42,0.9);
+      color:var(--text-muted);
+      font-size:13px;
+      line-height:1.7;
+    }
+    .info-left strong {
+      color:#e5e7eb;
+      font-weight:500;
+    }
+    .info-left-label {
+      font-family:var(--font-cond);
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:1.4px;
+      color:var(--c-core);
+      margin-bottom:8px;
+    }
+
+    .info-right {
+      text-shadow:0 0 14px rgba(15,23,42,0.9);
+      font-family:var(--font-cond);
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:1.3px;
+      color:rgba(148,163,184,0.9);
+    }
+
+    @media (max-width: 900px){
+      .top-bar{
+        padding:0 18px;
+        height:60px;
+      }
+      .breadcrumb{display:none;}
+      .info-layer{
+        inset:60px 0 0 0;
+        padding:18px;
+        flex-direction:column;
+        align-items:flex-start;
+        gap:12px;
+      }
+      .info-left{
+        max-width:none;
+        font-size:12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <!-- 顶栏 -->
+    <div class="top-bar">
+      <div class="brand">
+        <div class="brand-path">STARTIMES / UGANDA / MARKET SYSTEM</div>
+        <div class="brand-title">StarTimes Uganda · 市场体系</div>
+      </div>
+      <div class="top-actions">
+        <a class="nav-chip ecology" href="ecology/index.html">
+          <span class="nav-chip-dot"></span><span>Ecology · 业务生态</span>
+        </a>
+        <a class="nav-chip niche" href="niche/index.html">
+          <span class="nav-chip-dot"></span><span>Niche · 生态位体系</span>
+        </a>
+      </div>
+      <div class="breadcrumb">
+        <span>Data Space</span><span class="crumb-sep">/</span>
+        <span class="crumb-active">Market System</span>
+      </div>
+    </div>
+
+    <!-- 图表 -->
+    <div id="galaxy"></div>
+
+    <!-- 文字层 -->
+    <div class="info-layer">
+      <div class="info-left">
+        <div class="info-left-label">INTERACTIVE OVERVIEW</div>
+        <p>
+          本页是 <strong>StarTimes Uganda 市场体系</strong> 的总览图：中心是整体市场系统，
+          第一圈是两个一级模块 <strong>Ecology 业务生态</strong> 与 <strong>Niche 生态位体系</strong>，
+          外圈则进一步展开 DVB、Solar、OTT、渠道、受众等子结构。<br><br>
+          可以拖动画布、滚轮缩放，点击一级目录进入对应系统的详情页面，其余节点仅用于呈现结构关系。
+        </p>
+      </div>
+      <div class="info-right">
+        Drag to explore · Scroll to zoom · Click Ecology / Niche to enter
+      </div>
+    </div>
+  </div>
+
+  <!-- ECharts -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
 <script>
   var chart = echarts.init(document.getElementById('galaxy'));
@@ -330,3 +589,6 @@
     chart.setOption(buildOption(), true);
   });
 </script>
+
+</body>
+</html>
