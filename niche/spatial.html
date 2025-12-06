@@ -274,313 +274,277 @@
     </div>
   </div>
 
+<!-- 只需要 echarts，本页不用 d3 -->
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
 <script>
-  const chart = echarts.init(document.getElementById('touchpoint-chart'));
+  // 容器 ID —— 按你的实际情况改
+  var chartDom = document.getElementById('spatial-chart');
+  var chart = echarts.init(chartDom);
 
-  // 频道点位数据（保持上一版视觉风格，只补充说明信息）
-  const touchpoints = [
-    // 线下视觉 · Offline visual
-    {
-      name: '户外大牌 · Outdoor billboard',
-      en: 'Outdoor billboard',
-      cn: '户外大牌',
-      x: -0.55, y: -0.55,
-      category: 'Offline · Visual',
-      group: 'offline-visual',
-      note: '大型户外广告牌、主干道、高人流区域'
-    },
-    {
-      name: '灯杆广告 · Light pole banners',
-      en: 'Light pole banners',
-      cn: '灯杆广告',
-      x: -0.45, y: -0.50,
-      category: 'Offline · Visual',
-      group: 'offline-visual',
-      note: '灯杆旗、道路两侧连挂广告'
-    },
-    {
-      name: '营业厅 / 代理商 · Flyers & posters',
-      en: 'Flyers & posters',
-      cn: '营业厅 / 代理商物料',
-      x: -0.35, y: -0.40,
-      category: 'Offline · Visual',
-      group: 'offline-visual',
-      note: '传单、海报、门型展架等物料'
-    },
-    {
-      name: '纸媒 & 网站 · Print & online media',
-      en: 'Print & online media',
-      cn: '纸媒与网络媒体',
-      x: -0.20, y: -0.35,
-      category: 'Offline · Visual',
-      group: 'offline-visual',
-      note: '报纸杂志广告、网站 banner 等'
-    },
+  // 数据：每个触点一个点
+  var touchpoints = [
+    // 线下视觉：Offline · Visual（绿色）
+    { name: '户外大牌\nOutdoor billboard',     cat: 'offline-visual',   x: -0.75, y: -0.6 },
+    { name: '灯杆广告\nLight pole banners',    cat: 'offline-visual',   x: -0.6,  y: -0.55 },
+    { name: '营业厅 / 代理商\nFlyers & posters', cat: 'offline-visual', x: -0.55, y: -0.7 },
+    { name: '纸媒 & 网媒\nPrint & online media', cat: 'offline-visual', x: -0.4,  y: -0.5 },
 
-    // 线下视觉 + 听觉 · Offline A/V
-    {
-      name: '路演 · Roadshow',
-      en: 'Roadshow',
-      cn: '线下路演',
-      x: -0.30, y: 0.02,
-      category: 'Offline · Visual + Audio',
-      group: 'offline-av',
-      note: '商场/社区路演，音乐+主持+互动'
-    },
-    {
-      name: '发布会 · Press conference',
-      en: 'Press conference',
-      cn: '发布会',
-      x: -0.18, y: 0.02,
-      category: 'Offline · Visual + Audio',
-      group: 'offline-av',
-      note: '新品发布、媒体沟通会等活动'
-    },
+    // 线下视觉 + 听觉：Offline · Visual + Audio（橙色）
+    { name: '路演\nRoadshow',                 cat: 'offline-av',       x: -0.15, y:  0.02 },
+    { name: '发布会\nPress conference',       cat: 'offline-av',       x: -0.03, y:  0.02 },
 
-    // 线下听觉 · Offline audio
-    {
-      name: '广播节目 · Radio spots',
-      en: 'Radio spots',
-      cn: '广播广告',
-      x: -0.25, y: 0.55,
-      category: 'Offline · Audio',
-      group: 'offline-audio',
-      note: 'FM / AM 广播广告、口播、jingle'
-    },
-    {
-      name: '呼叫中心 · Call center / IVR',
-      en: 'Call center / IVR',
-      cn: '呼叫中心 / 语音导航',
-      x: -0.05, y: 0.60,
-      category: 'Offline · Audio',
-      group: 'offline-audio',
-      note: '客服电话 / IVR 语音提示'
-    },
+    // 线下听觉：Offline · Audio（紫色）
+    { name: '广播节目\nRadio spots',          cat: 'offline-audio',    x: -0.25, y:  0.55 },
+    { name: '呼叫中心\nCall center / IVR',    cat: 'offline-audio',    x: -0.1,  y:  0.65 },
 
-    // 线上视觉 + 听觉 · Digital A/V
-    {
-      name: 'TVC · Promo spots',
-      en: 'TVC · Promo spots',
-      cn: '品牌 TVC / 频道 Promo',
-      x: 0.25, y: 0.02,
-      category: 'Online · Visual + Audio',
-      group: 'digital-av',
-      note: '在自办频道和合作频道投放的广告片'
-    },
-    {
-      name: '社媒 · Social / Facebook / X',
-      en: 'Social · Facebook / X',
-      cn: '社交媒体内容',
-      x: 0.40, y: 0.02,
-      category: 'Online · Visual + Audio',
-      group: 'digital-av',
-      note: '短视频、动态图、配乐海报等'
-    },
-    {
-      name: 'WhatsApp 群发 · Broadcast list',
-      en: 'WhatsApp broadcast',
-      cn: 'WhatsApp 群发',
-      x: 0.55, y: 0.02,
-      category: 'Online · Visual + Audio',
-      group: 'digital-av',
-      note: 'WhatsApp 广播列表、群发图文/语音'
-    },
+    // 线上视觉：Online · Visual（蓝色）
+    { name: 'EPG 广告\nOpening / zapping / volume bar', cat: 'online-visual', x: 0.55, y: -0.45 },
+    { name: 'OTT 开屏广告\nApp splash',       cat: 'online-visual',    x: 0.7,  y: -0.35 },
+    { name: 'Mini banner\n小尺寸横幅',         cat: 'online-visual',    x: 0.8,  y: -0.25 },
 
-    // 线上视觉 · Online visual
-    {
-      name: 'EPG 广告 · Opening / zapping / volume bar',
-      en: 'EPG ads',
-      cn: 'EPG 开机 / 频道切换 / 音量条广告',
-      x: 0.28, y: -0.40,
-      category: 'Online · Visual',
-      group: 'online-visual',
-      note: '频道表界面中的视觉广告'
-    },
-    {
-      name: 'OTT 开屏广告 · App splash',
-      en: 'OTT App splash',
-      cn: 'OTT 开屏广告',
-      x: 0.40, y: -0.35,
-      category: 'Online · Visual',
-      group: 'online-visual',
-      note: 'StarTimes ON 等 App 打开时的全屏广告'
-    },
-    {
-      name: 'Mini banner · 小尺寸横幅',
-      en: 'Mini banner ads',
-      cn: '小尺寸 Banner',
-      x: 0.55, y: -0.30,
-      category: 'Online · Visual',
-      group: 'online-visual',
-      note: 'App 内部或 TV UI 内的小尺寸横幅广告'
-    }
+    // 线上视觉 + 听觉：Online · Visual + Audio（粉红）
+    { name: 'TVC\nPromo spots',               cat: 'online-av',        x: 0.35, y:  0.02 },
+    { name: '社媒\nSocial / Facebook / X',     cat: 'online-av',        x: 0.55, y:  0.02 },
+    { name: 'WhatsApp 群发\nBroadcast list',   cat: 'online-av',        x: 0.8,  y:  0.02 }
   ];
 
-  // 类别配色：保持上一版点的颜色
-  const colorMap = {
-    'offline-visual': '#22c55e',   // 绿色
-    'offline-av':     '#f97316',   // 橙色
-    'offline-audio':  '#a855f7',   // 紫色
-    'digital-av':     '#fb7185',   // 粉红
-    'online-visual':  '#38bdf8'    // 蓝色
+  var catStyle = {
+    'offline-visual': {
+      color: '#22c55e',
+      group: '线下视觉 · Offline visual'
+    },
+    'offline-av': {
+      color: '#f97316',
+      group: '线下视觉 + 听觉 · Offline visual + audio'
+    },
+    'offline-audio': {
+      color: '#a855f7',
+      group: '线下听觉 · Offline audio'
+    },
+    'online-visual': {
+      color: '#38bdf8',
+      group: '线上视觉 · Online visual'
+    },
+    'online-av': {
+      color: '#fb7185',
+      group: '线上视觉 + 听觉 · Online visual + audio'
+    }
   };
 
-  const option = {
+  var scatterData = touchpoints.map(function (tp) {
+    return {
+      value: [tp.x, tp.y],
+      name: tp.name,
+      category: tp.cat,
+      itemStyle: { color: catStyle[tp.cat].color }
+    };
+  });
+
+  var option = {
     backgroundColor: 'transparent',
-    tooltip: {
-      trigger: 'item',
-      backgroundColor: 'rgba(15,23,42,0.92)',
-      borderColor: 'rgba(148,163,184,0.6)',
-      borderWidth: 1,
-      padding: 10,
-      textStyle: {
-        fontFamily: 'Barlow, system-ui, -apple-system, BlinkMacSystemFont',
-        fontSize: 11,
-        color: '#e5e7eb'
-      },
-      formatter: function (params) {
-        const d = params.data;
-        const quad = d.category || '';
-        const note  = d.note ? `<div style="margin-top:4px;color:#9ca3af;">${d.note}</div>` : '';
-        return (
-          `<div style="font-weight:600;font-size:12px;margin-bottom:2px;">${d.name}</div>` +
-          `<div style="color:#cbd5f5;">${quad}</div>` +
-          note
-        );
-      }
-    },
-
     grid: {
-      left: '45%',
+      left: '40%',   // 图表整体靠右，避免遮挡左侧文案
       right: '6%',
-      top: '14%',
-      bottom: '18%'
+      top: '16%',
+      bottom: '20%'
     },
-
     xAxis: {
       type: 'value',
       min: -1,
       max: 1,
       splitLine: { show: false },
+      axisLine: { show: false },
       axisTick: { show: false },
-      axisLabel: { show: false }, // 文案用 graphic 自己画
-      axisLine: {
-        show: true,
-        onZero: true,
-        symbol: ['arrow', 'arrow'],
-        lineStyle: {
-          color: 'rgba(148,163,184,0.7)',
-          width: 1.4
-        }
-      }
+      axisLabel: { show: false }
     },
-
     yAxis: {
       type: 'value',
       min: -1,
       max: 1,
       splitLine: { show: false },
+      axisLine: { show: false },
       axisTick: { show: false },
-      axisLabel: { show: false },
-      axisLine: {
-        show: true,
-        onZero: true,
-        symbol: ['arrow', 'arrow'],
-        lineStyle: {
-          color: 'rgba(148,163,184,0.7)',
-          width: 1.4
-        }
+      axisLabel: { show: false }
+    },
+    tooltip: {
+      trigger: 'item',
+      backgroundColor: 'rgba(15,23,42,0.96)',
+      borderColor: 'rgba(148,163,184,0.7)',
+      borderWidth: 1,
+      padding: 10,
+      textStyle: {
+        fontFamily: 'Barlow, -apple-system, BlinkMacSystemFont, system-ui',
+        fontSize: 11,
+        color: '#e5e7eb'
+      },
+      formatter: function (params) {
+        var d = params.data;
+        var meta = catStyle[d.category] || {};
+        var x = d.value[0];
+        var y = d.value[1];
+
+        var pos = [];
+        pos.push(x < 0 ? 'Offline' : 'Online');
+        if (y > 0.2) pos.push('Audio');
+        else if (y < -0.2) pos.push('Visual');
+        else pos.push('Audio + Visual');
+
+        return (
+          '<div style="font-weight:600;font-size:12px;margin-bottom:4px;">' +
+            d.name.replace('\\n', ' · ') +
+          '</div>' +
+          (meta.group
+            ? '<div style="color:#a5b4fc;">' + meta.group + '</div>'
+            : ''
+          ) +
+          '<div style="color:#9ca3af;margin-top:4px;">象限：' + pos.join(' · ') + '</div>'
+        );
       }
     },
-
-    // 取消缩放：不配置 dataZoom，也不加 wheel 事件
-    dataZoom: [],
-
-    graphic: [
-      // 横轴两端：Offline / Online
-      {
-        type: 'text',
-        left: '46%',
-        top: '86%',
-        style: {
-          text: 'OFFLINE',
-          fontFamily: 'Barlow Condensed',
-          fontSize: 11,
-          letterSpacing: 1.5,
-          fill: 'rgba(148,163,184,0.9)'
-        }
-      },
-      {
-        type: 'text',
-        right: '8%',
-        top: '86%',
-        style: {
-          text: 'ONLINE',
-          fontFamily: 'Barlow Condensed',
-          fontSize: 11,
-          letterSpacing: 1.5,
-          fill: 'rgba(148,163,184,0.9)'
-        }
-      },
-      // 纵轴两端：Visual / Audio
-      {
-        type: 'text',
-        left: '56%',
-        bottom: '18%',
-        style: {
-          text: 'VISUAL',
-          fontFamily: 'Barlow Condensed',
-          fontSize: 11,
-          letterSpacing: 1.5,
-          fill: 'rgba(148,163,184,0.9)'
-        }
-      },
-      {
-        type: 'text',
-        left: '56%',
-        top: '9%',
-        style: {
-          text: 'AUDIO',
-          fontFamily: 'Barlow Condensed',
-          fontSize: 11,
-          letterSpacing: 1.5,
-          fill: 'rgba(148,163,184,0.9)'
-        }
-      }
-    ],
-
     series: [
+      // 坐标轴 + 箭头 + 四象限文字
+      {
+        type: 'custom',
+        coordinateSystem: 'cartesian2d',
+        data: [0],
+        silent: true,
+        zlevel: 1,
+        renderItem: function (params, api) {
+          var xLeft  = api.coord([-1, 0]);
+          var xRight = api.coord([ 1, 0]);
+          var yBottom= api.coord([ 0,-1]);
+          var yTop   = api.coord([ 0, 1]);
+          var arrow = 10;
+
+          return {
+            type: 'group',
+            children: [
+              // 横轴
+              {
+                type: 'line',
+                shape: { x1: xLeft[0], y1: xLeft[1], x2: xRight[0], y2: xRight[1] },
+                style: { stroke: 'rgba(148,163,184,0.9)', lineWidth: 1.3 }
+              },
+              // 纵轴
+              {
+                type: 'line',
+                shape: { x1: yBottom[0], y1: yBottom[1], x2: yTop[0], y2: yTop[1] },
+                style: { stroke: 'rgba(148,163,184,0.9)', lineWidth: 1.3 }
+              },
+              // 横轴箭头（Online 端）
+              {
+                type: 'polygon',
+                shape: {
+                  points: [
+                    [xRight[0], xRight[1]],
+                    [xRight[0] - arrow, xRight[1] - arrow * 0.5],
+                    [xRight[0] - arrow, xRight[1] + arrow * 0.5]
+                  ]
+                },
+                style: { fill: 'rgba(148,163,184,0.9)' }
+              },
+              // 纵轴箭头（Audio 端）
+              {
+                type: 'polygon',
+                shape: {
+                  points: [
+                    [yTop[0], yTop[1]],
+                    [yTop[0] - arrow * 0.5, yTop[1] + arrow],
+                    [yTop[0] + arrow * 0.5, yTop[1] + arrow]
+                  ]
+                },
+                style: { fill: 'rgba(148,163,184,0.9)' }
+              },
+              // 轴端文字 —— 全部水平排版
+              {
+                type: 'text',
+                style: {
+                  text: 'OFFLINE',
+                  x: xLeft[0] - 6,
+                  y: xLeft[1] + 18,
+                  textAlign: 'right',
+                  textVerticalAlign: 'middle',
+                  fontFamily: 'Barlow Condensed',
+                  fontSize: 11,
+                  letterSpacing: 1,
+                  fill: 'rgba(148,163,184,0.9)'
+                }
+              },
+              {
+                type: 'text',
+                style: {
+                  text: 'ONLINE',
+                  x: xRight[0] + 6,
+                  y: xRight[1] + 18,
+                  textAlign: 'left',
+                  textVerticalAlign: 'middle',
+                  fontFamily: 'Barlow Condensed',
+                  fontSize: 11,
+                  letterSpacing: 1,
+                  fill: 'rgba(148,163,184,0.9)'
+                }
+              },
+              {
+                type: 'text',
+                style: {
+                  text: 'VISUAL',
+                  x: yBottom[0] - 6,
+                  y: yBottom[1] + 18,
+                  textAlign: 'right',
+                  textVerticalAlign: 'middle',
+                  fontFamily: 'Barlow Condensed',
+                  fontSize: 11,
+                  letterSpacing: 1,
+                  fill: 'rgba(148,163,184,0.9)'
+                }
+              },
+              {
+                type: 'text',
+                style: {
+                  text: 'AUDIO',
+                  x: yTop[0] - 6,
+                  y: yTop[1] - 18,
+                  textAlign: 'right',
+                  textVerticalAlign: 'middle',
+                  fontFamily: 'Barlow Condensed',
+                  fontSize: 11,
+                  letterSpacing: 1,
+                  fill: 'rgba(148,163,184,0.9)'
+                }
+              }
+            ]
+          };
+        }
+      },
+      // 触点散点 —— 样式沿用你上一版的小圆点 + 标签
       {
         type: 'scatter',
-        data: touchpoints.map(tp => ({
-          value: [tp.x, tp.y],
-          ...tp,
-          itemStyle: {
-            color: colorMap[tp.group] || '#38bdf8',
-            shadowBlur: 18,
-            shadowColor: colorMap[tp.group] || '#38bdf8'
-          }
-        })),
-        symbol: 'circle',
-        symbolSize: 18,
+        data: scatterData,
+        symbolSize: 14,
+        zlevel: 2,
         label: {
           show: true,
+          position: 'right',
           formatter: '{b}',
-          position: 'top',
-          fontFamily: 'Barlow',
-          fontSize: 11,
-          color: '#e5e7eb'
+          color: '#e5e7eb',
+          fontFamily: 'Barlow, -apple-system, system-ui',
+          fontSize: 11
         },
-        emphasis: {
-          scale: 1.15
+        itemStyle: {
+          borderWidth: 0,
+          shadowBlur: 10,
+          shadowColor: 'rgba(15,23,42,0.9)'
         }
       }
     ]
   };
 
   chart.setOption(option);
-  window.addEventListener('resize', () => chart.resize());
+
+  // 只做自适应，不做缩放/拖拽
+  window.addEventListener('resize', function () {
+    chart.resize();
+  });
 </script>
 
 </body>
