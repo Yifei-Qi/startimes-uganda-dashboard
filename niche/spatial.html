@@ -2,326 +2,239 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <title>Niche · Spatial Touchpoints · StarTimes Uganda</title>
+  <title>Spatial Niche · Touchpoint Map · StarTimes Uganda</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- 字体统一：Barlow / JetBrains Mono -->
+  <!-- 字体，与其它页面统一 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
 
   <style>
     :root {
       --bg-dark: #050816;
-      --glass-bg: rgba(20, 25, 40, 0.78);
-      --glass-border: rgba(255, 255, 255, 0.16);
-      --glass-shadow: 0 18px 48px rgba(0,0,0,0.85);
-      --text-main: #f1f5f9;
+      --text-main: #f9fafb;
       --text-muted: #94a3b8;
-
-      --c-offline: #22c55e;
-      --c-online:  #38bdf8;
-      --c-av:      #f97316;
-      --c-audio:   #eab308;
-
       --font-din:  'Barlow', sans-serif;
       --font-cond: 'Barlow Condensed', sans-serif;
-      --font-mono: 'JetBrains Mono', monospace;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: var(--font-din);
-      background: var(--bg-dark);
+      background: radial-gradient(circle at 15% 0%, #0b1120 0%, #020617 55%, #000 100%);
       color: var(--text-main);
-      overflow: hidden;
+      font-family: var(--font-din);
       height: 100vh;
       width: 100vw;
-      background-image:
-        radial-gradient(circle at 50% 60%, rgba(15, 23, 42, 1) 0%, transparent 80%),
-        radial-gradient(circle at 20% 10%, rgba(56, 189, 248, 0.18) 0%, transparent 45%),
-        radial-gradient(circle at 80% 85%, rgba(34, 197, 94, 0.16) 0%, transparent 50%);
+      overflow: hidden;
     }
 
-    /* 顶栏：同 DVB / CONTENT 风格 */
+    /* 顶部导航（与其它页面统一） */
     .top-bar {
       position: fixed;
-      top: 0; left: 0; right: 0;
+      inset: 0 0 auto 0;
       height: 72px;
+      padding: 0 40px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 40px;
-      z-index: 20;
       background: linear-gradient(to bottom, rgba(5,8,22,0.96), transparent);
+      z-index: 20;
       pointer-events: none;
     }
+
     .brand {
       pointer-events: auto;
       display: flex;
       flex-direction: column;
     }
+
     .brand-path {
       font-family: var(--font-cond);
       font-size: 11px;
       letter-spacing: 1.5px;
       text-transform: uppercase;
       color: #38bdf8;
-      opacity: 0.9;
+      opacity: .95;
       margin-bottom: 4px;
       font-weight: 600;
     }
+
     .brand-title {
       font-family: var(--font-cond);
       font-size: 18px;
       font-weight: 600;
-      letter-spacing: 0.6px;
+      letter-spacing: .6px;
       text-transform: uppercase;
-      color: #fff;
-    }
-    .top-actions {
-      pointer-events: auto;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-    .breadcrumb {
-      pointer-events: auto;
-      font-family: var(--font-cond);
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 1.4px;
-      color: rgba(148,163,184,0.9);
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      top: 12px;
-      display: flex;
-      gap: 6px;
-      align-items: center;
-    }
-    .crumb-sep    { opacity: 0.6; }
-    .crumb-active { color: #e5e7eb; }
-
-    .back-btn {
-      font-family: var(--font-cond);
-      font-size: 14px;
-      font-weight: 600;
-      padding: 8px 24px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.08);
-      color: var(--text-main);
-      text-decoration: none;
-      border: 1px solid rgba(255,255,255,0.2);
-      backdrop-filter: blur(12px);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.25);
-    }
-    .back-btn:hover {
-      background: #38bdf8;
-      color: #000;
-      border-color: #38bdf8;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(56,189,248,0.45);
-    }
-
-    /* 中心图表 */
-    #chart-container {
-      position: absolute;
-      inset: 0;
-      z-index: 1;
-    }
-
-    /* 文本与面板层 */
-    .panel-layer {
-      position: absolute;
-      inset: 0;
-      z-index: 10;
-      pointer-events: none;
-      padding: 40px;
-    }
-
-    .hero {
-      position: absolute;
-      top: 96px;
-      left: 50px;
-      max-width: 420px;
-      pointer-events: auto;
-      user-select: none;
-      text-shadow: 0 4px 32px rgba(0,0,0,0.9);
-    }
-    .hero-label {
-      font-family: var(--font-cond);
-      font-size: 12px;
-      font-weight: 700;
-      color: #38bdf8;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      letter-spacing: 1.5px;
-    }
-    .hero-title {
-      font-family: var(--font-cond);
-      font-size: 46px;
-      font-weight: 700;
-      line-height: 0.9;
-      margin-bottom: 20px;
-      text-transform: uppercase;
-      letter-spacing: -0.5px;
-      background: linear-gradient(180deg, #fff 0%, #94a3b8 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .hero-desc {
-      font-size: 14px;
-      line-height: 1.7;
-      font-weight: 300;
-      color: var(--text-muted);
-      position: relative;
-      padding-left: 20px;
-      margin-bottom: 20px;
-    }
-    .hero-desc::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 4px;
-      bottom: 4px;
-      width: 4px;
-      background: rgba(148,163,184,0.7);
-      border-radius: 4px;
-    }
-    .hero-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-    .hero-tag {
-      padding: 4px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.6);
-      background: rgba(15,23,42,0.92);
       color: #e5e7eb;
     }
 
-    /* 右侧详情毛玻璃 */
-    .glass-card {
-      position: absolute;
-      width: 320px;
-      padding: 26px;
-      border-radius: 28px;
-      background: var(--glass-bg);
-      border: 1px solid var(--glass-border);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      box-shadow: var(--glass-shadow);
+    .breadcrumb {
+      pointer-events:auto;
+      font-family:var(--font-cond);
+      font-size:11px;
+      letter-spacing:1.4px;
+      text-transform:uppercase;
+      color:rgba(148,163,184,0.9);
+      position:absolute;
+      left:50%;
+      transform:translateX(-50%);
+      top:14px;
+      display:flex;
+      gap:6px;
+      align-items:center;
+    }
+    .crumb-sep{opacity:.6;}
+    .crumb-active{color:#e5e7eb;}
+
+    .back-btn {
       pointer-events: auto;
-      opacity: 0;
-      transform: translateY(30px);
-      transition: all 0.35s cubic-bezier(0.19, 1, 0.22, 1);
-    }
-    .glass-card.active {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    .pos-right {
-      top: 110px;
-      right: 40px;
-    }
-    .card-header {
       font-family: var(--font-cond);
-      font-size: 13px;
-      font-weight: 700;
-      color: rgba(148,163,184,0.9);
-      margin-bottom: 8px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .card-title {
-      font-family: var(--font-cond);
-      font-size: 22px;
+      font-size: 14px;
       font-weight: 600;
-      color: #fff;
-      margin-bottom: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .card-body {
-      font-size: 13px;
-      line-height: 1.6;
-      color: var(--text-muted);
-      margin-bottom: 12px;
-    }
-    .badge {
-      padding: 2px 8px;
+      padding: 8px 26px;
       border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.6);
-      background: rgba(15,23,42,0.9);
-      font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 1px;
+      text-decoration: none;
+      color: var(--text-main);
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.35);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+      transition: all .25s ease;
     }
-    .card-footer {
-      border-top: 1px solid rgba(148,163,184,0.35);
-      padding-top: 10px;
-      font-size: 11px;
-      color: rgba(148,163,184,0.9);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    .back-btn:hover {
+      background:#38bdf8;
+      color:#020617;
+      border-color:#38bdf8;
+      box-shadow:0 10px 28px rgba(56,189,248,0.5);
+      transform:translateY(-2px);
     }
 
-    /* 轴标签 overlay */
-    .axis-label {
-      position: absolute;
-      pointer-events: none;
-      font-family: var(--font-cond);
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 1.6px;
-      color: rgba(148,163,184,0.9);
+    /* 布局 */
+    #touch-chart {
+      position:absolute;
+      inset:0;
+      z-index:1;
     }
-    .axis-label.x-left  { left: 50%; transform: translateX(-220px); bottom: 72px; }
-    .axis-label.x-right { right: 50%; transform: translateX(220px); bottom: 72px; text-align:right; }
-    .axis-label.y-bottom { left: calc(50% + 6px); bottom: 60px; transform-origin: left bottom; transform: rotate(-90deg); }
-    .axis-label.y-top    { left: calc(50% + 6px); top: 88px; transform-origin: left top; transform: rotate(-90deg); }
 
-    @media (max-width: 1024px) {
-      body { overflow: auto; }
-      #chart-container { height: 60vh; }
-      .panel-layer { padding: 20px; }
-      .hero { position: relative; top: 76px; left: 20px; max-width: none; margin-right: 20px; }
-      .glass-card {
-        position: relative;
-        top: auto;
-        right: auto;
-        margin: 16px 20px 0;
-        width: auto;
-      }
-      .axis-label { display:none; }
+    .panel-layer {
+      position:absolute;
+      inset:0;
+      padding:80px 40px 40px;
+      z-index:10;
+      pointer-events:none;
+    }
+
+    .hero-block {
+      position:absolute;
+      top:96px;
+      left:40px;
+      max-width:420px;
+      pointer-events:auto;
+      text-shadow:0 14px 40px rgba(0,0,0,0.85);
+    }
+
+    .hero-label {
+      font-family:var(--font-cond);
+      font-size:12px;
+      font-weight:700;
+      letter-spacing:1.5px;
+      text-transform:uppercase;
+      color:#38bdf8;
+      margin-bottom:10px;
+    }
+
+    .hero-title {
+      font-family:var(--font-cond);
+      font-size:52px;
+      font-weight:700;
+      line-height:.9;
+      letter-spacing:-1px;
+      text-transform:uppercase;
+      margin-bottom:22px;
+    }
+
+    .hero-title span:nth-child(1){
+      display:block;
+      background:linear-gradient(180deg,#f9fafb 0%,#d1d5db 100%);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+    .hero-title span:nth-child(2){
+      display:block;
+      background:linear-gradient(180deg,#f9fafb 0%,#9ca3af 100%);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+
+    .hero-desc {
+      font-size:14px;
+      line-height:1.7;
+      color:var(--text-muted);
+      padding-left:18px;
+      border-left:3px solid rgba(148,163,184,0.6);
+      margin-bottom:22px;
+    }
+
+    .hero-desc strong{color:#e5e7eb;font-weight:600;}
+
+    .hero-chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-bottom:18px;
+    }
+    .hero-chip{
+      font-family:var(--font-cond);
+      font-size:11px;
+      letter-spacing:1px;
+      text-transform:uppercase;
+      padding:6px 14px;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.7);
+      background:rgba(15,23,42,0.95);
+      color:#e5e7eb;
+      box-shadow:0 8px 22px rgba(0,0,0,0.6);
+    }
+
+    .hint-line{
+      position:absolute;
+      left:40px;
+      bottom:32px;
+      font-family:var(--font-cond);
+      font-size:11px;
+      letter-spacing:1.5px;
+      text-transform:uppercase;
+      color:rgba(148,163,184,0.9);
+      display:flex;
+      gap:10px;
+      align-items:center;
+      pointer-events:none;
+    }
+    .hint-line::before{
+      content:'';
+      width:120px;
+      height:1px;
+      background:linear-gradient(90deg,rgba(148,163,184,0.5),transparent);
+    }
+
+    @media (max-width:900px){
+      .top-bar{padding:0 18px;height:64px;}
+      .panel-layer{padding:70px 18px 18px;}
+      .hero-block{position:static;max-width:none;margin-right:0;}
+      #touch-chart{top:280px;}
     }
   </style>
 </head>
 <body>
 
-  <!-- 顶栏 -->
   <div class="top-bar">
     <div class="brand">
       <div class="brand-path">STARTIMES / UGANDA / NICHE / SPATIAL</div>
       <div class="brand-title">Spatial Niche · Touchpoint Map</div>
-    </div>
-    <div class="top-actions">
-      <a class="back-btn" href="./index.html">Back to Niche</a>
     </div>
 
     <div class="breadcrumb">
@@ -329,337 +242,274 @@
       <span>Niche</span><span class="crumb-sep">/</span>
       <span class="crumb-active">Spatial Niche</span>
     </div>
+
+    <a class="back-btn" href="./index.html">Back to Niche</a>
   </div>
 
-  <!-- 图表容器 -->
-  <div id="chart-container"></div>
+  <div id="touch-chart"></div>
 
-  <!-- 文本与面板 -->
   <div class="panel-layer">
-    <section class="hero">
+    <section class="hero-block">
       <div class="hero-label">SPATIAL NICHE · UGANDA</div>
-      <h1 class="hero-title">From Screen<br>to Street</h1>
+      <h1 class="hero-title">
+        <span>FROM SCREEN</span>
+        <span>TO STREET</span>
+      </h1>
       <p class="hero-desc">
-        「空间生态位」不是单一广告渠道，而是把乌干达市场上 StarTimes 可触达的
-        <strong>线上 / 线下</strong> 与 <strong>视觉 / 听觉</strong> 触点放在同一张坐标图里：
-        左右代表从线下场景到线上场景，上下代表从纯视觉到纯听觉。
-        每一个点，是我们可以叠加内容与品牌叙事的一个位置。
+        「空间生态位」不是单一广告渠道，而是把乌干达市场上 StarTimes
+        可触达的线上 / 线下 视觉 / 听觉触点放在同一张坐标图里：左右代表从线下场景到线上场景，
+        上下代表从纯视觉到纯听觉。每一个点，是我们可以叠加内容与品牌叙事的一个位置。
       </p>
-      <div class="hero-tags">
-        <span class="hero-tag">Offline · Billboard / Roadshow</span>
-        <span class="hero-tag">On-screen · EPG / Opening Ads</span>
-        <span class="hero-tag">Audio · Radio / Call Center</span>
-        <span class="hero-tag">Digital · TVC / Social / WhatsApp</span>
+
+      <div class="hero-chips">
+        <div class="hero-chip">Offline · Billboard / Roadshow</div>
+        <div class="hero-chip">On-screen · EPG / Opening ads</div>
+        <div class="hero-chip">Audio · Radio / Call center</div>
+        <div class="hero-chip">Digital · TVC / Social / WhatsApp</div>
       </div>
     </section>
 
-    <!-- 右侧详情卡 -->
-    <aside class="glass-card pos-right" id="detail-panel">
-      <div class="card-header">
-        <span id="p-quadrant">Offline · Visual</span>
-        <span class="badge" id="p-layer">LINEAR TV</span>
-      </div>
-      <div class="card-title" id="p-name">Outdoor Billboard</div>
-      <div class="card-body" id="p-desc">
-        主干道路和社区周边的大牌，用于承载长期品牌主张或大档期活动，可与 EPG / TVC 的视觉锚点统一。
-      </div>
-      <div class="card-footer">
-        <span>Axis: <span id="p-coords">Offline · Visual</span></span>
-        <span id="p-next">后续可点击进入渠道详情页</span>
-      </div>
-    </aside>
-
-    <!-- 轴标签 -->
-    <div class="axis-label x-left">OFFLINE</div>
-    <div class="axis-label x-right">ONLINE</div>
-    <div class="axis-label y-bottom">VISUAL</div>
-    <div class="axis-label y-top">AUDIO</div>
+    <div class="hint-line">
+      <span>FROM NICHE INDEX → TOUCHPOINT MAP</span>
+    </div>
   </div>
 
-  <!-- ECharts -->
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
   <script>
-    const chart = echarts.init(document.getElementById('chart-container'));
+    const chartDom = document.getElementById('touch-chart');
+    const chart = echarts.init(chartDom);
 
-    // 触点数据：x=0-100 Offline→Online, y=0-100 Visual→Audio
-   // ========= 触点数据：严格按文档分类命名 =========
-const touchpoints = [
-  // 线下 · 视觉
-  {
-    id: 'billboard',
-    name: '户外大牌 · Outdoor billboard',
-    category: 'Offline · Visual',
-    x: -0.85, y: -0.8,
-    note: '线下视觉：户外大牌，主干道与城市核心位置的大幅广告牌。'
-  },
-  {
-    id: 'lightpoles',
-    name: '灯杆广告 · Light pole banners',
-    category: 'Offline · Visual',
-    x: -0.7, y: -0.75,
-    note: '线下视觉：灯杆、路灯旗帜等街道级曝光。'
-  },
-  {
-    id: 'dealers',
-    name: '营业厅 / 代理商 · Flyers & posters',
-    category: 'Offline · Visual',
-    x: -0.55, y: -0.7,
-    note: '线下视觉：营业厅与代理商（flyer、poster、roll-up stand 等物料）。'
-  },
-  {
-    id: 'print',
-    name: '纸媒 / 网媒 · Print & online media',
-    category: 'Offline · Visual',
-    x: -0.4, y: -0.85,
-    note: '线下视觉：报纸杂志、当地网站 banner 等。'
-  },
+    // 颜色：与象限属性对应
+    const colorMap = {
+      'offline-visual': '#22c55e',
+      'online-visual':  '#38bdf8',
+      'offline-audio':  '#a855f7',
+      'offline-av':     '#fb923c',
+      'online-av':      '#fb7185'
+    };
 
-  // 线下 · 听觉
-  {
-    id: 'radio',
-    name: '广播广告 · Radio spots',
-    category: 'Offline · Audio',
-    x: -0.75, y: 0.8,
-    note: '线下听觉：广播广告，覆盖驾车与家庭收听场景。'
-  },
-  {
-    id: 'callcenter',
-    name: '呼叫中心 · Call center / IVR',
-    category: 'Offline · Audio',
-    x: -0.55, y: 0.8,
-    note: '线下听觉：客服热线 / IVR 语音，负责续费提醒与活动推广。'
-  },
+    // 节点坐标：x 轴 Offline(-1) → Online(+1)，y 轴 Visual(-1) → Audio(+1)
+    const touchpoints = [
+      // 线下视觉
+      { name:'户外大牌 · Outdoor billboard',         x:-0.85, y:-0.65, cat:'offline-visual' },
+      { name:'灯杆广告 · Light pole banners',        x:-0.65, y:-0.62, cat:'offline-visual' },
+      { name:'营业厅 / 代理商 · Flyers & posters',   x:-0.72, y:-0.45, cat:'offline-visual' },
+      { name:'纸媒 / 网站 · Print & online media',    x:-0.55, y:-0.38, cat:'offline-visual' },
 
-  // 线下 · 视觉 + 听觉（必须在坐标轴上：y=0）
-  {
-    id: 'roadshow',
-    name: '路演 · Roadshow',
-    category: 'Offline · Audio + Visual',
-    x: -0.75, y: 0,
-    note: '线下视觉+听觉：路演活动，音响+舞台+车队巡游等。'
-  },
-  {
-    id: 'press',
-    name: '发布会 · Press conference',
-    category: 'Offline · Audio + Visual',
-    x: -0.6, y: 0,
-    note: '线下视觉+听觉：媒体发布会 / 品牌活动。'
-  },
+      // 线下听觉
+      { name:'广播节目 · Radio spots',               x:-0.65, y: 0.80, cat:'offline-audio' },
+      { name:'呼叫中心 · Call center / IVR',         x:-0.40, y: 0.90, cat:'offline-audio' },
 
-  // 线上 · 视觉
-  {
-    id: 'epg',
-    name: 'EPG 广告 · Opening / zapping / volume bar',
-    category: 'Online · Visual',
-    x: 0.55, y: -0.8,
-    note: '线上视觉：EPG（开机广告、频道切换广告、音量条广告）。'
-  },
-  {
-    id: 'ott-splash',
-    name: 'OTT 开屏广告 · App splash',
-    category: 'Online · Visual',
-    x: 0.75, y: -0.75,
-    note: '线上视觉：OTT App 开屏与首页主视觉位。'
-  },
-  {
-    id: 'minibanner',
-    name: 'Mini banner · 小尺寸横幅',
-    category: 'Online · Visual',
-    x: 0.9, y: -0.65,
-    note: '线上视觉：OTT / Web 端各类 mini banner。'
-  },
+      // 线下视觉 + 听觉（在视觉/听觉 0 轴上）
+      { name:'路演 · Roadshow',                      x:-0.55, y: 0.00, cat:'offline-av' },
+      { name:'发布会 · Press conference',            x:-0.30, y: 0.00, cat:'offline-av' },
 
-  // 线上 · 视觉 + 听觉（必须在坐标轴上：y=0）
-  {
-    id: 'tvc',
-    name: 'TVC · Promo spots',
-    category: 'Online · Audio + Visual',
-    x: 0.55, y: 0,
-    note: '线上视觉+听觉：频道内 TVC / promo，统一画面与旁白。'
-  },
-  {
-    id: 'social',
-    name: '社媒 · Social (Facebook / X)',
-    category: 'Online · Audio + Visual',
-    x: 0.75, y: 0,
-    note: '线上视觉+听觉：带配音视频帖、短视频广告等社媒内容。'
-  },
-  {
-    id: 'whatsapp',
-    name: 'WhatsApp · Broadcast list',
-    category: 'Online · Audio + Visual',
-    x: 0.9, y: 0,
-    note: '线上视觉+听觉：WhatsApp 广播，结合语音消息与图片 / 海报。'
-  }
-];
+      // 线上视觉
+      { name:'EPG 广告 · Opening / zapping / volume bar', x: 0.55, y:-0.55, cat:'online-visual' },
+      { name:'OTT 开屏广告 · App splash',           x: 0.78, y:-0.50, cat:'online-visual' },
+      { name:'Mini banner · 小尺寸横幅',             x: 0.92, y:-0.35, cat:'online-visual' },
 
+      // 线上视觉 + 听觉（同样压在中轴线上）
+      { name:'TVC · Promo spots',                    x: 0.55, y: 0.00, cat:'online-av' },
+      { name:'社媒 · Social (Facebook / X)',         x: 0.82, y: 0.02, cat:'online-av' },
+      { name:'WhatsApp · Broadcast list',            x: 0.98, y: 0.03, cat:'online-av' }
+    ];
 
-    function cssVar(name) {
-      return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || '#38bdf8';
-    }
+    const data = touchpoints.map(tp => ({
+      value: [tp.x, tp.y],
+      name: tp.name,
+      category: tp.cat
+    }));
 
-const colorMap = {
-  'Offline · Visual': '#22c55e',
-  'Offline · Audio': '#0ea5e9',
-  'Offline · Audio + Visual': '#f97316',
-  'Online · Visual': '#38bdf8',
-  'Online · Audio + Visual': '#e11d48'
-};
-
-const option = {
-  backgroundColor: 'transparent',
-  grid: {
-    left: '12%',
-    right: '12%',
-    top: '8%',
-    bottom: '18%'
-  },
-  tooltip: {
-    trigger: 'item',
-    backgroundColor: 'rgba(15,23,42,0.95)',
-    borderColor: 'rgba(148,163,184,0.6)',
-    borderWidth: 1,
-    padding: 10,
-    textStyle: {
-      fontFamily: 'Barlow',
-      fontSize: 11,
-      color: '#e5e7eb'
-    },
-    formatter: function (params) {
-      const d = params.data;
-      return [
-        '<strong>' + d.name + '</strong>',
-        '<br/>Segment: ' + d.category,
-        '<br/>' + d.note
-      ].join('');
-    }
-  },
-  xAxis: {
-    type: 'value',
-    min: -1,
-    max: 1,
-    splitLine: { show: false },
-    axisTick: { show: false },
-    axisLine: {
-      show: true,
-      onZero: true,
-      lineStyle: {
-        color: 'rgba(148,163,184,0.7)',
-        width: 1.2
+    const option = {
+      backgroundColor: 'transparent',
+      grid: {
+        // 把图整体往右移，避免遮挡左侧文字
+        left: '38%',
+        right: '8%',
+        top: '18%',
+        bottom: '18%'
       },
-      // 双向箭头
-      symbol: ['arrow', 'arrow'],
-      symbolSize: [10, 12]
-    },
-    axisLabel: {
-      color: 'rgba(148,163,184,0.9)',
-      fontFamily: 'Barlow Condensed',
-      fontSize: 11,
-      margin: 22,
-      formatter: function (val) {
-        if (val === -1) return 'OFFLINE';
-        if (val === 1) return 'ONLINE';
-        return '';
-      }
-    }
-  },
-  yAxis: {
-    type: 'value',
-    min: -1,
-    max: 1,
-    splitLine: { show: false },
-    axisTick: { show: false },
-    axisLine: {
-      show: true,
-      onZero: true,
-      lineStyle: {
-        color: 'rgba(148,163,184,0.7)',
-        width: 1.2
-      },
-      // 双向箭头
-      symbol: ['arrow', 'arrow'],
-      symbolSize: [10, 12]
-    },
-    axisLabel: {
-      color: 'rgba(148,163,184,0.9)',
-      fontFamily: 'Barlow Condensed',
-      fontSize: 11,
-      margin: 18,
-      formatter: function (val) {
-        if (val === -1) return 'VISUAL';
-        if (val === 1) return 'AUDIO';
-        return '';
-      }
-    }
-  },
-  series: [
-    {
-      type: 'scatter',
-      symbol: 'circle',
-      data: touchpoints.map(tp => ({
-        value: [tp.x, tp.y],
-        name: tp.name,
-        category: tp.category,
-        note: tp.note,
-        itemStyle: {
-          color: colorMap[tp.category] || '#38bdf8',
-          shadowBlur: 16,
-          shadowColor: (colorMap[tp.category] || '#38bdf8') + 'dd'
+      tooltip: {
+        trigger: 'item',
+        backgroundColor: 'rgba(15,23,42,0.96)',
+        borderColor: 'rgba(148,163,184,0.45)',
+        borderWidth: 1,
+        textStyle: {
+          fontFamily: 'Barlow',
+          fontSize: 12,
+          color: '#e5e7eb'
         },
-        symbolSize:
-          tp.category.indexOf('Audio + Visual') !== -1 ? 18 : 14
-      })),
-      emphasis: {
-        scale: 1.35
+        extraCssText:
+          'backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);' +
+          'padding:8px 14px;border-radius:18px;box-shadow:0 16px 40px rgba(0,0,0,0.9);',
+        formatter: function (params) {
+          const txt = params.data.name || '';
+          const parts = txt.split('·');
+          if (parts.length === 2) {
+            return (
+              '<div style="font-family:Barlow Condensed;font-size:13px;margin-bottom:2px;">' +
+              parts[0].trim() +
+              '</div>' +
+              '<div style="font-size:11px;color:rgba(148,163,184,0.95);">' +
+              parts[1].trim() +
+              '</div>'
+            );
+          }
+          return txt;
+        }
       },
-      label: {
-        show: true,
-        position: 'right',
-        formatter: '{b}',
-        color: '#e5e7eb',
-        fontFamily: 'Barlow Condensed',
-        fontSize: 11
-      }
-    }
-  ]
-};
+      xAxis: {
+        type: 'value',
+        min: -1.1,
+        max:  1.1,
+        axisLine: {
+          show: true,
+          symbol: ['arrow', 'arrow'],
+          lineStyle: {
+            color: 'rgba(148,163,184,0.85)',
+            width: 1.2
+          }
+        },
+        axisTick: { show: false },
+        axisLabel: { show: false },
+        splitLine: { show: false }
+      },
+      yAxis: {
+        type: 'value',
+        min: -1.1,
+        max:  1.1,
+        axisLine: {
+          show: true,
+          symbol: ['arrow', 'arrow'],
+          lineStyle: {
+            color: 'rgba(148,163,184,0.85)',
+            width: 1.2
+          }
+        },
+        axisTick: { show: false },
+        axisLabel: { show: false },
+        splitLine: { show: false }
+      },
+      // 支持缩放+拖动
+      dataZoom: [
+        {
+          type: 'inside',
+          xAxisIndex: 0,
+          yAxisIndex: 0,
+          zoomOnMouseWheel: true,
+          moveOnMouseMove: true,
+          moveOnMouseWheel: false,
+          preventDefaultMouseMove: false
+        }
+      ],
+      graphic: [
+        // 纵轴顶部 AUDIO（横着）
+        {
+          type: 'text',
+          left: '63%',
+          top: '11%',
+          silent: true,
+          style: {
+            text: 'AUDIO',
+            fontFamily: 'Barlow Condensed',
+            fontSize: 12,
+            letterSpacing: 2,
+            fill: 'rgba(148,163,184,0.9)'
+          }
+        },
+        // 纵轴底部 VISUAL（横着）
+        {
+          type: 'text',
+          left: '63%',
+          bottom: '11%',
+          silent: true,
+          style: {
+            text: 'VISUAL',
+            fontFamily: 'Barlow Condensed',
+            fontSize: 12,
+            letterSpacing: 2,
+            fill: 'rgba(148,163,184,0.9)'
+          }
+        },
+        // 横轴左侧 OFFLINE
+        {
+          type: 'text',
+          left: '38%',
+          bottom: '13%',
+          silent: true,
+          style: {
+            text: 'OFFLINE',
+            fontFamily: 'Barlow Condensed',
+            fontSize: 12,
+            letterSpacing: 2,
+            fill: 'rgba(148,163,184,0.9)'
+          }
+        },
+        // 横轴右侧 ONLINE
+        {
+          type: 'text',
+          right: '8%',
+          bottom: '13%',
+          silent: true,
+          style: {
+            text: 'ONLINE',
+            fontFamily: 'Barlow Condensed',
+            fontSize: 12,
+            letterSpacing: 2,
+            fill: 'rgba(148,163,184,0.9)'
+          }
+        }
+      ],
+      series: [
+        {
+          name: 'Touchpoints',
+          type: 'scatter',
+          data: data,
+          symbol: 'circle',
+          symbolSize: 18,
+          itemStyle: {
+            color: function (params) {
+              return colorMap[params.data.category] || '#e5e7eb';
+            },
+            shadowBlur: 24,
+            shadowColor: 'rgba(15,23,42,0.9)',
+            borderWidth: 1.1,
+            borderColor: 'rgba(15,23,42,0.9)'
+          },
+          label: {
+            show: true,
+            position: 'right',
+            distance: 6,
+            formatter: function (params) {
+              const txt = params.data.name || '';
+              const parts = txt.split('·');
+              return (parts[0] || txt).trim();
+            },
+            fontFamily: 'Barlow Condensed',
+            fontSize: 12,
+            color: '#e5e7eb'
+          },
+          emphasis: {
+            scale: 1.2,
+            itemStyle: {
+              shadowBlur: 40,
+              shadowColor: 'rgba(248,250,252,0.95)'
+            },
+            label: {
+              fontSize: 13,
+              fontWeight: 600
+            }
+          }
+        }
+      ]
+    };
 
-chart.setOption(option);
+    chart.setOption(option);
 
-
-    // 右侧详情卡交互
-    const panel = document.getElementById('detail-panel');
-    const elQuad = document.getElementById('p-quadrant');
-    const elLayer = document.getElementById('p-layer');
-    const elName  = document.getElementById('p-name');
-    const elDesc  = document.getElementById('p-desc');
-    const elCoords = document.getElementById('p-coords');
-
-    function updatePanel(meta) {
-      if (!meta) return;
-      elQuad.textContent = meta.quadrant;
-      elLayer.textContent = meta.layer;
-      elName.textContent  = meta.name;
-      elDesc.textContent  = meta.desc;
-      elCoords.textContent = meta.quadrant;
-      panel.classList.add('active');
-    }
-
-    // 默认选中第一个点
-    updatePanel(points[0]);
-
-    chart.on('click', params => {
-      if (params.data && params.data.meta) {
-        updatePanel(params.data.meta);
-      }
+    window.addEventListener('resize', function(){
+      chart.resize();
     });
-    chart.on('mouseover', params => {
-      if (params.data && params.data.meta) {
-        updatePanel(params.data.meta);
-      }
-    });
-
-    window.addEventListener('resize', () => chart.resize());
   </script>
 </body>
 </html>
