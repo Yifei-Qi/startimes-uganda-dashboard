@@ -1,3 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>Market Niche · Competitive Landscape · StarTimes Uganda</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: #050816;
+      --glass-bg: rgba(15, 23, 42, 0.86);
+      --glass-border: rgba(148, 163, 184, 0.3);
+      --glass-shadow: 0 18px 50px rgba(0,0,0,0.8);
+
+      --text-main: #f9fafb;
+      --text-muted: #94a3b8;
+
+      --c-root:    #06b6d4;
+      --c-spatial: #10b981;
+      --c-market:  #a855f7;
+
+      --font-din:  'Barlow', sans-serif;
+      --font-cond: 'Barlow Condensed', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      font-family: var(--font-din);
+      background: var(--bg-dark);
+      color: var(--text-main);
+      /* 星云背景 */
+      background-image:
+        radial-gradient(circle at 15% 10%, rgba(56,189,248,0.18) 0, transparent 45%),
+        radial-gradient(circle at 85% 80%, rgba(168,85,247,0.18) 0, transparent 50%),
+        radial-gradient(circle at 50% 50%, #020617 0, #020617 60%, #000 100%);
+      position: relative;
+    }
+
+    /* 顶部导航，与 ecology / niche 对齐 */
+    .top-bar {
+      position: fixed;
+      inset: 0 0 auto 0;
+      height: 72px;
+      padding: 0 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(to bottom, rgba(5,8,22,0.96), transparent);
+      z-index: 20;
+      pointer-events: none;
+    }
+    .brand {
+      pointer-events: auto;
+      display:flex;
+      flex-direction:column;
+    }
+    .brand-path {
+      font-family: var(--font-cond);
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--c-root);
+      opacity: .95;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+    .brand-title {
+      font-family: var(--font-cond);
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: .6px;
+      text-transform: uppercase;
+      color: #e5e7eb;
+    }
+
+    .breadcrumb {
+      pointer-events:auto;
+      font-family:var(--font-cond);
+      font-size:11px;
+      letter-spacing:1.4px;
+      text-transform:uppercase;
+      color:rgba(148,163,184,0.9);
+      position:absolute;
+      left:50%;
+      transform:translateX(-50%);
+      top:14px;
+      display:flex;
+      gap:6px;
+      align-items:center;
+    }
+    .crumb-sep{opacity:.6;}
+    .crumb-active{color:#e5e7eb;}
+
+    .back-btn {
+      pointer-events: auto;
+      font-family: var(--font-cond);
+      font-size: 14px;
+      font-weight: 600;
+      padding: 8px 26px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-decoration: none;
+      color: var(--text-main);
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.35);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+      transition: all .25s ease;
+    }
+    .back-btn:hover {
+      background:#38bdf8;
+      color:#020617;
+      border-color:#38bdf8;
+      box-shadow:0 10px 28px rgba(56,189,248,0.5);
+      transform:translateY(-2px);
+    }
+
+    /* 主布局：左文案 + 右图表 */
+    .page-layout {
+      position:absolute;
+      left:0; right:0; top:72px; bottom:0;
+      padding:32px 40px 32px;
+      display:flex;
+      gap:32px;
+    }
+
+    .panel-left {
+      width:360px;
+      max-width:380px;
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-start;
+      pointer-events:none;
+    }
+
+    .hero-label {
+      font-family:var(--font-cond);
+      font-size:12px;
+      font-weight:700;
+      letter-spacing:1.5px;
+      text-transform:uppercase;
+      color:var(--c-market);
+      margin-bottom:10px;
+    }
+    .hero-title {
+      font-family:var(--font-cond);
+      font-size:44px;
+      font-weight:700;
+      line-height:0.9;
+      letter-spacing:-0.5px;
+      text-transform:uppercase;
+      margin-bottom:18px;
+      background:linear-gradient(180deg,#f9fafb 0%,#9ca3af 100%);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+    .hero-subtitle {
+      font-family:var(--font-cond);
+      font-size:14px;
+      letter-spacing:1px;
+      text-transform:uppercase;
+      color:rgba(148,163,184,0.95);
+      margin-bottom:10px;
+    }
+    .hero-desc {
+      font-size:13px;
+      line-height:1.7;
+      color:var(--text-muted);
+      padding-left:16px;
+      border-left:3px solid rgba(148,163,184,0.6);
+      margin-bottom:20px;
+    }
+    .hero-desc strong{color:#e5e7eb;font-weight:500;}
+
+    .hero-list {
+      list-style:none;
+      font-size:12px;
+      line-height:1.6;
+      color:rgba(148,163,184,0.95);
+      margin-bottom:20px;
+    }
+    .hero-list li::before{
+      content:'• ';
+      color:rgba(148,163,184,0.9);
+    }
+
+    /* 信息卡片：不会盖住图表，固定在左列 */
+    .info-card {
+      pointer-events:auto;
+      margin-top:8px;
+      padding:22px 20px 20px;
+      border-radius:24px;
+      background:var(--glass-bg);
+      border:1px solid var(--glass-border);
+      box-shadow:var(--glass-shadow);
+      backdrop-filter:blur(20px);
+      -webkit-backdrop-filter:blur(20px);
+    }
+    .info-header {
+      font-family:var(--font-cond);
+      font-size:11px;
+      letter-spacing:1.4px;
+      text-transform:uppercase;
+      color:rgba(148,163,184,0.9);
+      display:flex;
+      justify-content:space-between;
+      margin-bottom:6px;
+    }
+    .info-header-tag {
+      color:var(--c-root);
+    }
+    .info-title {
+      font-family:var(--font-cond);
+      font-size:24px;
+      font-weight:600;
+      margin-bottom:10px;
+      text-transform:uppercase;
+    }
+    .info-line {
+      display:flex;
+      justify-content:space-between;
+      font-size:12px;
+      margin-bottom:4px;
+      color:rgba(226,232,240,0.95);
+    }
+    .info-label {
+      color:rgba(148,163,184,0.9);
+      font-family:var(--font-cond);
+      text-transform:uppercase;
+      letter-spacing:0.8px;
+      font-size:11px;
+    }
+    .info-swot-title {
+      margin-top:8px;
+      font-family:var(--font-cond);
+      font-size:11px;
+      color:rgba(148,163,184,0.9);
+      letter-spacing:1px;
+      text-transform:uppercase;
+    }
+    .info-swot-list {
+      margin-top:4px;
+      padding-left:14px;
+      font-size:12px;
+      color:rgba(226,232,240,0.92);
+      line-height:1.5;
+    }
+
+    .panel-right {
+      flex:1;
+      position:relative;
+      min-width:0;
+    }
+    #market-chart {
+      position:absolute;
+      inset:0;
+    }
+
+    .axis-hint {
+      position:absolute;
+      left:0;
+      bottom:0;
+      font-family:var(--font-cond);
+      font-size:11px;
+      letter-spacing:1.2px;
+      text-transform:uppercase;
+      color:rgba(148,163,184,0.8);
+      pointer-events:none;
+    }
+
+    @media (max-width: 900px){
+      .page-layout{
+        flex-direction:column;
+        padding:24px 18px 18px;
+      }
+      .panel-left{
+        width:auto;
+        max-width:none;
+      }
+      .panel-right{
+        height:340px;
+      }
+      .hero-title{
+        font-size:36px;
+      }
+      .breadcrumb{display:none;}
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 顶部导航 -->
+  <div class="top-bar">
+    <div class="brand">
+      <div class="brand-path">STARTIMES / UGANDA / NICHE / MARKET</div>
+      <div class="brand-title">Market Niche · Competitive Landscape</div>
+    </div>
+
+    <div class="breadcrumb">
+      <span>Data Space</span><span class="crumb-sep">/</span>
+      <span>Niche</span><span class="crumb-sep">/</span>
+      <span class="crumb-active">Market Niche</span>
+    </div>
+
+    <a class="back-btn" href="./index.html">Back to Niche</a>
+  </div>
+
+  <!-- 主内容 -->
+  <main class="page-layout">
+    <!-- 左侧文案 + 信息卡 -->
+    <section class="panel-left">
+      <div>
+        <div class="hero-label">2.2 MARKET NICHE · PAY TV</div>
+        <h1 class="hero-title">Competitive<br>Landscape</h1>
+        <div class="hero-subtitle">StarTimes vs DStv / GOtv / Azam TV / Zuku TV</div>
+        <p class="hero-desc">
+          本页把乌干达 Pay TV 市场放在一张图里：<strong>内圈</strong>是运营商整体市场份额，
+          <strong>外圈</strong>拆解为价格带、内容深度、本地内容、体育版权、覆盖与渠道等维度，
+          同时看到<span style="white-space:nowrap;">「占有率 × 结构优势」</span>。
+        </p>
+        <ul class="hero-list">
+          <li><strong>2.2.1 市场占有率：</strong>基于 Ipsos NAMS 2023.6 与公司内部估算。</li>
+          <li><strong>2.2.2 SWOT 概览：</strong>悬停运营商或外圈维度，可在下方卡片看到简要 SWOT。</li>
+          <li><strong>2.2.3–2.2.6：</strong>后续小节将分别展开「产品类型与价格带、频道 / 节目包、最优产品、渠道对比」。</li>
+        </ul>
+      </div>
+
+      <!-- 动态信息卡 -->
+      <div class="info-card" id="info-card">
+        <div class="info-header">
+          <span id="card-segment">VALUE / MASS MARKET</span>
+          <span class="info-header-tag" id="card-position">LOW PRICE · WIDE COVERAGE</span>
+        </div>
+        <div class="info-title" id="card-name">StarTimes</div>
+
+        <div class="info-line">
+          <span class="info-label">估算市场份额</span>
+          <span id="card-share">55%</span>
+        </div>
+        <div class="info-line">
+          <span class="info-label">主力价格带</span>
+          <span id="card-price">低价包 · 家庭装</span>
+        </div>
+        <div class="info-line">
+          <span class="info-label">内容 / 频道结构</span>
+          <span id="card-content">本地 + 国际体育均衡，涵盖 DTT / DTH</span>
+        </div>
+
+        <div class="info-swot-title">SWOT SNAPSHOT</div>
+        <ul class="info-swot-list" id="card-swot">
+          <li>价格竞争力强，覆盖城市 + 乡镇主流用户。</li>
+          <li>体育与本地内容组合，对 DSTv / GOtv 形成替代。</li>
+          <li>ARPU 较低，对内容投入与运营效率有压力。</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 右侧图表 -->
+    <section class="panel-right">
+      <div id="market-chart"></div>
+      <div class="axis-hint">FROM MARKET SHARE → PRODUCT → CHANNELS</div>
+    </section>
+  </main>
+
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
 <script>
   // ---------- 数据 ----------
@@ -405,3 +783,6 @@
     updateLayout();
   });
 </script>
+
+</body>
+</html>
