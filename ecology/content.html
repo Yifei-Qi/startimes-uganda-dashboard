@@ -202,7 +202,7 @@
       border-radius: 4px;
     }
 
-    /* 话题标签 / 分栏按钮 */
+    /* 标签行 */
     .hero-tags {
       display: flex;
       flex-wrap: wrap;
@@ -284,22 +284,22 @@
     /* 套餐区：两行，DTT / DTH */
     .bouquet-panel {
       position: absolute;
-      left: 40px;
-      right: 40px;
+      left: 50px;           /* 与 hero-text 左边对齐 */
+      right: auto;
       bottom: 32px;
-      max-width: 760px;
+      max-width: 520px;     /* 与 hero-text 宽度对齐 */
       pointer-events: auto;
     }
 
     .bouquet-row {
-      margin-top: 10px;
-      padding: 10px 14px 12px;
-      border-radius: 24px;
+      margin-top: 8px;
+      padding: 8px 10px 10px;
+      border-radius: 20px;
       background: rgba(15,23,42,0.92);
       border: 1px solid rgba(148,163,184,0.45);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      box-shadow: 0 14px 40px rgba(0,0,0,0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
     }
 
     .bouquet-row-title {
@@ -308,17 +308,17 @@
       letter-spacing: 1.6px;
       text-transform: uppercase;
       color: rgba(148,163,184,0.9);
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
 
     .bouquet-row-grid {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 8px;
+      gap: 6px;
     }
 
     .bouquet-item {
-      border-radius: 18px;
+      border-radius: 16px;
       overflow: hidden;
       background: #020617;
       display: flex;
@@ -330,7 +330,7 @@
       width: 100%;
       height: auto;
       display: block;
-      transform: scale(0.9);
+      transform: scale(0.8);  /* 缩小整体视觉尺寸 */
       transform-origin: center;
     }
 
@@ -614,11 +614,31 @@
       ]
     };
 
-    // 递归为每个节点附加样式（分支颜色 + label 水平）
-    function decorate(node) {
+    // 递归为每个节点附加样式（分支颜色 + 层级大小 + label 水平）
+    function decorate(node, depth) {
+      depth = depth || 0;
       var col = branchColors[node.branch] || branchColors.other;
+
+      var size;
+      var fontSize;
+      var fontWeight = 500;
+
+      if (depth === 0) {
+        size = 14;
+        fontSize = 15;
+        fontWeight = 700;
+      } else if (depth === 1) {
+        size = 10;
+        fontSize = 13;
+      } else {
+        size = 6;
+        fontSize = 11;
+      }
+
+      node.symbolSize = size;
       node.itemStyle = { color: col };
-      node.lineStyle = { color: col, width: 1.2 };
+      node.lineStyle = { color: col, width: depth <= 1 ? 1.6 : 1.1 };
+
       node.label = {
         position: 'right',
         verticalAlign: 'middle',
@@ -626,13 +646,17 @@
         rotate: 0,
         color: '#e5e7eb',
         fontFamily: 'Barlow Condensed',
-        fontSize: 12
+        fontSize: fontSize,
+        fontWeight: fontWeight
       };
+
       if (node.children && node.children.length) {
-        node.children.forEach(decorate);
+        node.children.forEach(function (child) {
+          decorate(child, depth + 1);
+        });
       }
     }
-    decorate(treeData);
+    decorate(treeData, 0);
 
     var option = {
       backgroundColor: 'transparent',
@@ -653,12 +677,11 @@
           type: 'tree',
           layout: 'radial',
           data: [treeData],
-          top: '10%',
-          bottom: '10%',
+          top: '8%',
+          bottom: '8%',
           left: '18%',
           right: '26%',
           symbol: 'circle',
-          symbolSize: 6,
           roam: true,                 // 允许拖拽缩放
           initialTreeDepth: 3,
           expandAndCollapse: true,
@@ -670,17 +693,14 @@
             verticalAlign: 'middle',
             align: 'left',
             color: '#e5e7eb',
-            fontFamily: 'Barlow Condensed',
-            fontSize: 12
+            fontFamily: 'Barlow Condensed'
           },
           leaves: {
             label: {
-              rotate: 0,
-              fontSize: 11
+              rotate: 0
             }
           },
           lineStyle: {
-            width: 1.1,
             curveness: 0.35
           }
         }
