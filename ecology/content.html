@@ -454,166 +454,185 @@
   </div>
 
   <!-- ECharts：径向内容树 -->
-  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
-  <script>
-    var chart = echarts.init(document.getElementById('chart-container'));
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<script>
+  // ===== 1. 初始化 =====
+  var chart = echarts.init(document.getElementById('chart-container'));
 
-    // 简化版内容生态树：从 RIGHTS → LOCALISATION → CHANNELS → BOUQUETS/APP
-    var data = {
-      name: 'Content Engine',
-      children: [
-        {
-          name: 'International Rights',
-          children: [
-            { name: 'Top Leagues &\nGlobal Sports' },
-            { name: 'Movies & Series' },
-            { name: 'Kids & Animation' }
-          ]
-        },
-        {
-          name: 'African & Local Leagues',
-          children: [
-            { name: 'Uganda Premier League' },
-            { name: 'CECAFA / AFCON\nQualifiers' },
-            { name: 'Other African\nDomestic Leagues' }
-          ]
-        },
-        {
-          name: 'Localisation Factory',
-          children: [
-            {
-              name: 'Dubbing & Voice',
-              children: [
-                { name: 'Luganda Dub' },
-                { name: 'English Dub / VO' }
-              ]
-            },
-            {
-              name: 'Editing & Packaging',
-              children: [
-                { name: 'Promo / Trailers' },
-                { name: 'Bumpers & Idents' }
-              ]
-            },
-            {
-              name: 'Scheduling',
-              children: [
-                { name: 'Prime Time\nStory Blocks' },
-                { name: 'Daytime\nTelenovela' },
-                { name: 'Kids & Religion\nSlots' }
-              ]
-            }
-          ]
-        },
-        {
-          name: 'Owned & Local Channels',
-          children: [
-            { name: 'Luganda General\nEntertainment\n(Self-owned)' },
-            { name: 'Sports Hub\n(Local + Intl)' },
-            { name: 'Movie / Series\nThematic Channel' }
-          ]
-        },
-        {
-          name: 'Distribution & Monetisation',
-          children: [
-            {
-              name: 'DTT Bouquets',
-              children: [
-                { name: 'Copa 16k' },
-                { name: 'Nova 14k' },
-                { name: 'Basic 21k' },
-                { name: 'Classic 36k' }
-              ]
-            },
-            {
-              name: 'DTH Bouquets',
-              children: [
-                { name: 'Nova 16k' },
-                { name: 'Smart 36k' },
-                { name: 'Super 60k' },
-                { name: 'Special 21k' }
-              ]
-            },
-            {
-              name: 'StarTimes ON · OTT',
-              children: [
-                { name: 'Live Channels' },
-                { name: 'VOD Library' },
-                { name: 'Data Bundles\nPartnerships' }
-              ]
-            },
-            {
-              name: 'Ads Inventory',
-              children: [
-                { name: 'Channel Spots' },
-                { name: 'In-Program\nSponsorship' },
-                { name: 'Digital / Social\nExtensions' }
-              ]
-            }
-          ]
-        }
-      ]
-    };
-
-    var option = {
-      backgroundColor: 'transparent',
-      tooltip: {
-        trigger: 'item',
-        triggerOn: 'mousemove',
-        formatter: function (params) {
-          return params.data.name || '';
-        }
+  // ===== 2. 内容树数据：一棵 Content Engine → Rights / Localisation / Channels / Bouquets 的树 =====
+  var contentTree = {
+    name: 'Content Engine',
+    desc: '上游版权采购、自制、本地化加工与频道编排的统一中枢。',
+    children: [
+      {
+        name: 'Distribution & Monetisation',
+        desc: '通过 DVB / DTT / DTH / OTT / App 等多渠道分发内容，并与订阅、广告变现打通。',
+        children: [
+          {
+            name: 'DTT / DTH / OTT Bouquets',
+            desc: '将内容打包成不同价位与定位的节目包：DTT Copa / Nova / Basic / Classic；DTH Nova / Smart / Super / Special 等。'
+          },
+          {
+            name: 'StarTimes ON · OTT',
+            desc: '移动端 OTT 平台，与线性频道打通，支持点播、回看和付费专区。'
+          },
+          {
+            name: 'Ads Inventory',
+            desc: '频道时段、赛事赞助、开机画面、OTT 开屏等广告库存。'
+          }
+        ]
       },
-      series: [
-        {
-          type: 'tree',
-          data: [data],
-          layout: 'radial',
-          symbol: 'circle',
-          symbolSize: 6,
-          initialTreeDepth: 2,
-          animationDuration: 800,
-          animationEasing: 'cubicOut',
-          roam: false,               // 保持静态，只用视觉层深度感
-          expandAndCollapse: true,
-          lineStyle: {
-            width: 1,
-            curveness: 0.6,
-            color: 'rgba(148,163,184,0.6)'
+      {
+        name: 'International Rights',
+        desc: '从国际市场购买体育、影视、少儿等节目的版权。',
+        children: [
+          {
+            name: 'Top Leagues & Global Sports',
+            desc: '五大联赛 / 欧战 / NBA 等高价值体育版权，用于体育频道与赛事专栏。'
           },
-          itemStyle: {
-            color: '#38bdf8',
-            borderColor: '#020617',
-            borderWidth: 1,
-            shadowBlur: 10,
-            shadowColor: 'rgba(15,23,42,0.9)'
+          {
+            name: 'Movies & Series',
+            desc: '欧美与亚洲电影、连续剧资源，用于电影台与综合台编排。'
           },
+          {
+            name: 'Kids & Animation',
+            desc: '面向儿童与家庭的动画、教育类节目，为少儿频道与早晚带提供内容。'
+          }
+        ]
+      },
+      {
+        name: 'African & Local Leagues',
+        desc: '围绕非洲本地与区域联赛的体育版权布局。',
+        children: [
+          {
+            name: 'Ugandan Leagues',
+            desc: '乌干达本地联赛与杯赛，是本地体育内容和球迷粘性的基础。'
+          },
+          {
+            name: 'CECAFA / AFCON Qualifiers',
+            desc: '东中非区域赛事与国家队预选赛，强化区域影响力。'
+          },
+          {
+            name: 'Other African Domestic Leagues',
+            desc: '其他非洲国家联赛，用于完善 StarTimes 非洲体育矩阵。'
+          }
+        ]
+      },
+      {
+        name: 'Owned & Local Channels',
+        desc: '乌干达本地自办频道与合作频道。',
+        children: [
+          {
+            name: 'Movie / Series Thematic Channel',
+            desc: '以非洲与国际剧集为主的主题频道，可搭配 Luganda 配音与字幕。'
+          },
+          {
+            name: 'Sports Hub (Local + Intl)',
+            desc: '集合本地联赛与国际版权的体育频道，是体育类用户的主入口。'
+          }
+        ]
+      },
+      {
+        name: 'Localisation Factory',
+        desc: '将国际内容变成乌干达观众“听得懂、看得爽”的加工工厂。',
+        children: [
+          {
+            name: 'Dubbing & Voice',
+            desc: 'Luganda / English / Swahili 等多语种配音与旁白制作。'
+          },
+          {
+            name: 'Editing & Packaging',
+            desc: '本地化剪辑、版式包装、片头片花制作，让内容更贴近本地审美。'
+          },
+          {
+            name: 'Scheduling',
+            desc: '根据受众习惯与节目评级做编排，衔接节目包与广告排期。'
+          }
+        ]
+      }
+    ]
+  };
+
+  // ===== 3. 配置：放大字号、紧凑布局、支持缩放拖拽、悬停提示 =====
+  var option = {
+    backgroundColor: 'transparent',
+    tooltip: {
+      trigger: 'item',
+      confine: true,
+      borderWidth: 0,
+      backgroundColor: 'rgba(15,23,42,0.95)',
+      textStyle: {
+        fontFamily: 'Barlow',
+        fontSize: 12
+      },
+      formatter: function (params) {
+        var d = params.data || {};
+        var title = d.name || '';
+        var desc = d.desc || '';
+        if (!title) return '';
+        return '<strong style="font-family: \\'Barlow Condensed\\'; font-size:13px;">'
+          + title +
+          '</strong>' +
+          (desc
+            ? '<br/><span style="color:#94a3b8; font-size:11px; line-height:1.6;">'
+              + desc + '</span>'
+            : '');
+      }
+    },
+    series: [
+      {
+        type: 'tree',
+        data: [contentTree],
+
+        // 让整棵树集中在中上部，给底部节目包留出空间
+        top: '12%',
+        bottom: '24%',
+        left: '16%',
+        right: '22%',
+
+        layout: 'radial',
+        roam: true,                 // 可以拖拽、缩放
+        nodeClick: 'zoomToNode',    // 点击节点放大到该节点
+        initialTreeDepth: 2,
+        animationDuration: 800,
+        animationEasing: 'cubicOut',
+
+        symbol: 'circle',
+        symbolSize: 10,
+        itemStyle: {
+          color: '#38bdf8',
+          borderColor: 'rgba(15,23,42,0.9)',
+          borderWidth: 1.5,
+          shadowBlur: 16,
+          shadowColor: 'rgba(15,23,42,0.9)'
+        },
+        lineStyle: {
+          color: 'rgba(148,163,184,0.7)',
+          width: 1.2,
+          curveness: 0.2
+        },
+
+        label: {
+          show: true,
+          fontFamily: 'Barlow Condensed',
+          fontSize: 13,             // 放大文字
+          color: '#e5e7eb',
+          distance: 8
+        },
+        leaves: {
           label: {
-            show: true,
-            color: '#e5e7eb',
-            fontFamily: 'Barlow Condensed',
-            fontSize: 11,
-            rotate: 0,
-            formatter: function (params) {
-              return params.data.name;
-            }
-          },
-          leaves: {
-            label: {
-              fontSize: 11
-            },
-            itemStyle: {
-              color: '#f97316'
-            }
+            fontSize: 12,
+            distance: 10
           }
         }
-      ]
-    };
+      }
+    ]
+  };
 
-    chart.setOption(option);
-    window.addEventListener('resize', function () {
-      chart.resize();
-    });
-  </script>
+  chart.setOption(option);
+  window.addEventListener('resize', function () {
+    chart.resize();
+  });
+</script>
 </body>
 </html>
