@@ -2,800 +2,612 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <title>Solar · Off-Grid Power · StarTimes Uganda</title>
+  <title>Spatial Niche · Touchpoint Map · StarTimes Uganda</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Barlow & JetBrains Mono -->
+  <!-- 字体，与其它页面统一 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
 
   <style>
     :root {
       --bg-dark: #050816;
       --text-main: #f9fafb;
       --text-muted: #94a3b8;
-      --c-sub: #06b6d4;
-      --c-solar: #22c55e;
-      --c-dev: #f97316;
-      --font-din: 'Barlow', sans-serif;
+      --font-din:  'Barlow', sans-serif;
       --font-cond: 'Barlow Condensed', sans-serif;
-      --font-mono: 'JetBrains Mono', monospace;
-
-      /* 和 DVB 页面统一的毛玻璃参数 */
-      --glass-bg: rgba(20, 25, 40, 0.65);
-      --glass-border: rgba(255, 255, 255, 0.15);
-      --glass-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.7);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
+      background: radial-gradient(circle at 15% 0%, #0b1120 0%, #020617 55%, #000 100%);
+      color: var(--text-main);
+      font-family: var(--font-din);
       height: 100vh;
       width: 100vw;
       overflow: hidden;
-      font-family: var(--font-din);
-      color: var(--text-main);
-      background: var(--bg-dark);
-      background-image:
-        radial-gradient(circle at 50% 60%, rgba(15,23,42,1) 0%, transparent 75%),
-        radial-gradient(circle at 80% 10%, rgba(6,182,212,0.18) 0%, transparent 55%),
-        radial-gradient(circle at 15% 80%, rgba(34,197,94,0.18) 0%, transparent 55%);
     }
 
-    /* 顶部导航条：保持原结构，仅颜色/风格对齐 DVB */
-   /* 顶栏（与 DVB 页面统一） */
-.top-bar {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  height: 72px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 40px;
-  z-index: 20;
-  background: linear-gradient(to bottom, rgba(5,8,22,0.96), transparent);
-  pointer-events: none;
-}
-.brand {
-  pointer-events: auto;
-  display: flex;
-  flex-direction: column;
-}
-.brand-path {
-  font-family: var(--font-cond);
-  font-size: 11px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: #38bdf8;
-  opacity: 0.9;
-  margin-bottom: 4px;
-  font-weight: 600;
-}
-.brand-title {
-  font-family: var(--font-cond);
-  font-size: 18px;
-  font-weight: 600;
-  letter-spacing: 0.6px;
-  text-transform: uppercase;
-  color: #fff;
-}
-.top-actions {
-  pointer-events: auto;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
+    /* 顶部导航 */
+    .top-bar {
+      position: fixed;
+      inset: 0 0 auto 0;
+      height: 72px;
+      padding: 0 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(to bottom, rgba(5,8,22,0.96), transparent);
+      z-index: 20;
+      pointer-events: none;
+    }
 
-/* 面包屑导航 */
-.breadcrumb {
-  pointer-events: auto;
-  font-family: var(--font-cond);
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 1.4px;
-  color: rgba(148,163,184,0.9);
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  top: 12px;
-  display: flex;
-  gap: 6px;
-  align-items: center;
-}
-.crumb-sep    { opacity: 0.6; }
-.crumb-active { color: #e5e7eb; }
+    .brand {
+      pointer-events: auto;
+      display: flex;
+      flex-direction: column;
+    }
 
-/* Back 按钮（与 DVB 一致） */
-.back-btn {
-  font-family: var(--font-cond);
-  font-size: 14px;
-  font-weight: 600;
-  padding: 8px 24px;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.08);
-  color: var(--text-main);
-  text-decoration: none;
-  border: 1px solid rgba(255,255,255,0.2);
-  backdrop-filter: blur(12px);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.25);
-}
-.back-btn:hover {
-  background: #38bdf8;
-  color: #000;
-  border-color: #38bdf8;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(56,189,248,0.45);
-}
-
-@media (max-width: 768px) {
-  .top-bar {
-    padding: 0 20px;
-    height: 60px;
-  }
-  .breadcrumb { display: none; }
-}
-
-    /* Back 按钮样式复制 DVB 页 */
-    .back-btn {
-      font-family: var(--font-cond); 
-      font-size: 14px; 
+    .brand-path {
+      font-family: var(--font-cond);
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #38bdf8;
+      opacity: .95;
+      margin-bottom: 4px;
       font-weight: 600;
-      padding: 8px 24px;
+    }
+
+    .brand-title {
+      font-family: var(--font-cond);
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: .6px;
+      text-transform: uppercase;
+      color: #e5e7eb;
+    }
+
+    .breadcrumb {
+      pointer-events:auto;
+      font-family:var(--font-cond);
+      font-size:11px;
+      letter-spacing:1.4px;
+      text-transform:uppercase;
+      color:rgba(148,163,184,0.9);
+      position:absolute;
+      left:50%;
+      transform:translateX(-50%);
+      top:14px;
+      display:flex;
+      gap:6px;
+      align-items:center;
+    }
+    .crumb-sep{opacity:.6;}
+    .crumb-active{color:#e5e7eb;}
+
+    .back-btn {
+      pointer-events: auto;
+      font-family: var(--font-cond);
+      font-size: 14px;
+      font-weight: 600;
+      padding: 8px 26px;
       border-radius: 999px;
-      background: rgba(255,255,255,0.08);
-      color: var(--text-main);
-      text-decoration: none;
-      border: 1px solid rgba(255,255,255,0.2);
-      backdrop-filter: blur(12px);
       text-transform: uppercase;
       letter-spacing: 1px;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+      text-decoration: none;
+      color: var(--text-main);
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.35);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+      transition: all .25s ease;
     }
     .back-btn:hover {
-      background: #38bdf8;
-      color: #000;
-      border-color: #38bdf8;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(56,189,248,0.45);
+      background:#38bdf8;
+      color:#020617;
+      border-color:#38bdf8;
+      box-shadow:0 10px 28px rgba(56,189,248,0.5);
+      transform:translateY(-2px);
     }
 
-    /* 主画布 */
-    #chart-container {
+    /* 图表容器 */
+    #touch-chart {
       position:absolute;
       inset:0;
       z-index:1;
     }
 
-    /* 左侧文本 + 面板层 */
+    /* 左侧文案层 */
     .panel-layer {
       position:absolute;
-      inset:68px 0 0 0;
-      padding:32px 40px 32px 40px;
-      z-index:5;
+      inset:0;
+      padding:80px 40px 40px;
+      z-index:10;
       pointer-events:none;
     }
 
-    /* hero 文本块：加毛玻璃，不改位置/内容 */
-    .hero {
+    .hero-block {
       position:absolute;
+      top:96px;
       left:40px;
-      top:40px;
-      max-width:380px;
+      max-width:420px;
       pointer-events:auto;
-      text-shadow:0 16px 40px rgba(0,0,0,0.85);
-
-      padding:24px 26px 22px;
-      border-radius:28px;
-      background: var(--glass-bg);
-      border: 1px solid var(--glass-border);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      box-shadow: var(--glass-shadow);
+      text-shadow:0 14px 40px rgba(0,0,0,0.85);
     }
+
     .hero-label {
       font-family:var(--font-cond);
-      font-size:11px;
-      letter-spacing:2px;
+      font-size:12px;
+      font-weight:700;
+      letter-spacing:1.5px;
       text-transform:uppercase;
       color:#38bdf8;
       margin-bottom:10px;
     }
+
     .hero-title {
       font-family:var(--font-cond);
-      font-size:46px;
-      line-height:0.9;
+      font-size:52px;
+      font-weight:700;
+      line-height:.9;
+      letter-spacing:-1px;
       text-transform:uppercase;
-      letter-spacing:-0.5px;
-      margin-bottom:18px;
-      background:linear-gradient(180deg,#e5e7eb, #64748b);
+      margin-bottom:22px;
+    }
+
+    .hero-title span:nth-child(1){
+      display:block;
+      background:linear-gradient(180deg,#f9fafb 0%,#d1d5db 100%);
       -webkit-background-clip:text;
       -webkit-text-fill-color:transparent;
     }
+    .hero-title span:nth-child(2){
+      display:block;
+      background:linear-gradient(180deg,#f9fafb 0%,#9ca3af 100%);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+
     .hero-desc {
-      font-size:13px;
+      font-size:14px;
       line-height:1.7;
       color:var(--text-muted);
+      padding-left:18px;
+      border-left:3px solid rgba(148,163,184,0.6);
       margin-bottom:22px;
     }
-    .hero-tags {
+
+    .hero-desc strong{color:#e5e7eb;font-weight:600;}
+
+    .hero-chips{
       display:flex;
       flex-wrap:wrap;
       gap:8px;
+      margin-bottom:18px;
     }
-    .hero-tag {
-      font-size:11px;
-      padding:4px 10px;
-      border-radius:999px;
-      border:1px solid rgba(148,163,184,0.60);
-      background:rgba(15,23,42,0.8);
-      color:rgba(226,232,240,0.9);
-    }
-
-    /* 右侧详情卡：沿用原结构 + 毛玻璃参数对齐 DVB */
-    .detail-card {
-      position:absolute;
-      right:40px;
-      top:96px;
-      width:320px;
-      padding:24px 24px 22px;
-      border-radius:28px;
-      background:var(--glass-bg);
-      border:1px solid var(--glass-border);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      box-shadow:var(--glass-shadow);
-      pointer-events:auto;
-      opacity:0;
-      transform:translateY(20px);
-      transition: all .35s cubic-bezier(0.19, 1, 0.22, 1);
-    }
-    .detail-card.visible { opacity:1; transform:translateY(0); }
-
-    .detail-head {
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      margin-bottom:10px;
+    .hero-chip{
       font-family:var(--font-cond);
-      font-size:12px;
-      text-transform:uppercase;
+      font-size:11px;
       letter-spacing:1px;
-      color:rgba(148,163,184,0.9);
-    }
-    .badge-family {
-      padding:2px 10px;
-      border-radius:999px;
-      border:1px solid rgba(148,163,184,0.6);
-      background:rgba(15,23,42,0.85);
-      font-size:11px;
-    }
-    .detail-title {
-      font-family:var(--font-cond);
-      font-size:24px;
       text-transform:uppercase;
-      margin-bottom:8px;
-      letter-spacing:0.5px;
-    }
-    .detail-sub {
-      font-size:12px;
-      color:var(--text-muted);
-      margin-bottom:16px;
-    }
-    .spec-grid {
-      display:grid;
-      grid-template-columns: repeat(2,minmax(0,1fr));
-      gap:10px 16px;
-      margin-bottom:14px;
-      font-size:11px;
-    }
-    .spec-label { color:rgba(148,163,184,0.9); }
-    .spec-val { font-family:var(--font-mono); font-size:12px; }
-
-    .detail-footer {
-      padding-top:10px;
-      border-top:1px solid rgba(148,163,184,0.3);
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      font-size:11px;
-      color:var(--text-muted);
-    }
-    .pill-small {
-      padding:2px 8px;
+      padding:6px 14px;
       border-radius:999px;
-      border:1px solid rgba(148,163,184,0.5);
-      background:rgba(15,23,42,0.85);
-      margin-left:4px;
+      border:1px solid rgba(148,163,184,0.7);
+      background:rgba(15,23,42,0.95);
+      color:#e5e7eb;
+      box-shadow:0 8px 22px rgba(0,0,0,0.6);
     }
 
-    /* 下方产品卡一排：保持排布，只改成毛玻璃风格 */
-    .product-strip {
+    .hint-line{
       position:absolute;
       left:40px;
-      right:40px;
-      bottom:26px;
-      display:grid;
-      grid-template-columns: repeat(3,minmax(0,1fr));
-      gap:16px;
-      pointer-events:auto;
-    }
-    .product-card {
-      padding:16px 18px;
-      border-radius:22px;
-      background:var(--glass-bg);
-      border:1px solid var(--glass-border);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      box-shadow:var(--glass-shadow);
-      font-size:12px;
-      color:rgba(226,232,240,0.95);
-    }
-    .product-header {
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      margin-bottom:6px;
-    }
-    .product-name {
+      bottom:32px;
       font-family:var(--font-cond);
-      font-size:18px;
+      font-size:11px;
+      letter-spacing:1.5px;
       text-transform:uppercase;
-      letter-spacing:1px;
+      color:rgba(148,163,184,0.9);
+      display:flex;
+      gap:10px;
+      align-items:center;
+      pointer-events:none;
     }
-    .product-tag {
-      font-size:10px;
-      padding:3px 8px;
-      border-radius:999px;
-      border:1px solid rgba(148,163,184,0.5);
-      text-transform:uppercase;
+    .hint-line::before{
+      content:'';
+      width:120px;
+      height:1px;
+      background:linear-gradient(90deg,rgba(148,163,184,0.5),transparent);
     }
-    .product-body ul {
-      list-style:none;
-      margin-top:6px;
-      color:var(--text-muted);
-    }
-    .product-body li { margin-top:3px; }
 
-    @media (max-width: 1024px) {
-      body { overflow:auto; }
-      #chart-container { height:60vh; }
-      .panel-layer { position:relative; inset:auto; padding:16px 16px 24px; }
-      .hero { position:relative; left:auto; top:auto; max-width:none; margin-bottom:18px; }
-      .detail-card { position:relative; right:auto; top:auto; width:auto; margin-top:12px; }
-      .product-strip {
-        position:relative;
-        left:auto;right:auto;bottom:auto;
-        margin-top:16px;
-        grid-template-columns:1fr;
-      }
+    @media (max-width:900px){
+      .top-bar{padding:0 18px;height:64px;}
+      .panel-layer{padding:70px 18px 18px;}
+      .hero-block{position:static;max-width:none;margin-right:0;}
+      #touch-chart{top:260px;}
     }
   </style>
 </head>
 <body>
 
-  <!-- 顶栏：与 DVB 页面统一 -->
   <div class="top-bar">
     <div class="brand">
-      <div class="brand-path">STARTIMES / UGANDA / ECOLOGY / SOLAR</div>
-      <div class="brand-title">Solar · Off-Grid Power</div>
-    </div>
-
-    <div class="top-actions">
-      <a class="back-btn" href="./index.html">Back to Ecology</a>
+      <div class="brand-path">STARTIMES / UGANDA / NICHE / SPATIAL</div>
+      <div class="brand-title">Spatial Niche · Touchpoint Map</div>
     </div>
 
     <div class="breadcrumb">
       <span>Data Space</span><span class="crumb-sep">/</span>
-      <span>Ecology</span><span class="crumb-sep">/</span>
-      <span class="crumb-active">Solar · Off-Grid Power</span>
+      <span>Niche</span><span class="crumb-sep">/</span>
+      <span class="crumb-active">Spatial Niche</span>
+    </div>
+
+    <a class="back-btn" href="./index.html">Back to Niche</a>
+  </div>
+
+  <div id="touch-chart"></div>
+
+  <div class="panel-layer">
+    <section class="hero-block">
+      <div class="hero-label">SPATIAL NICHE · UGANDA</div>
+      <h1 class="hero-title">
+        <span>FROM SCREEN</span>
+        <span>TO STREET</span>
+      </h1>
+      <p class="hero-desc">
+        「空间生态位」不是单一广告渠道，而是把乌干达市场上 StarTimes
+        可触达的线上 / 线下 视觉 / 听觉触点放在同一张坐标图里：左右代表从线下场景到线上场景，
+        上下代表从纯视觉到纯听觉。每一个点，是我们可以叠加内容与品牌叙事的一个位置。
+      </p>
+
+      <div class="hero-chips">
+        <div class="hero-chip">Offline · Billboard / Roadshow</div>
+        <div class="hero-chip">On-screen · EPG / Opening ads</div>
+        <div class="hero-chip">Audio · Radio / Call center</div>
+        <div class="hero-chip">Digital · TVC / Social / WhatsApp</div>
+      </div>
+    </section>
+
+    <div class="hint-line">
+      <span>FROM NICHE INDEX → TOUCHPOINT MAP</span>
     </div>
   </div>
 
-
-  <!-- 星系画布 -->
-  <div id="chart-container"></div>
-
-  <!-- 文本与面板层（结构完全保持） -->
-  <div class="panel-layer">
-    <section class="hero">
-      <div class="hero-label">SOLAR PRODUCT ORBITS</div>
-      <h1 class="hero-title">StarTimes<br>Off-Grid Solar</h1>
-      <p class="hero-desc">
-        三个产品族围绕同一颗「StarTimes Solar」恒星运转：入门照明套装 S50 家族、可带电视的中档
-        S130 家族，以及面向「一机多负载」家庭的旗舰 S350 家族。
-        每颗星代表一个具体机型（如 S50B、S130A 等），
-        半径与体积暗示光伏功率与电池容量，帮助快速理解从
-        <strong>基础照明 → 电视娱乐 → 小家电供电</strong>
-        的产品梯度。
-      </p>
-      <div class="hero-tags">
-        <span class="hero-tag">LiFePO₄ 电池 · 长寿命循环</span>
-        <span class="hero-tag">PAYG 分期 · 与 TV 业务协同</span>
-        <span class="hero-tag">家庭级 Off-Grid 场景</span>
-      </div>
-    </section>
-
-    <!-- 右侧详情卡 -->
-    <aside class="detail-card" id="detail-card">
-      <div class="detail-head">
-        <span id="d-family">S50 FAMILY</span>
-        <span class="badge-family" id="d-segment">ENTRY · LIGHTING</span>
-      </div>
-      <div class="detail-title" id="d-name">S50B · Dual 11W Kit</div>
-      <div class="detail-sub" id="d-brief">
-        4Ah LiFePO₄ + 2×11W PV，三盏灯，适合基础照明与手机充电。
-      </div>
-      <div class="spec-grid">
-        <div>
-          <div class="spec-label">PV Module</div>
-          <div class="spec-val" id="d-pv">22W (2×11W)</div>
-        </div>
-        <div>
-          <div class="spec-label">Battery</div>
-          <div class="spec-val" id="d-batt">4Ah · 9.6V LiFePO₄</div>
-        </div>
-        <div>
-          <div class="spec-label">Max Load</div>
-          <div class="spec-val" id="d-load">仅照明 + USB</div>
-        </div>
-        <div>
-          <div class="spec-label">Lights</div>
-          <div class="spec-val" id="d-lights">3× 130-250 lm</div>
-        </div>
-      </div>
-      <div class="detail-footer">
-        <span>
-          Target HH:
-          <span class="pill-small" id="d-target">无市电·基础照明</span>
-        </span>
-        <span>Hover 星点以切换机型</span>
-      </div>
-    </aside>
-
-    <!-- 下方三张产品卡 -->
-    <section class="product-strip">
-      <article class="product-card">
-        <div class="product-header">
-          <div class="product-name">S50 Family</div>
-          <div class="product-tag">Entry Lighting</div>
-        </div>
-        <div class="product-body">
-          <div style="font-family:var(--font-mono);font-size:11px;">
-            10–15W PV · 4Ah LiFePO₄ · 3 lights
-          </div>
-          <ul>
-            <li>• 覆盖 1–2 间房的基础照明，支持手机充电。</li>
-            <li>• 4Ah LiFePO₄ 电池，约 2000 次循环，稳定耐用。</li>
-            <li>• PAYG 功能，可接入现有分期系统。</li>
-          </ul>
-        </div>
-      </article>
-
-      <article class="product-card">
-        <div class="product-header">
-          <div class="product-name">S130 Family</div>
-          <div class="product-tag">TV + Lighting</div>
-        </div>
-        <div class="product-body">
-          <div style="font-family:var(--font-mono);font-size:11px;">
-            50–100W PV · 12Ah · TV up to 60W
-          </div>
-          <ul>
-            <li>• 可稳定驱动 24–32 寸电视 + 多盏灯，家庭娱乐入门。</li>
-            <li>• 12.8V 12Ah LiFePO₄，支持 USB 与多路 DC 输出。</li>
-            <li>• 遥控、分期激活等功能已与 TV 业务逻辑统一。</li>
-          </ul>
-        </div>
-      </article>
-
-      <article class="product-card">
-        <div class="product-header">
-          <div class="product-name">S350 Family</div>
-          <div class="product-tag">Multi-Load</div>
-        </div>
-        <div class="product-body">
-          <div style="font-family:var(--font-mono);font-size:11px;">
-            80–125W PV · 30Ah · Max load 100W
-          </div>
-          <ul>
-            <li>• 兼顾电视、风扇、小音箱等多负载，一机覆盖核心家电。</li>
-            <li>• 更大储能与功率，适合作为「小微能源中心」。</li>
-            <li>• 与 TV、OTT 业务打包可形成高 ARPU 旗舰套餐。</li>
-          </ul>
-        </div>
-      </article>
-    </section>
-  </div>
-
-  <!-- ECharts（保持原样） -->
+  <!-- ECharts -->
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
   <script>
-    // === 数据定义：三条轨道、各机型一颗星 ===
-    const families = {
-      S50: { radius: 30, color: '#22c55e', segment: 'ENTRY · LIGHTING' },
-      S130: { radius: 55, color: '#38bdf8', segment: 'TV · FAMILY' },
-      S350: { radius: 80, color: '#f97316', segment: 'MULTI-LOAD' }
+    var chartDom = document.getElementById('touch-chart');
+    var chart = echarts.init(chartDom);
+
+    // 颜色与类别说明
+    var catStyle = {
+      'offline-visual': {
+        color: '#22c55e',
+        group: '线下视觉 · Offline visual'
+      },
+      'offline-av': {
+        color: '#f97316',
+        group: '线下视觉 + 听觉 · Offline visual + audio'
+      },
+      'online-audio': {
+        color: '#a855f7',
+        group: '线上听觉 · Online audio'
+      },
+      'online-visual': {
+        color: '#38bdf8',
+        group: '线上视觉 · Online visual'
+      },
+      'online-av': {
+        color: '#fb7185',
+        group: '线上视觉 + 听觉 · Online visual + audio'
+      }
     };
 
-    // 每个机型的业务含义与规格
-    const models = [
-      {
-        id: 'S50',
-        family: 'S50',
-        name: 'S50 · 10W Kit',
-        brief: '10W PV + 4Ah LiFePO₄，入门基础照明套装。',
-        pv: '10W',
-        batt: '4Ah · 9.6V LiFePO₄',
-        load: '照明 + USB 充电',
-        lights: '3× 130-250 lm',
-        target: '无市电 · 单间/小户'
-      },
-      {
-        id: 'S50A',
-        family: 'S50',
-        name: 'S50A · 11W Kit',
-        brief: '11W PV，略高发电冗余，更适合多机夜间使用。',
-        pv: '11W',
-        batt: '4Ah · 9.6V LiFePO₄',
-        load: '照明 + USB 充电',
-        lights: '3× 130-250 lm',
-        target: '基础照明 · 多手机'
-      },
-      {
-        id: 'S50B',
-        family: 'S50',
-        name: 'S50B · Dual 11W',
-        brief: '2×11W PV 提升阴雨天容错，适合高使用频率家庭。',
-        pv: '22W (2×11W)',
-        batt: '4Ah · 9.6V LiFePO₄',
-        load: '照明 + USB 充电',
-        lights: '3× 130-250 lm',
-        target: '高使用频率 · 多终端'
-      },
-      {
-        id: 'S50C',
-        family: 'S50',
-        name: 'S50C · 15W',
-        brief: '15W PV 模块，安装更简便，适合标准小户照明。',
-        pv: '15W',
-        batt: '4Ah · 9.6V LiFePO₄',
-        load: '照明 + USB 充电',
-        lights: '3× 130-250 lm',
-        target: '典型 1–2 间房'
-      },
-      {
-        id: 'S130',
-        family: 'S130',
-        name: 'S130 · 50W',
-        brief: '50W PV + 12Ah，可带小电视与多盏灯。',
-        pv: '50W',
-        batt: '12Ah · 12.8V LiFePO₄',
-        load: '≤60W（TV + 灯）',
-        lights: '4× LED 灯',
-        target: '入门电视家庭'
-      },
-      {
-        id: 'S130B',
-        family: 'S130',
-        name: 'S130B · 100W',
-        brief: '100W PV + 12Ah，提升雨季发电与晚间续航。',
-        pv: '100W',
-        batt: '12Ah · 12.8V LiFePO₄',
-        load: '≤60W（TV + 灯）',
-        lights: '4× LED 灯',
-        target: '高使用率电视户'
-      },
-      {
-        id: 'S130A',
-        family: 'S130',
-        name: 'S130A · 65W',
-        brief: '65W PV 折中方案，在成本与性能之间取得平衡。',
-        pv: '65W',
-        batt: '12Ah · 12.8V LiFePO₄',
-        load: '≤60W',
-        lights: '4× LED 灯',
-        target: '主流农村家庭'
-      },
-      {
-        id: 'S350',
-        family: 'S350',
-        name: 'S350 · 80W',
-        brief: '80W PV + 30Ah，适合电视 + 多灯组合。',
-        pv: '80W',
-        batt: '30Ah · 12.8V LiFePO₄',
-        load: '≤100W（TV + Fan）',
-        lights: '4× LED 灯',
-        target: '多负载入门'
-      },
-      {
-        id: 'S350B',
-        family: 'S350',
-        name: 'S350B · 100W',
-        brief: '100W PV + 30Ah，兼顾功率与续航的中档主力。',
-        pv: '100W',
-        batt: '30Ah · 12.8V LiFePO₄',
-        load: '≤100W',
-        lights: '4× LED 灯',
-        target: '旗舰电视套餐'
-      },
-      {
-        id: 'S350A',
-        family: 'S350',
-        name: 'S350A · 125W',
-        brief: '125W PV 顶配版本，适合负载多、地理条件较差区域。',
-        pv: '125W',
-        batt: '30Ah · 12.8V LiFePO₄',
-        load: '≤100W',
-        lights: '4× LED 灯',
-        target: '小型商户 / 高负载'
-      }
+    // 坐标系范围固定 [-100, 100]，便于窗口适配
+    // 重新布置所有点，留出足够间距
+    var touchpoints = [
+      // Offline visual（左下）
+      { name: '户外大牌\nOutdoor billboard',     cat: 'offline-visual', x: -75, y: -35, labelPos:'right',  labelOffset:[8, -4] },
+      { name: '灯杆广告\nLight pole banners',    cat: 'offline-visual', x: -60, y: -55, labelPos:'right',  labelOffset:[8, -4] },
+      { name: '营业厅 / 代理商\nFlyers & posters', cat:'offline-visual', x:-45, y:-40, labelPos:'right',  labelOffset:[8, -4] },
+      { name: '纸媒 & 网媒\nPrint & online media',cat:'offline-visual', x:-55, y:-70, labelPos:'right',  labelOffset:[8, -4] },
+
+      // Offline visual + audio（靠近原点，略高于横轴）
+      { name: '路演\nRoadshow',                 cat:'offline-av',    x:-10, y:  8, labelPos:'top',    labelOffset:[0, -14] },
+      { name: '发布会\nPress conference',       cat:'offline-av',    x:  8, y:  8, labelPos:'top',    labelOffset:[0, -14] },
+
+      // Online audio（右上）
+      { name: '广播节目\nRadio spots',          cat:'online-audio', x: 25, y: 65, labelPos:'right',  labelOffset:[8, -4] },
+      { name: '呼叫中心\nCall center / IVR',    cat:'online-audio', x: 48, y: 78, labelPos:'right',  labelOffset:[8, -4] },
+
+      // Online visual（右下）
+      { name: 'EPG 广告\nOpening / zapping / volume bar', cat:'online-visual', x: 40, y:-55, labelPos:'right', labelOffset:[8, -4] },
+      { name: 'OTT 开屏广告\nApp splash',       cat:'online-visual', x: 60, y:-42, labelPos:'right', labelOffset:[8, -4] },
+      { name: 'Mini banner\n小尺寸横幅',         cat:'online-visual', x: 78, y:-32, labelPos:'right', labelOffset:[8, -4] },
+
+      // Online visual + audio（横轴右侧）
+      { name: 'TVC\nPromo spots',               cat:'online-av',    x: 30, y:  4, labelPos:'bottom', labelOffset:[0, 14] },
+      { name: '社媒\nSocial / Facebook / X',    cat:'online-av',    x: 50, y:  4, labelPos:'bottom', labelOffset:[0, 14] },
+      { name: 'WhatsApp 群发\nBroadcast list',   cat:'online-av',    x: 75, y:  4, labelPos:'bottom', labelOffset:[0, 14] }
     ];
 
-    // 将机型映射到极坐标
-    const angleStep = 360 / models.length;
-    const points = models.map((m, idx) => {
-      const fam = families[m.family];
-      const baseRadius = fam.radius;
-      const radius = baseRadius + (Math.random() - 0.5) * 6; // 轻微扰动
-      const angle = idx * angleStep + (Math.random() - 0.5) * 8;
-      const sizeBase = m.family === 'S50' ? 10 : (m.family === 'S130' ? 14 : 18);
-      const size = sizeBase + Math.random() * 4;
-
+    // 统一 data 结构，并把 label 的位置写在每个点上
+    var pointData = touchpoints.map(function (tp) {
       return {
-        value: [radius, angle],
-        symbolSize: size,
-        itemStyle: {
-          color: fam.color,
-          shadowBlur: 25,
-          shadowColor: fam.color
+        value: [tp.x, tp.y],
+        name: tp.name,
+        category: tp.cat,
+        symbolSize: 14,
+        label: {
+          position: tp.labelPos || 'right',
+          offset: tp.labelOffset || [8, 0]
         },
-        model: m
+        itemStyle: {
+          color: catStyle[tp.cat].color
+        }
       };
     });
 
-    const chart = echarts.init(document.getElementById('chart-container'));
-
-    const option = {
+    var option = {
       backgroundColor: 'transparent',
-      animation: true,
-      polar: {
-        center: ['50%', '52%'],
-        radius: '85%'
+      grid: {
+        left: '40%',   // 图表整体靠右，避免挡住左侧文案
+        right: '6%',
+        top: '14%',
+        bottom: '18%'
       },
-      angleAxis: {
+      xAxis: {
         type: 'value',
-        min: 0, max: 360,
-        show: false,
-        startAngle: 90
+        min: -100,
+        max: 100,
+        splitLine: { show: false },
+        axisLine: { show: false },
+        axisTick: { show: false },
+        axisLabel: { show: false }
       },
-      radiusAxis: {
+      yAxis: {
         type: 'value',
-        min: 0, max: 100,
-        show: false
+        min: -100,
+        max: 100,
+        splitLine: { show: false },
+        axisLine: { show: false },
+        axisTick: { show: false },
+        axisLabel: { show: false }
       },
-      tooltip: { show: false },
+      tooltip: {
+        trigger: 'item',
+        backgroundColor: 'rgba(15,23,42,0.96)',
+        borderColor: 'rgba(148,163,184,0.7)',
+        borderWidth: 1,
+        padding: 10,
+        textStyle: {
+          fontFamily: 'Barlow, -apple-system, BlinkMacSystemFont, system-ui',
+          fontSize: 11,
+          color: '#e5e7eb'
+        },
+        formatter: function (params) {
+          var d = params.data;
+          var meta = catStyle[d.category] || {};
+          var x = d.value[0];
+          var y = d.value[1];
+
+          var pos = [];
+          pos.push(x < 0 ? 'Offline' : 'Online');
+          if (y > 20) pos.push('Audio');
+          else if (y < -20) pos.push('Visual');
+          else pos.push('Audio + Visual');
+
+          return [
+            '<div style="font-weight:600;font-size:12px;margin-bottom:4px;">',
+            d.name.replace('\\n', ' · '),
+            '</div>',
+            meta.group
+              ? '<div style="color:#a5b4fc;">' + meta.group + '</div>'
+              : '',
+            '<div style="color:#9ca3af;margin-top:4px;">象限：' + pos.join(' · ') + '</div>'
+          ].join('');
+        }
+      },
       series: [
-        // 恒星与光晕
+        // 1. 自定义坐标轴（含四个箭头与四个单位标签）
         {
           type: 'custom',
-          coordinateSystem: 'none',
-          renderItem: function(params, api) {
-            const cx = api.getWidth() / 2;
-            const cy = api.getHeight() * 0.52;
-            const maxR = Math.min(api.getWidth(), api.getHeight()) * 0.4;
+          coordinateSystem: 'cartesian2d',
+          data: [0],
+          silent: true,
+          zlevel: 1,
+          renderItem: function (params, api) {
+            // 轴线长度用 -80~80，单位标签用 -100 / 100，始终随坐标自适应居中
+            var xLeft   = api.coord([-80,   0]);
+            var xRight  = api.coord([ 80,   0]);
+            var yBottom = api.coord([  0, -80]);
+            var yTop    = api.coord([  0,  80]);
+
+            var pOffline = api.coord([-100, 0]);
+            var pOnline  = api.coord([ 100, 0]);
+            var pVisual  = api.coord([   0,-100]);
+            var pAudio   = api.coord([   0, 100]);
+
+            var arrow = 10;
+
             return {
               type: 'group',
               children: [
+                // 横轴线
                 {
-                  type: 'circle',
-                  shape: { cx, cy, r: maxR * 0.15 },
+                  type: 'line',
+                  shape: { x1: xLeft[0], y1: xLeft[1], x2: xRight[0], y2: xRight[1] },
+                  style: { stroke: 'rgba(148,163,184,0.9)', lineWidth: 1.4 }
+                },
+                // 纵轴线
+                {
+                  type: 'line',
+                  shape: { x1: yBottom[0], y1: yBottom[1], x2: yTop[0], y2: yTop[1] },
+                  style: { stroke: 'rgba(148,163,184,0.9)', lineWidth: 1.4 }
+                },
+                // 左箭头（Offline）
+                {
+                  type: 'polygon',
+                  shape: {
+                    points: [
+                      [xLeft[0], xLeft[1]],
+                      [xLeft[0] + arrow, xLeft[1] - arrow * 0.5],
+                      [xLeft[0] + arrow, xLeft[1] + arrow * 0.5]
+                    ]
+                  },
+                  style: { fill: 'rgba(148,163,184,0.9)' }
+                },
+                // 右箭头（Online）
+                {
+                  type: 'polygon',
+                  shape: {
+                    points: [
+                      [xRight[0], xRight[1]],
+                      [xRight[0] - arrow, xRight[1] - arrow * 0.5],
+                      [xRight[0] - arrow, xRight[1] + arrow * 0.5]
+                    ]
+                  },
+                  style: { fill: 'rgba(148,163,184,0.9)' }
+                },
+                // 上箭头（Audio）
+                {
+                  type: 'polygon',
+                  shape: {
+                    points: [
+                      [yTop[0], yTop[1]],
+                      [yTop[0] - arrow * 0.5, yTop[1] + arrow],
+                      [yTop[0] + arrow * 0.5, yTop[1] + arrow]
+                    ]
+                  },
+                  style: { fill: 'rgba(148,163,184,0.9)' }
+                },
+                // 下箭头（Visual）
+                {
+                  type: 'polygon',
+                  shape: {
+                    points: [
+                      [yBottom[0], yBottom[1]],
+                      [yBottom[0] - arrow * 0.5, yBottom[1] - arrow],
+                      [yBottom[0] + arrow * 0.5, yBottom[1] - arrow]
+                    ]
+                  },
+                  style: { fill: 'rgba(148,163,184,0.9)' }
+                },
+                // 四个单位标签，全部与坐标轴严格居中对齐
+                {
+                  type: 'text',
                   style: {
-                    fill: 'rgba(248,250,252,0.95)',
-                    shadowBlur: 40,
-                    shadowColor: 'rgba(226,232,240,0.9)'
+                    text: 'OFFLINE',
+                    x: pOffline[0],
+                    y: pOffline[1] + 20,
+                    textAlign: 'center',
+                    textVerticalAlign: 'middle',
+                    fontFamily: 'Barlow Condensed',
+                    fontSize: 13,
+                    letterSpacing: 1,
+                    fill: '#e5e7eb'
                   }
                 },
+                {
+                  type: 'text',
+                  style: {
+                    text: 'ONLINE',
+                    x: pOnline[0],
+                    y: pOnline[1] + 20,
+                    textAlign: 'center',
+                    textVerticalAlign: 'middle',
+                    fontFamily: 'Barlow Condensed',
+                    fontSize: 13,
+                    letterSpacing: 1,
+                    fill: '#e5e7eb'
+                  }
+                },
+                {
+                  type: 'text',
+                  style: {
+                    text: 'VISUAL',
+                    x: pVisual[0],
+                    y: pVisual[1] - 20,
+                    textAlign: 'center',
+                    textVerticalAlign: 'middle',
+                    fontFamily: 'Barlow Condensed',
+                    fontSize: 13,
+                    letterSpacing: 1,
+                    fill: '#e5e7eb'
+                  }
+                },
+                {
+                  type: 'text',
+                  style: {
+                    text: 'AUDIO',
+                    x: pAudio[0],
+                    y: pAudio[1] + 20,
+                    textAlign: 'center',
+                    textVerticalAlign: 'middle',
+                    fontFamily: 'Barlow Condensed',
+                    fontSize: 13,
+                    letterSpacing: 1,
+                    fill: '#e5e7eb'
+                  }
+                }
               ]
             };
-          },
-          data: [0],
-          z: 0
+          }
         },
 
-        // 家族轨道
-        {
-          type: 'custom',
-          coordinateSystem: 'none',
-          renderItem: function(params, api) {
-            const cx = api.getWidth() / 2;
-            const cy = api.getHeight() * 0.52;
-            const maxR = Math.min(api.getWidth(), api.getHeight()) * 0.4;
-            const rings = [];
-            Object.values(families).forEach((f) => {
-              const r = maxR * (f.radius / 100);
-              rings.push({
-                type: 'circle',
-                shape: { cx, cy, r },
-                style: {
-                  stroke: f.color,
-                  fill: 'none',
-                  lineWidth: 1,
-                  opacity: 0.5
-                }
-              });
-            });
-            return { type: 'group', children: rings };
-          },
-          data: [0],
-          z: 1
-        },
-
-        // 星点
+        // 2. 动态光晕层（effectScatter）
         {
           type: 'effectScatter',
-          coordinateSystem: 'polar',
-          data: points,
-          rippleEffect: { scale: 2.4, brushType: 'stroke' },
+          coordinateSystem: 'cartesian2d',
+          data: pointData,
+          symbolSize: function (val, params) {
+            return params.data.symbolSize;
+          },
+          rippleEffect: {
+            scale: 3.5,
+            brushType: 'stroke'
+          },
+          showEffectOn: 'render',
+          zlevel: 2,
+          itemStyle: {
+            shadowBlur: 20,
+            shadowColor: 'rgba(15,23,42,0.85)'
+          },
+          tooltip: { show: false },
+          label: { show: false }
+        },
+
+        // 3. 实体圆点 + 文本层
+        {
+          type: 'scatter',
+          coordinateSystem: 'cartesian2d',
+          data: pointData,
+          symbolSize: function (val, params) {
+            return params.data.symbolSize;
+          },
+          zlevel: 3,
           label: {
             show: true,
-            formatter: function(p){ return p.data.model.id; },
-            position: 'right',
-            color: '#e5e7eb',
-            fontFamily: 'Barlow Condensed',
+            formatter: '{b}',
+            color: '#f9fafb',
+            fontFamily: 'Barlow, -apple-system, system-ui',
             fontSize: 12
           },
-          z: 3
+          itemStyle: {
+            borderWidth: 2,
+            borderColor: 'rgba(15,23,42,0.9)'
+          }
         }
       ]
     };
 
     chart.setOption(option);
-
-    // 详情卡联动
-    const card = document.getElementById('detail-card');
-    const elFamily = document.getElementById('d-family');
-    const elSeg = document.getElementById('d-segment');
-    const elName = document.getElementById('d-name');
-    const elBrief = document.getElementById('d-brief');
-    const elPv = document.getElementById('d-pv');
-    const elBatt = document.getElementById('d-batt');
-    const elLoad = document.getElementById('d-load');
-    const elLights = document.getElementById('d-lights');
-    const elTarget = document.getElementById('d-target');
-
-    function updateCard(model) {
-      const famMeta = families[model.family];
-      elFamily.textContent = model.family + ' FAMILY';
-      elSeg.textContent = famMeta.segment;
-      elSeg.style.borderColor = famMeta.color;
-      elSeg.style.color = famMeta.color;
-
-      elName.textContent = model.name;
-      elBrief.textContent = model.brief;
-      elPv.textContent = model.pv;
-      elBatt.textContent = model.batt;
-      elLoad.textContent = model.load;
-      elLights.textContent = model.lights;
-      elTarget.textContent = model.target;
-      elTarget.style.borderColor = famMeta.color;
-      card.classList.add('visible');
-    }
-
-    // 初始显示一个主力机型
-    updateCard(models.find(m => m.id === 'S50B'));
-
-    chart.on('mouseover', function (params) {
-      if (params.seriesType !== 'effectScatter') return;
-      const m = params.data.model;
-      updateCard(m);
+    window.addEventListener('resize', function () {
+      chart.resize();
     });
-
-    window.addEventListener('resize', () => chart.resize());
   </script>
+
 </body>
 </html>
