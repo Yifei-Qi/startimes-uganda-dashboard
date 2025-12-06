@@ -5,22 +5,47 @@
   <title>StarTimes Uganda · Data Space</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <!-- 统一字体：Barlow + JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
   <style>
+    :root {
+      --bg-dark: #050816;
+      --glass-bg: rgba(20, 25, 40, 0.65);
+      --glass-border: rgba(255, 255, 255, 0.15);
+      --glass-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.7);
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+
+      --c-sub:   #06b6d4; /* Niche 蓝 */
+      --c-eco:   #fbbf24; /* Ecology 金 */
+      --font-din:  'Barlow', sans-serif;
+      --font-cond: 'Barlow Condensed', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
+
     html, body {
       width: 100%;
       height: 100%;
       overflow: hidden;
-      font-family: -apple-system, BlinkMacSystemFont,"SF Pro Text",
-        "Segoe UI", Roboto,"Helvetica Neue", Arial,"Noto Sans SC", sans-serif;
-      background: #020617;
-      color: #e5e7eb;
+      font-family: var(--font-din);
+      background: var(--bg-dark);
+      color: var(--text-main);
     }
+
     #app {
       position: relative;
       width: 100%;
       height: 100%;
-      background: radial-gradient(circle at top, #020617 0, #020617 45%, #000000 100%);
+      background-image:
+        radial-gradient(circle at 50% 60%, #020617 0, #020617 45%, #000000 100%),
+        radial-gradient(circle at 85% 20%, rgba(6, 182, 212, 0.08) 0%, transparent 45%),
+        radial-gradient(circle at 15% 80%, rgba(16, 185, 129, 0.08) 0%, transparent 45%);
+      overflow: hidden;
     }
 
     /* 背景空间光晕 */
@@ -55,51 +80,145 @@
       z-index: 2;
     }
 
-    /* 左上角品牌区 */
-    .brand {
+    /* 顶部栏：品牌 + 入口标签（与 Ecology 页风格统一） */
+    .top-bar {
       position: absolute;
-      top: 20px;
-      left: 26px;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
       z-index: 10;
+      background: linear-gradient(to bottom, rgba(5,8,22,0.96), transparent);
       pointer-events: none;
+    }
+
+    .brand {
+      pointer-events: auto;
+      display: flex;
+      flex-direction: column;
       text-shadow: 0 0 18px rgba(15,23,42,0.9);
     }
+    .brand-path {
+      font-family: var(--font-cond);
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(148,163,184,0.9);
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
     .brand-title {
+      font-family: var(--font-cond);
       font-size: 18px;
       letter-spacing: 0.16em;
       text-transform: uppercase;
       font-weight: 600;
       color: #fef9c3;
     }
-    .brand-subtitle {
-      margin-top: 4px;
-      font-size: 11px;
-      color: #9ca3af;
-    }
 
-    /* 右上角导航 */
     .top-nav {
-      position: absolute;
-      top: 18px;
-      right: 24px;
+      pointer-events: auto;
       display: flex;
       gap: 10px;
-      z-index: 10;
+      align-items: center;
     }
+
+    /* 统一按钮/标签风格：参考 sector-chip */
     .nav-pill {
-      font-size: 12px;
-      padding: 6px 14px;
+      font-family: var(--font-cond);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 6px 16px;
       border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.5);
+      border: 1px solid rgba(148,163,184,0.6);
       background: rgba(15,23,42,0.9);
       color: #e5e7eb;
       text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       backdrop-filter: blur(10px);
-      transition: all 0.18s ease-out;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+      transition: all 0.2s ease-out;
     }
+    .nav-pill-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #6b7280;
+    }
+    .nav-pill.eco .nav-pill-dot   { background: var(--c-eco); }
+    .nav-pill.niche .nav-pill-dot { background: var(--c-sub); }
+
     .nav-pill:hover {
+      transform: translateY(-1px);
       border-color: rgba(248,250,252,0.95);
       background: rgba(15,23,42,0.98);
+      box-shadow: 0 8px 22px rgba(15,23,42,0.9);
+    }
+
+    /* 中部左侧：大标题（与 Ecology 页 hero 样式统一） */
+    .hero-text {
+      position: absolute;
+      top: 110px;
+      left: 50px;
+      max-width: 420px;
+      text-shadow: 0 4px 30px rgba(0,0,0,0.9);
+      pointer-events: none;
+      user-select: none;
+      z-index: 5;
+    }
+    .hero-label {
+      font-family: var(--font-cond);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--c-sub);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: 1.5px;
+    }
+    .hero-label::before {
+      content: '';
+      width: 34px;
+      height: 1px;
+      background: rgba(148,163,184,0.7);
+    }
+    .hero-title {
+      font-family: var(--font-cond);
+      font-size: 52px;          /* 放大主页大标题 */
+      font-weight: 700;
+      line-height: 0.9;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: -0.5px;
+      background: linear-gradient(180deg, #ffffff 0%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-desc {
+      font-size: 13px;
+      line-height: 1.6;
+      font-weight: 300;
+      color: var(--text-muted);
+      position: relative;
+      padding-left: 18px;
+    }
+    .hero-desc::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 4px;
+      bottom: 4px;
+      width: 3px;
+      border-radius: 4px;
+      background: rgba(148,163,184,0.8);
     }
 
     /* 左下角说明 */
@@ -108,10 +227,10 @@
       left: 26px;
       bottom: 22px;
       z-index: 10;
-      max-width: 360px;
-      font-size: 12px;
-      color: #9ca3af;
-      line-height: 1.5;
+      max-width: 380px;
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.6;
       backdrop-filter: blur(10px);
       text-shadow: 0 0 12px rgba(15,23,42,0.95);
     }
@@ -129,13 +248,38 @@
       font-size: 11px;
       color: #6b7280;
       text-shadow: 0 0 10px rgba(15,23,42,0.9);
+      font-family: var(--font-cond);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
 
     @media (max-width: 768px) {
-      .brand-title { font-size: 14px; }
-      .brand-subtitle { font-size: 10px; }
-      .top-nav { top: 60px; right: 14px; }
-      .bottom-info { left: 16px; right: 16px; bottom: 16px; font-size: 11px; }
+      .top-bar {
+        padding: 0 16px;
+        height: 64px;
+      }
+      .hero-text {
+        top: 86px;
+        left: 18px;
+        right: 18px;
+        max-width: none;
+      }
+      .hero-title {
+        font-size: 38px;
+      }
+      .bottom-info {
+        left: 16px;
+        right: 16px;
+        bottom: 16px;
+        font-size: 11px;
+      }
+      .top-nav {
+        gap: 6px;
+      }
+      .nav-pill {
+        padding: 4px 10px;
+        font-size: 10px;
+      }
     }
   </style>
 </head>
@@ -146,25 +290,48 @@
     <div class="glow g2"></div>
     <div class="glow g3"></div>
 
-    <!-- 网络图画布 -->
+    <!-- 顶部：品牌 + 入口标签 -->
+    <div class="top-bar">
+      <div class="brand">
+        <div class="brand-path">STARTIMES / UGANDA</div>
+        <div class="brand-title">DATA SPACE UNIVERSE</div>
+      </div>
+      <div class="top-nav">
+        <a class="nav-pill eco" href="ecology/index.html">
+          <span class="nav-pill-dot"></span><span>生态 Ecology</span>
+        </a>
+        <a class="nav-pill niche" href="niche/index.html">
+          <span class="nav-pill-dot"></span><span>生态位 Niche</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 中部左侧：主页大标题 -->
+    <div class="hero-text">
+      <div class="hero-label">MEDIA ECOLOGY · UNIVERSE MAP</div>
+      <h1 class="hero-title">
+        StarTimes Uganda<br>
+        Data Space
+      </h1>
+      <div class="hero-desc">
+        屏幕中央由两个发光星系构成目录结构：
+        左侧为 <strong>Ecology</strong> 业务生态星系，右侧为
+        <strong>Niche</strong> 生态位星系。每个星系的核心恒星代表一级模块，
+        环绕的轨道行星代表下钻入口。拖动 / 缩放即可在宇宙中浏览，
+        点击核心或行星节点进入对应分析页。
+      </div>
+    </div>
+
+    <!-- 网络图画布（两个发光星系） -->
     <div id="galaxy"></div>
 
-    <div class="brand">
-      <div class="brand-title">STARTIMES UGANDA · DATA SPACE</div>
-      <div class="brand-subtitle">Ecology · Niche · Spatial Niche · Market Niche</div>
-    </div>
-
-    <div class="top-nav">
-      <a class="nav-pill" href="ecology/index.html">生态 Ecology</a>
-      <a class="nav-pill" href="niche/index.html">生态位 Niche</a>
-    </div>
-
     <div class="bottom-info">
-      <strong>交互说明：</strong>拖动画布、滚轮缩放；点击节点进入模块。
-      当前层级展示两大核心节点 <strong>Ecology</strong> 与 <strong>Niche</strong>，
+      <strong>交互说明：</strong>按住空白区域拖动画布，鼠标滚轮缩放；
+      悬停查看节点名称，点击节点进入模块。
+      当前层级展示两大核心星系 <strong>Ecology</strong> 与 <strong>Niche</strong>，
       生态位内部进一步分化为 <strong>Spatial niche</strong> 与
-      <strong>Market niche</strong>，并以人口、媒体、户外、社媒等“卫星节点”
-      织成整体媒体生态网络。
+      <strong>Market niche</strong>，生态内部则区分
+      <strong>横向产业布局</strong> 与 <strong>纵向不可替代性</strong>。
     </div>
 
     <div class="bottom-right">
@@ -173,193 +340,289 @@
   </div>
 
   <!-- ECharts -->
-<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
-<script>
-  var chart = echarts.init(document.getElementById('galaxy'));
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+  <script>
+    var chart = echarts.init(document.getElementById('galaxy'));
 
-  // 固定坐标布局：确保一进来能看全
-  var nodes = [
-    // 一级：生态位 & 生态
-    {
-      name: '生态位 · Niche',
-      x: 420,
-      y: 260,
-      symbolSize: 90,
-      itemStyle: {
-        color: '#38bdf8',
-        opacity: 0.95,
-        shadowBlur: 40,
-        shadowColor: 'rgba(56,189,248,0.85)'
-      },
-      label: {
-        show: true,
-        fontSize: 22,
-        fontWeight: 600,
-        color: '#e5e7eb'
-      },
-      link: 'niche/index.html'
-    },
-    {
-      name: '生态 · Ecology',
-      x: 760,
-      y: 260,
-      symbolSize: 90,
-      itemStyle: {
-        color: '#fbbf24',
-        opacity: 0.95,
-        shadowBlur: 40,
-        shadowColor: 'rgba(250,204,21,0.85)'
-      },
-      label: {
-        show: true,
-        fontSize: 22,
-        fontWeight: 600,
-        color: '#fefce8'
-      },
-      link: 'ecology/index.html'
-    },
+    // 两个星系：左侧 Ecology，右侧 Niche
+    var CENTER_Y = 290;
+    var ECO_X    = 420;
+    var NICHE_X  = 820;
 
-    // 生态位下面：空间 & 市场
-    {
-      name: '空间生态位 · Spatial niche',
-      x: 340,
-      y: 420,
-      symbolSize: 60,
-      itemStyle: {
-        color: '#22c55e',
-        opacity: 0.9,
-        shadowBlur: 28,
-        shadowColor: 'rgba(34,197,94,0.8)'
-      },
-      label: {
-        show: true,
-        fontSize: 16,
-        fontWeight: 500,
-        color: '#dcfce7'
-      },
-      link: 'niche/spatial/index.html'
-    },
-    {
-      name: '市场生态位 · Market niche',
-      x: 520,
-      y: 420,
-      symbolSize: 60,
-      itemStyle: {
-        color: '#f97316',
-        opacity: 0.9,
-        shadowBlur: 28,
-        shadowColor: 'rgba(249,115,22,0.85)'
-      },
-      label: {
-        show: true,
-        fontSize: 16,
-        fontWeight: 500,
-        color: '#ffedd5'
-      },
-      link: 'niche/market/index.html'
-    },
+    var nodes = [
+      /* -------- Ecology 星系：发光银河 + 核心恒星 + 轨道行星 -------- */
 
-    // 生态下面：横向 / 纵向
-    {
-      name: '横向 · 产业产品布局',
-      x: 900,
-      y: 180,
-      symbolSize: 60,
-      itemStyle: {
-        color: '#facc15',
-        opacity: 0.9,
-        shadowBlur: 26,
-        shadowColor: 'rgba(250,204,21,0.8)'
-      },
-      label: {
-        show: true,
-        fontSize: 14,
-        color: '#fef9c3'
-      },
-      link: 'ecology/horizontal.html'
-    },
-    {
-      name: '纵向 · 特点 / 门槛 / 不可替代性',
-      x: 900,
-      y: 340,
-      symbolSize: 60,
-      itemStyle: {
-        color: '#eab308',
-        opacity: 0.9,
-        shadowBlur: 26,
-        shadowColor: 'rgba(234,179,8,0.85)'
-      },
-      label: {
-        show: true,
-        fontSize: 14,
-        color: '#fef3c7'
-      },
-      link: 'ecology/vertical.html'
-    }
-  ];
-
-  var links = [
-    // 生态位 → 空间 / 市场
-    { source: '生态位 · Niche', target: '空间生态位 · Spatial niche' },
-    { source: '生态位 · Niche', target: '市场生态位 · Market niche' },
-    // 生态 → 横向 / 纵向
-    { source: '生态 · Ecology', target: '横向 · 产业产品布局' },
-    { source: '生态 · Ecology', target: '纵向 · 特点 / 门槛 / 不可替代性' },
-    // 生态 与 生态位 之间连一条关系线
-    { source: '生态位 · Niche', target: '生态 · Ecology' }
-  ];
-
-  var option = {
-    backgroundColor: 'transparent',
-    tooltip: {
-      formatter: function (params) {
-        return params.data.name || '';
-      }
-    },
-    series: [
+      // Ecology 外圈光晕（多层叠加模拟星系）
       {
-        type: 'graph',
-        layout: 'none',      // 使用上面给定的 x, y
-        data: nodes,
-        links: links,
-        roam: true,          // 可以拖拽/缩放
-        focusNodeAdjacency: true,
-        edgeSymbol: ['none', 'circle'],
-        edgeSymbolSize: 3,
-        lineStyle: {
-          color: 'rgba(148,163,184,0.45)',
-          width: 1.2,
-          curveness: 0.25
+        name: 'ECO-HALO-OUTER',
+        x: ECO_X,
+        y: CENTER_Y,
+        symbolSize: 260,
+        itemStyle: {
+          color: 'rgba(251,191,36,0.03)'
         },
-        emphasis: {
-          scale: 1.08,
+        tooltip: { show: false },
+        silent: true
+      },
+      {
+        name: 'ECO-HALO-MID',
+        x: ECO_X,
+        y: CENTER_Y,
+        symbolSize: 200,
+        itemStyle: {
+          color: 'rgba(251,191,36,0.06)'
+        },
+        tooltip: { show: false },
+        silent: true
+      },
+      {
+        name: 'ECO-HALO-INNER',
+        x: ECO_X,
+        y: CENTER_Y,
+        symbolSize: 140,
+        itemStyle: {
+          color: 'rgba(251,191,36,0.12)'
+        },
+        tooltip: { show: false },
+        silent: true
+      },
+
+      // Ecology 核心恒星（点击进入生态页）
+      {
+        name: '生态 · Ecology',
+        x: ECO_X,
+        y: CENTER_Y,
+        symbolSize: 96,
+        itemStyle: {
+          color: '#fbbf24',
+          opacity: 0.96,
+          shadowBlur: 60,
+          shadowColor: 'rgba(250,204,21,0.9)',
+          borderColor: 'rgba(254,249,195,0.9)',
+          borderWidth: 2
+        },
+        label: {
+          show: true,
+          fontSize: 20,
+          fontWeight: 600,
+          color: '#fefce8'
+        },
+        link: 'ecology/index.html'
+      },
+
+      // Ecology 轨道行星：横向 / 纵向
+      {
+        name: '横向 · 产业产品布局',
+        x: ECO_X - 125,
+        y: CENTER_Y - 110,
+        symbolSize: 58,
+        itemStyle: {
+          color: 'rgba(251,191,36,0.95)',
+          shadowBlur: 30,
+          shadowColor: 'rgba(250,204,21,0.9)',
+          borderColor: 'rgba(15,23,42,0.8)',
+          borderWidth: 1
+        },
+        label: {
+          show: true,
+          fontSize: 13,
+          color: '#fef9c3'
+        },
+        link: 'ecology/horizontal.html'
+      },
+      {
+        name: '纵向 · 特点 / 门槛 / 不可替代性',
+        x: ECO_X + 135,
+        y: CENTER_Y + 105,
+        symbolSize: 58,
+        itemStyle: {
+          color: 'rgba(234,179,8,0.96)',
+          shadowBlur: 30,
+          shadowColor: 'rgba(234,179,8,0.9)',
+          borderColor: 'rgba(15,23,42,0.8)',
+          borderWidth: 1
+        },
+        label: {
+          show: true,
+          fontSize: 13,
+          color: '#fef3c7'
+        },
+        link: 'ecology/vertical.html'
+      },
+
+      /* -------- Niche 星系：发光银河 + 核心恒星 + 轨道行星 -------- */
+
+      // Niche 外圈光晕
+      {
+        name: 'NICHE-HALO-OUTER',
+        x: NICHE_X,
+        y: CENTER_Y,
+        symbolSize: 260,
+        itemStyle: {
+          color: 'rgba(56,189,248,0.03)'
+        },
+        tooltip: { show: false },
+        silent: true
+      },
+      {
+        name: 'NICHE-HALO-MID',
+        x: NICHE_X,
+        y: CENTER_Y,
+        symbolSize: 200,
+        itemStyle: {
+          color: 'rgba(56,189,248,0.07)'
+        },
+        tooltip: { show: false },
+        silent: true
+      },
+      {
+        name: 'NICHE-HALO-INNER',
+        x: NICHE_X,
+        y: CENTER_Y,
+        symbolSize: 140,
+        itemStyle: {
+          color: 'rgba(56,189,248,0.14)'
+        },
+        tooltip: { show: false },
+        silent: true
+      },
+
+      // Niche 核心恒星（点击进入生态位总览）
+      {
+        name: '生态位 · Niche',
+        x: NICHE_X,
+        y: CENTER_Y,
+        symbolSize: 96,
+        itemStyle: {
+          color: '#06b6d4',
+          opacity: 0.97,
+          shadowBlur: 60,
+          shadowColor: 'rgba(6,182,212,0.9)',
+          borderColor: 'rgba(224,242,254,0.95)',
+          borderWidth: 2
+        },
+        label: {
+          show: true,
+          fontSize: 20,
+          fontWeight: 600,
+          color: '#e0f2fe'
+        },
+        link: 'niche/index.html'
+      },
+
+      // Niche 轨道行星：空间 / 市场生态位
+      {
+        name: '空间生态位 · Spatial niche',
+        x: NICHE_X - 135,
+        y: CENTER_Y + 95,
+        symbolSize: 58,
+        itemStyle: {
+          color: 'rgba(34,197,94,0.96)',
+          shadowBlur: 30,
+          shadowColor: 'rgba(34,197,94,0.9)',
+          borderColor: 'rgba(15,23,42,0.8)',
+          borderWidth: 1
+        },
+        label: {
+          show: true,
+          fontSize: 13,
+          color: '#dcfce7'
+        },
+        link: 'niche/spatial/index.html'
+      },
+      {
+        name: '市场生态位 · Market niche',
+        x: NICHE_X + 125,
+        y: CENTER_Y - 100,
+        symbolSize: 58,
+        itemStyle: {
+          color: 'rgba(249,115,22,0.95)',
+          shadowBlur: 30,
+          shadowColor: 'rgba(249,115,22,0.9)',
+          borderColor: 'rgba(15,23,42,0.8)',
+          borderWidth: 1
+        },
+        label: {
+          show: true,
+          fontSize: 13,
+          color: '#ffedd5'
+        },
+        link: 'niche/market/index.html'
+      }
+    ];
+
+    var links = [
+      // Ecology 星系内部轨道连线
+      { source: '生态 · Ecology', target: '横向 · 产业产品布局' },
+      { source: '生态 · Ecology', target: '纵向 · 特点 / 门槛 / 不可替代性' },
+
+      // Niche 星系内部轨道连线
+      { source: '生态位 · Niche', target: '空间生态位 · Spatial niche' },
+      { source: '生态位 · Niche', target: '市场生态位 · Market niche' },
+
+      // 两大星系之间的“虫洞”连线
+      { source: '生态 · Ecology', target: '生态位 · Niche' }
+    ];
+
+    var option = {
+      backgroundColor: 'transparent',
+      tooltip: {
+        trigger: 'item',
+        formatter: function (params) {
+          // 只对真正的节点显示 tooltip，隐藏光晕和边
+          if (params.dataType === 'edge') return null;
+          if (params.data && params.data.name &&
+              !/^ECO-HALO|^NICHE-HALO/.test(params.data.name)) {
+            return params.data.name;
+          }
+          return null;
+        }
+      },
+      animationDuration: 800,
+      animationEasing: 'cubicOut',
+      series: [
+        {
+          type: 'graph',
+          layout: 'none',
+          data: nodes,
+          links: links,
+          roam: true,                  // 拖动 + 缩放
+          focusNodeAdjacency: true,
+          draggable: false,
+          edgeSymbol: ['none', 'none'],
+          edgeSymbolSize: 6,
           lineStyle: {
-            width: 1.8,
-            color: 'rgba(248,250,252,0.95)'
+            color: 'rgba(148,163,184,0.55)',
+            width: 1.4,
+            curveness: 0.22
           },
           label: {
-            fontSize: 14,
-            fontWeight: 600
+            show: false
+          },
+          emphasis: {
+            scale: 1.05,
+            focus: 'adjacency',
+            lineStyle: {
+              width: 2,
+              color: 'rgba(248,250,252,0.95)'
+            }
           }
         }
+      ]
+    };
+
+    chart.setOption(option);
+
+    // 点击节点跳转（保持原有链接结构不变）
+    chart.on('click', function (params) {
+      if (params.data && params.data.link) {
+        window.location.href = params.data.link;
       }
-    ]
-  };
+    });
 
-  chart.setOption(option);
-
-  chart.on('click', function (params) {
-    if (params.data && params.data.link) {
-      window.location.href = params.data.link;
-    }
-  });
-
-  window.addEventListener('resize', function () {
-    chart.resize();
-  });
-</script>
-
-
-
+    window.addEventListener('resize', function () {
+      chart.resize();
+    });
+  </script>
 </body>
 </html>
