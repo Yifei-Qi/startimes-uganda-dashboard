@@ -264,72 +264,81 @@
     }
 
     /* 左下节目包缩略图区：不会遮挡主图 */
-    .bouquet-strip {
-      position: absolute;
-      left: 40px;
-      bottom: 32px;
-      max-width: 640px;
-      pointer-events: auto;
-    }
-    .bouquet-title {
-      font-family: var(--font-cond);
-      font-size: 12px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: rgba(148,163,184,0.9);
-      margin-bottom: 8px;
-    }
-    .bouquet-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-    .bouquet-card {
-      padding: 6px;
-      border-radius: 18px;
-      background: rgba(15,23,42,0.96);
-      border: 1px solid rgba(148,163,184,0.35);
-      box-shadow: 0 10px 32px rgba(0,0,0,0.85);
-    }
-    .bouquet-card img {
-      display: block;
-      width: 150px;      /* 缩小很多，避免挡住图 */
-      height: auto;
-      border-radius: 14px;
-    }
+    
+   /* 左下节目包缩略图区：小型毛玻璃卡片，不遮挡主图 */
+.bouquet-strip {
+  position: absolute;
+  left: 40px;
+  bottom: 24px;
+  pointer-events: auto;
+  max-width: 520px;
+}
 
-    @media (max-width: 1024px) {
-      body { overflow: auto; }
-      #chart-container { height: 60vh; }
-      .panel-layer {
-        position: relative;
-        inset: 72px 0 0 0;
-        padding: 20px;
-      }
-      .hero-text {
-        position: relative;
-        top: 0; left: 0;
-        max-width: none;
-      }
-      .glass-card {
-        position: relative;
-        right: auto;
-        top: auto;
-        margin-top: 16px;
-        width: auto;
-      }
-      .bouquet-strip {
-        position: relative;
-        left: 0;
-        bottom: 0;
-        margin-top: 18px;
-        max-width: none;
-      }
-      .bouquet-card img {
-        width: 140px;
-      }
-      .breadcrumb { display: none; }
-    }
+.bouquet-inner {
+  padding: 10px 14px;
+  border-radius: 22px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: var(--glass-shadow);
+  display: flex;
+  gap: 16px;
+}
+
+.bouquet-column {
+  flex: 1;
+  min-width: 0;
+}
+
+.bouquet-title {
+  font-family: var(--font-cond);
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(148,163,184,0.9);
+  margin-bottom: 6px;
+}
+
+.bouquet-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.bouquet-card {
+  padding: 2px;
+  border-radius: 14px;
+  background: rgba(15,23,42,0.96);
+  border: 1px solid rgba(148,163,184,0.35);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.75);
+}
+
+.bouquet-card img {
+  display: block;
+  width: 88px;     /* 显著缩小，不再遮住主图 */
+  height: auto;
+  border-radius: 12px;
+}
+
+/* 小屏：节目包排成一列，仍保持小尺寸 */
+@media (max-width: 1024px) {
+  .bouquet-strip {
+    position: relative;
+    left: 0;
+    bottom: 0;
+    margin-top: 18px;
+    max-width: none;
+  }
+  .bouquet-inner {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .bouquet-card img {
+    width: 96px;
+  }
+}
+
   </style>
 </head>
 <body>
@@ -400,9 +409,12 @@
 
     <!-- 左下节目包缩略图 -->
     <section class="bouquet-strip">
-      <div class="bouquet-title">DTT &amp; DTH BOUQUETS · PRICE TAGS (UGX / 月)</div>
-      <div class="bouquet-grid">
-        <!-- 注意：src 路径按你仓库实际路径调整 -->
+  <div class="bouquet-inner">
+    <!-- DTT Bouquets 一行小图标 -->
+    <div class="bouquet-column">
+      <div class="bouquet-title">DTT Bouquets · Antenna</div>
+      <div class="bouquet-row">
+        <!-- 注意：src 路径按你仓库实际路径改 -->
         <div class="bouquet-card">
           <img src="../assets/bouquets/dtt-copa-16000.png" alt="DTT Copa 16,000/-">
         </div>
@@ -415,7 +427,13 @@
         <div class="bouquet-card">
           <img src="../assets/bouquets/dtt-classic-36000.png" alt="DTT Classic 36,000/-">
         </div>
+      </div>
+    </div>
 
+    <!-- DTH Bouquets 一行小图标 -->
+    <div class="bouquet-column">
+      <div class="bouquet-title">DTH Bouquets · Dish</div>
+      <div class="bouquet-row">
         <div class="bouquet-card">
           <img src="../assets/bouquets/dth-nova-16000.png" alt="DTH Nova 16,000/-">
         </div>
@@ -429,7 +447,10 @@
           <img src="../assets/bouquets/dth-special-21000.png" alt="DTH Special 21,000/-">
         </div>
       </div>
-    </section>
+    </div>
+  </div>
+</section>
+
   </div>
 
   <!-- ECharts：径向内容树 -->
