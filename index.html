@@ -243,10 +243,10 @@
       <div class="info-left">
         <div class="info-left-label">INTERACTIVE OVERVIEW</div>
         <p>
-          本页是 <strong>StarTimes Uganda 市场体系</strong> 的总览星图：中心是整体市场系统，
+          本页是 <strong>StarTimes Uganda 市场体系</strong> 的总览图：中心是整体市场系统，
           第一圈是两个一级模块 <strong>Ecology 业务生态</strong> 与 <strong>Niche 生态位体系</strong>，
           外圈则进一步展开 DVB、Solar、OTT、渠道、受众等子结构。<br><br>
-          可以拖动画布、滚轮缩放，点击两颗主星进入对应系统的详情页面，其余节点仅用于呈现结构关系。
+          可以拖动画布、滚轮缩放，点击一级目录进入对应系统的详情页面，其余节点仅用于呈现结构关系。
         </p>
       </div>
       <div class="info-right">
@@ -308,10 +308,10 @@
         label: {
           show: true,
           fontFamily: 'Barlow Condensed, sans-serif',
-          fontSize: 40,          // 比顶部标题更大
+          fontSize: 60,          // 比顶部标题更大
           fontWeight: 700,
           color: '#ffffff',
-          lineHeight: 30
+          lineHeight: 120
         },
         tooltip: {
           formatter: 'StarTimes Uganda · Market System<br/>整合 Ecology 与 Niche 两大系统的总览入口'
@@ -347,7 +347,7 @@
           name: n.name,
           x: x,
           y: y,
-          symbolSize: minSide * 0.1,   // 略放大
+          symbolSize: minSide * 0.6,   // 略放大
           itemStyle: {
             color: n.color,
             shadowBlur: 40,
@@ -361,11 +361,11 @@
             fontSize: 26,              // 放大标签字号
             fontWeight: 600,
             color: '#ffffff',          // 文字改为白色
-            lineHeight: 22
+            lineHeight: 40
           },
           link: n.link,
           tooltip: { formatter: n.tip },
-          z: 2
+          z: 0.2
         });
       });
 
