@@ -2,10 +2,10 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <title>Ecology · Business Constellation · StarTimes Uganda</title>
+  <title>Niche · Ecological Niche · StarTimes Uganda</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <!-- DIN 风格字体 -->
+
+  <!-- 字体引入，与 Ecology 统一 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -14,7 +14,7 @@
     :root {
       --bg-dark: #050816;
 
-      /* 与 Niche / Spatial 页统一的玻璃卡片样式 */
+      /* 与 Ecology 统一的玻璃卡片样式 */
       --glass-bg: rgba(15, 23, 42, 0.88);
       --glass-border: rgba(148, 163, 184, 0.4);
       --glass-shadow: 0 18px 60px rgba(0, 0, 0, 0.85);
@@ -22,205 +22,278 @@
       --text-main: #f9fafb;
       --text-muted: #94a3b8;
 
-      /* 统一主色 */
-      --c-root:  #38bdf8; /* 顶栏路径、标签、按钮高亮 */
-      --c-sub:   #06b6d4; /* Subscription 扇区 */
-      --c-solar: #10b981; /* Solar 扇区 */
-      --c-dev:   #f97316; /* Devices / Ads 扇区 */
+      /* 主色与分支色 */
+      --c-root:    #38bdf8; /* 顶部路径、标签、按钮高亮 */
+      --c-spatial: #10b981; /* Spatial Niche */
+      --c-market:  #a855f7; /* Market Niche */
 
       --font-din:  'Barlow', sans-serif;
       --font-cond: 'Barlow Condensed', sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
 
     body {
       font-family: var(--font-din);
-      background: var(--bg-dark);
       color: var(--text-main);
-      overflow: hidden;
-      height: 100vh;
-      width: 100vw;
-      background-image: 
+      background: var(--bg-dark);
+      background-image:
         radial-gradient(circle at 50% 60%, rgba(15, 23, 42, 1) 0%, transparent 80%),
-        radial-gradient(circle at 85% 20%, rgba(6, 182, 212, 0.05) 0%, transparent 20%),
-        radial-gradient(circle at 15% 80%, rgba(16, 185, 129, 0.05) 0%, transparent 20%);
+        radial-gradient(circle at 85% 20%, rgba(56, 189, 248, 0.06) 0%, transparent 22%),
+        radial-gradient(circle at 15% 80%, rgba(16, 185, 129, 0.06) 0%, transparent 22%);
+      position: relative;
     }
 
-    /* 顶部：品牌 + 面包屑 + 扇区导航 + 返回 */
+    /* 顶部导航栏，与 Ecology 保持一致 */
     .top-bar {
-      position: fixed; top: 0; left: 0; right: 0; height: 72px;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 40px; z-index: 20;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 72px;
+      padding: 0 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 20;
       background: linear-gradient(to bottom, rgba(5,8,22,0.96), transparent);
       pointer-events: none;
     }
+
     .brand { pointer-events: auto; display: flex; flex-direction: column; }
     .brand-path {
-      font-family: var(--font-cond); font-size: 11px; letter-spacing: 1.5px;
-      text-transform: uppercase; color: var(--c-root); opacity: 0.95;
-      margin-bottom: 4px; font-weight: 600;
+      font-family: var(--font-cond);
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--c-root);
+      opacity: 0.95;
+      margin-bottom: 4px;
+      font-weight: 600;
     }
     .brand-title {
-      font-family: var(--font-cond); font-size: 18px; font-weight: 600;
-      letter-spacing: 0.6px; text-transform: uppercase; color: #e5e7eb;
+      font-family: var(--font-cond);
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      color: #e5e7eb;
     }
-    .top-actions { pointer-events: auto; display: flex; align-items: center; gap: 16px; }
 
     .breadcrumb {
-      pointer-events:auto;
+      pointer-events: auto;
       font-family: var(--font-cond);
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 1.4px;
       color: rgba(148,163,184,0.9);
-      position:absolute;
-      left:50%;
-      transform:translateX(-50%);
-      top:12px;
-      display:flex;
-      gap:6px;
-      align-items:center;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 14px;
+      display: flex;
+      gap: 6px;
+      align-items: center;
     }
-    .crumb-sep { opacity:0.6; }
-    .crumb-active { color:#e5e7eb; }
-
-    .sector-nav {
-      position:absolute;
-      top:38px;
-      left:50%;
-      transform:translateX(-50%);
-      display:flex;
-      gap:10px;
-      pointer-events:auto;
-    }
-    .sector-chip {
-      font-family: var(--font-cond);
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      padding:4px 14px;
-      border-radius:999px;
-      border:1px solid rgba(148,163,184,0.7);
-      background:rgba(15,23,42,0.9);
-      color:#e5e7eb;
-      text-decoration:none;
-      display:flex;
-      align-items:center;
-      gap:6px;
-      box-shadow:0 6px 16px rgba(0,0,0,0.35);
-      transition:all .25s ease;
-      backdrop-filter: blur(6px);
-    }
-    .sector-chip-dot {
-      width:8px;height:8px;border-radius:999px;background:#6b7280;
-    }
-    .sector-chip.sub   .sector-chip-dot { background:var(--c-sub); }
-    .sector-chip.solar .sector-chip-dot { background:var(--c-solar); }
-    .sector-chip.dev   .sector-chip-dot { background:var(--c-dev); }
-
-    .sector-chip:hover {
-      transform:translateY(-1px);
-      border-color:rgba(248,250,252,0.9);
-      box-shadow:0 8px 22px rgba(15,23,42,0.9);
-    }
+    .crumb-sep { opacity: 0.6; }
+    .crumb-active { color: #e5e7eb; }
 
     .back-btn {
-      pointer-events:auto;
-      font-family: var(--font-cond); font-size: 14px; font-weight: 600;
+      pointer-events: auto;
+      font-family: var(--font-cond);
+      font-size: 14px;
+      font-weight: 600;
       padding: 8px 26px;
       border-radius: 999px;
-      background: rgba(255,255,255,0.06);
-      color: var(--text-main);
-      text-decoration: none;
-      border: 1px solid rgba(255,255,255,0.35);
-      backdrop-filter: blur(14px);
       text-transform: uppercase;
       letter-spacing: 1px;
-      transition: all 0.25s ease;
+      text-decoration: none;
+      color: var(--text-main);
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.35);
+      backdrop-filter: blur(14px);
       box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+      transition: all .25s ease;
     }
     .back-btn:hover {
-      background: var(--c-root); color: #020617; border-color: var(--c-root);
+      background: var(--c-root);
+      color: #020617;
+      border-color: var(--c-root);
       box-shadow: 0 10px 28px rgba(56,189,248,0.5);
       transform: translateY(-2px);
     }
 
-    #chart-container { position: absolute; inset: 0; z-index: 1; }
+    /* 图表容器 */
+    #niche-chart {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
 
-    .panel-layer { position: absolute; inset: 0; pointer-events: none; z-index: 10; padding: 40px; }
+    /* UI 层 */
+    .panel-layer {
+      position: absolute;
+      inset: 0;
+      padding: 40px;
+      z-index: 10;
+      pointer-events: none;
+    }
 
-    /* 左上主说明 */
+    /* 左上 Hero 文案，样式对齐 Ecology */
     .hero-text {
-      position: absolute; top: 96px; left: 50px; max-width: 420px;
+      position: absolute;
+      top: 110px;
+      left: 50px;
+      max-width: 440px;
       text-shadow: 0 4px 30px rgba(0,0,0,0.8);
       pointer-events: none;
       user-select: none;
     }
     .hero-label {
-      font-family: var(--font-cond); font-size: 12px; font-weight: 700;
-      color: var(--c-root); margin-bottom: 12px;
-      display: flex; align-items: center; gap: 8px;
-      letter-spacing: 1.5px; text-transform: uppercase;
+      font-family: var(--font-cond);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--c-root);
+      margin-bottom: 12px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
     .hero-title {
-      font-family: var(--font-cond); font-size: 52px; font-weight: 700;
-      line-height: 0.9; margin-bottom: 24px;
-      text-transform: uppercase; letter-spacing: -1px;
-      background: linear-gradient(180deg, #ffffff 0%, #94a3b8 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      font-family: var(--font-cond);
+      font-size: 52px;
+      font-weight: 700;
+      line-height: 0.9;
+      margin-bottom: 24px;
+      text-transform: uppercase;
+      letter-spacing: -1px;
+      background: linear-gradient(180deg,#ffffff 0%,#94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
     .hero-desc {
-      font-size: 14px; line-height: 1.6; font-weight: 300; color: var(--text-muted);
-      position: relative;
-      padding-left: 20px; margin-bottom: 32px;
+      font-size: 14px;
+      line-height: 1.6;
+      font-weight: 300;
+      color: var(--text-muted);
+      border-left: 3px solid rgba(148,163,184,0.6);
+      padding-left: 18px;
+      margin-bottom: 30px;
     }
-    .hero-desc::before {
-      content: ''; position: absolute; left: 0; top: 4px; bottom: 4px; width: 4px;
-      background: rgba(148,163,184,0.5); border-radius: 4px;
-    }
-    .struct-legend { display: flex; flex-direction: column; gap: 16px; }
-    .struct-item { display: flex; align-items: center; gap: 14px; color: rgba(255,255,255,0.9); }
-    .struct-bar { width: 6px; height: 32px; border-radius: 6px; box-shadow: 0 0 12px currentColor; }
-    .struct-info { display: flex; flex-direction: column; justify-content: center; }
-    .struct-pct { font-family: var(--font-mono); font-weight: 700; font-size: 18px; line-height: 1; margin-bottom: 2px; }
-    .struct-name { font-family: var(--font-cond); font-size: 12px; text-transform: uppercase; opacity: 0.7; letter-spacing: 0.5px; }
+    .hero-desc strong { color: #f9fafb; font-weight: 500; }
 
+    /* 下级导航 chips，与 Ecology 的 sector-chip 统一风格 */
+    .nav-chips { display: flex; gap: 12px; pointer-events: auto; }
+    .nav-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-cond);
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.7);
+      background: rgba(15,23,42,0.9);
+      color: #e5e7eb;
+      text-decoration: none;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+      transition: all .25s ease;
+      backdrop-filter: blur(6px);
+    }
+    .chip-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #6b7280;
+    }
+    .nav-chip.spatial .chip-dot { background: var(--c-spatial); }
+    .nav-chip.market  .chip-dot { background: var(--c-market); }
+
+    .nav-chip:hover {
+      transform: translateY(-1px);
+      border-color: rgba(248,250,252,0.9);
+      box-shadow: 0 8px 22px rgba(15,23,42,0.9);
+    }
+
+    /* 右下动态详情面板，与 Ecology 统一 */
     .glass-card {
-      position: absolute; width: 320px; padding: 28px;
+      position: absolute;
+      bottom: 50px;
+      right: 50px;
+      width: 320px;
+      padding: 28px;
       border-radius: 32px;
       background: var(--glass-bg);
       border: 1px solid var(--glass-border);
-      backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
       box-shadow: var(--glass-shadow);
-      pointer-events: auto; opacity: 0; transform: translateY(30px);
+      pointer-events: auto;
+      opacity: 0;
+      transform: translateY(24px);
       transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
     }
     .glass-card.active { opacity: 1; transform: translateY(0); }
 
     .card-header {
-      font-family: var(--font-cond); font-size: 13px; font-weight: 700;
-      color: rgba(148,163,184,0.9); margin-bottom: 8px;
-      text-transform: uppercase; letter-spacing: 1px;
-      display: flex; justify-content: space-between; align-items: center;
+      font-family: var(--font-cond);
+      font-size: 12px;
+      font-weight: 700;
+      color: rgba(148,163,184,0.9);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      display: flex;
+      justify-content: space-between;
     }
     .card-title {
-      font-family: var(--font-cond); font-size: 24px; font-weight: 600;
-      color: #f9fafb; margin-bottom: 16px;
-      text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.2;
+      font-family: var(--font-cond);
+      font-size: 26px;
+      font-weight: 600;
+      color: #f9fafb;
+      margin-bottom: 12px;
+      line-height: 1.1;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
-    .metric-val { font-family: var(--font-mono); font-size: 36px; font-weight: 400; color: #f9fafb; display: block; margin-bottom: 4px; }
-    .metric-label { font-family: var(--font-cond); font-size: 12px; color: rgba(148,163,184,0.9); text-transform: uppercase; letter-spacing: 1px; }
+    .card-body {
+      font-size: 13px;
+      line-height: 1.6;
+      color: rgba(226,232,240,0.9);
+    }
+    .card-hint {
+      margin-top: 16px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: rgba(148,163,184,0.8);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .dot-status {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--c-root);
+    }
 
-    .pos-bottom-right { bottom: 50px; right: 50px; }
-
-    @media (max-width: 768px) {
-      .top-bar { padding: 0 20px; height: 60px; }
-      .hero-text { top: 80px; left: 24px; right: 24px; max-width: none; }
+    @media (max-width: 900px) {
+      .top-bar { padding: 0 20px; height: 64px; }
+      .hero-text { top: 88px; left: 24px; right: 24px; max-width: none; }
       .hero-title { font-size: 40px; }
       .glass-card { left: 24px; right: 24px; bottom: 24px; width: auto; border-radius: 24px; }
-      .breadcrumb,.sector-nav { display:none; }
+      .breadcrumb { display: none; }
     }
   </style>
 </head>
@@ -228,674 +301,350 @@
 
   <div class="top-bar">
     <div class="brand">
-      <div class="brand-path">STARTIMES / UGANDA / ECOLOGY</div>
-      <div class="brand-title">Business Constellation</div>
-    </div>
-    <div class="top-actions">
-      <a class="back-btn" href="../index.html">Back to Universe</a>
+      <div class="brand-path">STARTIMES / UGANDA / NICHE</div>
+      <div class="brand-title">Ecological Niche</div>
     </div>
 
     <div class="breadcrumb">
       <span>Data Space</span><span class="crumb-sep">/</span>
-      <span>Ecology</span><span class="crumb-sep">/</span>
-      <span class="crumb-active">Business Constellation</span>
+      <span>Niche</span><span class="crumb-sep">/</span>
+      <span class="crumb-active">Ecological Niche</span>
     </div>
 
-    <div class="sector-nav">
-      <a class="sector-chip sub" href="./ecology-dvb.html">
-        <span class="sector-chip-dot"></span><span>DVB · TV Ecosystem</span>
-      </a>
-      <a class="sector-chip solar" href="./solar.html">
-        <span class="sector-chip-dot"></span><span>Solar · Off-grid Power</span>
-      </a>
-      <a class="sector-chip dev" href="./content.html">
-        <span class="sector-chip-dot"></span><span>Content · OTT &amp; Ads</span>
-      </a>
-    </div>
+    <a class="back-btn" href="../index.html">Back to Universe</a>
   </div>
 
-  <div id="chart-container"></div>
+  <div id="niche-chart"></div>
 
   <div class="panel-layer">
-    <!-- 左上：总览说明 -->
     <div class="hero-text">
       <div class="hero-label">ECOSYSTEM OVERVIEW</div>
-      <h1 class="hero-title">Business<br>Planetary System</h1>
+      <div class="hero-title">Ecological<br>Niche Map</div>
       <div class="hero-desc">
-        中央恒星代表乌干达四达整体业务重心；三条极光扇区分别为
-        Subscription <strong>63%</strong>、Solar <strong>30%</strong>、
-        Ads &amp; Devices <strong>7%</strong> 的收入组成。五颗业务行星
-        （Solar / DTV / DTH / DTT / OTT）围绕恒星运行，KPI 星点按照指
-        标属性分布在各自收入扇区中，部分“终端 / 设备 / 广告”类指标
-        被跃迁到 <em>Ads &amp; Devices</em> 扇区。
+        「生态位」界定了 StarTimes 在乌干达本地媒体生态中的<strong>核心坐标</strong>。
+        图谱分为两大星域：<strong style="color:var(--c-spatial)">Spatial Niche</strong>（空间生态位）关注物理渠道与触点分布；
+        <strong style="color:var(--c-market)">Market Niche</strong>（市场生态位）关注竞争格局与产品包型。
+        <span style="font-size:12px;opacity:0.6;margin-top:10px;display:block;">
+          * 鼠标悬停查看节点说明，点击核心节点可进入下一级页面。
+        </span>
       </div>
-
-      <div class="struct-legend">
-        <div class="struct-item">
-          <div class="struct-bar" style="background:var(--c-sub); color:var(--c-sub)"></div>
-          <div class="struct-info">
-            <span class="struct-pct" style="color:var(--c-sub)">63%</span>
-            <span class="struct-name">Content Subscription</span>
-          </div>
-        </div>
-        <div class="struct-item">
-          <div class="struct-bar" style="background:var(--c-solar); color:var(--c-solar)"></div>
-          <div class="struct-info">
-            <span class="struct-pct" style="color:var(--c-solar)">30%</span>
-            <span class="struct-name">Solar Energy</span>
-          </div>
-        </div>
-        <div class="struct-item">
-          <div class="struct-bar" style="background:var(--c-dev); color:var(--c-dev)"></div>
-          <div class="struct-info">
-            <span class="struct-pct" style="color:var(--c-dev)">07%</span>
-            <span class="struct-name">Devices &amp; Advertising</span>
-          </div>
-        </div>
+      <div class="nav-chips">
+        <a href="./spatial.html" class="nav-chip spatial">
+          <span class="chip-dot"></span><span>Spatial Niche</span>
+        </a>
+        <a href="./market.html" class="nav-chip market">
+          <span class="chip-dot"></span><span>Market Niche</span>
+        </a>
       </div>
     </div>
 
-    <!-- 右下：指标详情卡 -->
-    <div class="glass-card pos-bottom-right" id="detail-panel">
+    <!-- 右下：动态说明卡片 -->
+    <div class="glass-card" id="detail-card">
       <div class="card-header">
-        <span id="p-biz">BUSINESS</span>
-        <span id="p-type" style="color:var(--c-root)">SECTOR</span>
+        <span id="p-role">NODE TYPE</span>
+        <span id="p-tag" style="color:var(--c-root)">DETAILS</span>
       </div>
-      <div class="card-title" id="p-name">Metric Name</div>
-      <div style="margin-bottom:16px;">
-         <span class="metric-val" id="p-val">0</span>
-         <span class="metric-label">Current Value</span>
+      <div class="card-title" id="p-name">Node Name</div>
+      <div class="card-body" id="p-desc">
+        Description content goes here.
       </div>
-      <div style="border-top:1px solid rgba(148,163,184,0.5); padding-top:16px; font-family:var(--font-din); font-size:13px; color:rgba(226,232,240,0.9); display:flex; align-items:center; gap:8px;">
-        Trend Status:
-        <span id="p-trend" style="font-weight:bold; font-size:14px; padding:2px 8px; border-radius:12px; background:rgba(148,163,184,0.15);">--</span>
+      <div class="card-hint">
+        <span class="dot-status" id="p-status-dot"></span>
+        <span id="p-status-text">Hover a node to inspect</span>
       </div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
   <script>
-    // 视角状态：旋转 + 缩放 + 极光进度
-    var viewState = {
-      rotationDeg: 0,
-      zoom: 1,
-      auroraProgress: 0
-    };
+    var chartDom = document.getElementById('niche-chart');
+    var nicheChart = echarts.init(chartDom);
 
-    // 统一的宏观收入扇区定义
-    var macroDefs = [
-      { id: 'Subscription', label: 'Subscription', value: 63, color: '#06b6d4' },
-      { id: 'Solar',        label: 'Solar',        value: 30, color: '#10b981' },
-      { id: 'AdsDevices',   label: 'Ads & Devices',value: 7,  color: '#f97316' }
+    // --- 节点数据 ---
+    const nodes = [
+      {
+        id: 'niche-root',
+        name: 'Niche',
+        role: 'root',
+        desc: '生态位核心节点。定义了我们在市场中的生存空间与竞争优势。',
+        fx: 0, fy: 0, fr: 1.0,
+        depth: 0
+      },
+      {
+        id: 'spatial-main',
+        name: 'Spatial\nNiche',
+        role: 'spatial-main',
+        link: 'spatial.html',
+        desc: '空间生态位：涵盖所有物理和数字接触点，包括营业厅、代理商及线上流量入口。',
+        fx: -0.34, fy: 0.04, fr: 0.62,
+        depth: 1
+      },
+      {
+        id: 'market-main',
+        name: 'Market\nNiche',
+        role: 'market-main',
+        link: 'market.html',
+        desc: '市场生态位：分析市场份额、竞争对手策略、产品定价及套餐组合。',
+        fx: 0.34, fy: 0.08, fr: 0.58,
+        depth: 1
+      },
+      // Spatial 子层
+      { id: 's-1', name: 'Offline\nVisual', role: 'spatial-sub', desc: '线下视觉触点：海报、墙体广告、单页等。', fx: -0.60, fy: 0.32, fr: 0.20, depth: 2 },
+      { id: 's-2', name: 'Offline\nAudio', role: 'spatial-sub', desc: '线下听觉触点：广播广告、路演活动。', fx: -0.40, fy: 0.45, fr: 0.18, depth: 2 },
+      { id: 's-3', name: 'Online\nVisual', role: 'spatial-sub', desc: '线上视觉：社媒图文、App Banner。', fx: -0.23, fy: -0.10, fr: 0.18, depth: 2 },
+      { id: 's-4', name: 'Online\nAudio', role: 'spatial-sub', desc: '线上听觉：流媒体音频广告。', fx: -0.48, fy: -0.25, fr: 0.18, depth: 2 },
+      { id: 's-5', name: 'Visual+\nAudio', role: 'spatial-sub', desc: '视听融合：电视广告、视频号内容。', fx: -0.12, fy: 0.20, fr: 0.18, depth: 2 },
+      // Market 子层
+      { id: 'm-1', name: 'Market\nShare', role: 'market-sub', desc: '市场占有率分析：DTT / DTH 不同区域占比。', fx: 0.18, fy: -0.22, fr: 0.18, depth: 2 },
+      { id: 'm-2', name: 'SWOT', role: 'market-sub', desc: '优势、劣势、机会与威胁分析。', fx: 0.52, fy: -0.18, fr: 0.18, depth: 2 },
+      { id: 'm-3', name: 'Product\nPrice', role: 'market-sub', desc: '硬件产品线及其定价策略。', fx: 0.15, fy: 0.33, fr: 0.18, depth: 2 },
+      { id: 'm-4', name: 'Packages', role: 'market-sub', desc: '节目内容包及频道组合策略。', fx: 0.48, fy: 0.34, fr: 0.18, depth: 2 },
+      { id: 'm-5', name: 'Best\nOffer', role: 'market-sub', desc: '当前最具竞争力的促销组合。', fx: 0.30, fy: 0.56, fr: 0.18, depth: 2 },
+      { id: 'm-6', name: 'Channel\nCompare', role: 'market-sub', desc: '分渠道销售表现对比。', fx: 0.66, fy: 0.10, fr: 0.18, depth: 2 }
     ];
 
-    var businessDefs = [
-      { id: 'Solar', label: 'SOLAR', tone: 'green' },
-      { id: 'DTV',   label: 'DTV',   tone: 'blue'  },
-      { id: 'DTH',   label: 'DTH',   tone: 'cyan'  },
-      { id: 'DTT',   label: 'DTT',   tone: 'indigo'},
-      { id: 'OTT',   label: 'OTT',   tone: 'violet'}
-    ];
-
-    function toneColor(tone, alpha) {
-      if (tone === 'green')  return 'rgba(74,222,128,'  + alpha + ')';
-      if (tone === 'blue')   return 'rgba(59,130,246,' + alpha + ')';
-      if (tone === 'cyan')   return 'rgba(34,211,238,' + alpha + ')';
-      if (tone === 'indigo') return 'rgba(129,140,248,'+ alpha + ')';
-      if (tone === 'violet') return 'rgba(192,132,252,'+ alpha + ')';
-      return 'rgba(148,163,184,'+ alpha + ')';
+    // 星星背景
+    const stars = [];
+    for (let i = 0; i < 150; i++) {
+      stars.push([Math.random() * 100, Math.random() * 100, Math.random()]);
     }
 
-    var gap = 0.5;
-    var effectiveTotal = 100 - macroDefs.length * gap;
-    var currentVal = 0;
-    var macroLayout = {};
-    ['Subscription','Solar','AdsDevices'].forEach(function(id) {
-      var m = macroDefs.find(function(x){return x.id===id;});
-      var span = (m.value / 100) * effectiveTotal;
-      macroLayout[id] = {
-        start: currentVal,
-        end: currentVal + span,
-        mid: currentVal + span/2,
-        color: m.color,
-        label: m.label
+    // 全局视图状态：实现拖拽位移（初始向右偏移）
+    const viewState = {
+      offsetX: 80,  // 初始向右挪一些像素
+      offsetY: 0
+    };
+
+    function getNodeStyle(node) {
+      const colors = {
+        root:    '#06b6d4',
+        spatial: '#10b981',
+        market:  '#a855f7',
+        dark:    '#1e293b'
       };
-      currentVal += span + gap;
-    });
 
-    var MAX_RADIUS = 100;
+      let baseColor;
+      if (node.role === 'root') baseColor = colors.root;
+      else if (node.role.includes('spatial')) baseColor = colors.spatial;
+      else if (node.role.includes('market')) baseColor = colors.market;
+      else baseColor = colors.dark;
 
-    // 行星
-    var planetPoints = [];
-    var planetMap = {};
-    businessDefs.forEach(function(biz){
-      var targetMacroId = 'Subscription';
-      if (biz.id === 'Solar') targetMacroId = 'Solar';
+      let opacity = 0.9;
+      if (node.depth === 0) opacity = 0.2;
+      else if (node.depth === 1) opacity = 0.6;
+      else opacity = 0.85;
 
-      var layout = macroLayout[targetMacroId];
-      var angleVal = layout.mid;
-
-      if (targetMacroId === 'Subscription') {
-        var subBizs = ['DTV','DTH','DTT','OTT'];
-        var idx = subBizs.indexOf(biz.id);
-        var step = (layout.end - layout.start) / (subBizs.length + 1);
-        if (idx >= 0) angleVal = layout.start + step * (idx + 1);
-      }
-
-      var radius = 60;
-
-      planetPoints.push({
-        name: biz.label,
-        value: [radius, angleVal],
-        itemStyle: {
-          color: toneColor(biz.tone, 0.95),
-          borderColor: 'rgba(255,255,255,0.9)',
-          borderWidth: 2,
-          shadowBlur: 30,
-          shadowColor: 'rgba(15,23,42,0.8)'
-        }
-      });
-      planetMap[biz.id] = { radius: radius, angle: angleVal, tone: biz.tone, label: biz.label };
-    });
-
-    // KPI 原始数据
-    var kpiRaw = {
-      Solar: [
-        { name: '销量 每月累计',          value: 1481,     trend: 'down' },
-        { name: '销售收入(应收) 每月累计', value: 168973,   trend: 'down' },
-        { name: '全款收款 每月累计',      value: 1148,     trend: 'down' },
-        { name: '首付款收款 每月累计',    value: 10171,    trend: 'down' },
-        { name: '分期款收款 每月累计',    value: 80729,    trend: 'down' },
-        { name: '累计应收分期款 月末',    value: 23072112, trend: 'up'   },
-        { name: '当月应收分期款 月末',    value: 224472,   trend: 'down' },
-        { name: '分期中用户数 月末',      value: 234390,   trend: 'up'   }
-      ],
-      DTV: [
-        { name: '新增用户数 每月累计',    value: 110,   trend: 'down' },
-        { name: '在线用户数 每月去重',    value: 8112, trend: 'down' },
-        { name: '注册用户数 月末',        value: 39510,trend: 'down' },
-        { name: '扣费金额 每月累计',      value: 4353, trend: 'down' },
-        { name: '充值金额 每月累计',      value: 6408, trend: 'down' },
-        { name: '扣费用户数 每月去重',    value: 7501, trend: 'down' },
-        { name: '充值用户数 每月去重',    value: 1949, trend: 'down' },
-        { name: '月扣费ARPPU',           value: 0.58, trend: 'down' },
-        { name: '月充值ARPPU',           value: 3.288,trend: 'down' },
-        { name: '销量 每月累计',          value: 50,   trend: 'down' }
-      ],
-      DTH: [
-        { name: '新增用户数 每月累计',    value: 425,    trend: 'down' },
-        { name: '在线用户数 每月去重',    value: 349860, trend: 'down' },
-        { name: '注册用户数 月末',        value: 1101568,trend: 'down' },
-        { name: '扣费金额 每月累计',      value: 190787, trend: 'down' },
-        { name: '充值金额 每月累计',      value: 289402, trend: 'down' },
-        { name: '扣费用户数 每月去重',    value: 339611, trend: 'down' },
-        { name: '充值用户数 每月去重',    value: 85237,  trend: 'down' },
-        { name: '月扣费ARPPU',           value: 0.562,  trend: 'down' },
-        { name: '月充值ARPPU',           value: 3.395,  trend: 'down' }
-      ],
-      DTT: [
-        { name: '新增用户数 每月累计',    value: 249,    trend: 'down' },
-        { name: '在线用户数 每月去重',    value: 344459, trend: 'down' },
-        { name: '注册用户数 月末',        value: 1848112,trend: 'down' },
-        { name: '扣费金额 每月累计',      value: 180694, trend: 'down' },
-        { name: '充值金额 每月累计',      value: 263016, trend: 'down' },
-        { name: '扣费用户数 每月去重',    value: 340802, trend: 'down' },
-        { name: '充值用户数 每月去重',    value: 112640, trend: 'down' },
-        { name: '月扣费ARPPU',           value: 0.53,   trend: 'down' },
-        { name: '月充值ARPPU',           value: 2.335,  trend: 'down' }
-      ],
-      OTT: [
-        { name: '新增用户 本月累计',       value: 13426,  trend: 'up'  },
-        { name: 'App日活 本月日均',       value: 46168,  trend: 'up'  },
-        { name: 'App月活 本月日均',       value: 371110, trend: 'up'  },
-        { name: '会员充值金额 本月累计',   value: 2365.15,trend: 'up'  },
-        { name: 'DVB充值金额 本月累计',    value: 1782.63,trend: 'up'  },
-        { name: '绑卡续费率 本月日均',     value: 31.74,  trend: 'up'  },
-        { name: 'DSP广告收入 本月累计',   value: 9.78,   trend: 'up'  }
-      ]
-    };
-
-    function classifyMacro(bizId, metricName) {
-      if (bizId === 'Solar') return 'Solar';
-      if (/广告|DSP/.test(metricName)) return 'AdsDevices';
-      if (/销量|新.*用户|终端|设备|机顶盒/.test(metricName) && bizId !== 'Solar') {
-        return 'AdsDevices';
-      }
-      return 'Subscription';
+      return { baseColor, opacity };
     }
 
-    // KPI 星团
-    var clusterPoints = [];
-    businessDefs.forEach(function(biz){
-      var metrics = kpiRaw[biz.id] || [];
-      if (!metrics.length) return;
+    function renderItem(params, api) {
+      const node = nodes[params.dataIndex];
+      if (!node) return;
 
-      var planet = planetMap[biz.id];
-      var maxVal = metrics.reduce(function(m,x){return Math.max(m, x.value);}, 0.0001);
+      const w = api.getWidth();
+      const h = api.getHeight();
+      const minSide = Math.min(w, h);
+      const baseR = minSide * 0.38;
 
-      metrics.forEach(function(m){
-        var macroId = classifyMacro(biz.id, m.name);
-        var layout = macroLayout[macroId];
+      const cx0 = w * 0.55;
+      const cy0 = h * 0.55;
 
-        var angle, radius;
-        if (macroId === 'AdsDevices') {
-          var span = layout.end - layout.start;
-          angle = layout.start + span * (0.18 + 0.64 * Math.random());
-          radius = 70 + Math.random()*22;
-        } else {
-          angle = planet.angle + (Math.random()-0.5) * 10;
-          radius = planet.radius + (Math.random()-0.5) * 18;
-        }
+      const isMobile = w < 800;
+      const finalCx0 = isMobile ? w * 0.5 : cx0;
+      const finalCy0 = isMobile ? h * 0.6 : cy0;
 
-        var ratio = m.value / maxVal;
-        var size = 12 + 16 * Math.sqrt(ratio);
+      const cx = finalCx0 + node.fx * baseR + viewState.offsetX;
+      const cy = finalCy0 + node.fy * baseR + viewState.offsetY;
+      const r  = baseR * node.fr * (isMobile ? 0.85 : 1);
 
-        var fillColor = toneColor(planet.tone, 0.9);
-        var borderColor = 'rgba(226,232,240,0.9)';
-        if (m.trend === 'up')   borderColor = '#f97316';
-        else if (m.trend === 'down') borderColor = '#3b82f6';
+      const style = getNodeStyle(node);
 
-        clusterPoints.push({
-          value: [radius, angle],
-          info: {
-            name: m.name,
-            value: m.value,
-            trend: m.trend,
-            biz: planet.label,
-            type: layout.label
-          },
-          symbolSize: size,
-          itemStyle: {
-            color: fillColor,
-            opacity: 0.95,
-            borderColor: borderColor,
-            borderWidth: 2,
-            shadowBlur: 26,
-            shadowColor: borderColor
-          }
-        });
-      });
-    });
+      let fontSize;
+      if (node.role === 'root') fontSize = r / 3.5;
+      else if (node.role.includes('main')) fontSize = r / 4;
+      else fontSize = r / 4.5;
+      fontSize = Math.max(fontSize, 10);
 
-    // 星场
-    var starfield = [];
-    (function(){
-      var count = 260;
-      for (var i=0;i<count;i++){
-        var radius = 20 + Math.random()*(MAX_RADIUS-15);
-        var angle = Math.random()*100;
-        var alpha = 0.15 + 0.5*Math.random();
-        starfield.push({
-          value: [radius, angle],
-          symbolSize: 1 + 2.5*Math.random(),
-          itemStyle: {
-            color: 'rgba(248,250,252,' + alpha + ')',
-            opacity: 1
-          }
-        });
-      }
-    })();
-
-    // 图表实例
-    var chart = echarts.init(document.getElementById('chart-container'));
-
-    // Niche 链接点（在星系中作为两个特别的行星）
-    var nicheLinkPoints = [
-      {
-        name: 'Spatial Niche',
-        value: [42, 16],
-        link: '../niche/spatial.html',
-        itemStyle: {
-          color: 'rgba(16,185,129,0.95)',
-          borderColor: 'rgba(248,250,252,0.95)',
-          borderWidth: 2,
-          shadowBlur: 32,
-          shadowColor: 'rgba(16,185,129,0.9)'
-        }
-      },
-      {
-        name: 'Market Niche',
-        value: [42, 84],
-        link: '../niche/market.html',
-        itemStyle: {
-          color: 'rgba(168,85,247,0.95)',
-          borderColor: 'rgba(248,250,252,0.95)',
-          borderWidth: 2,
-          shadowBlur: 32,
-          shadowColor: 'rgba(168,85,247,0.9)'
-        }
-      }
-    ];
-
-    var option = {
-      backgroundColor: 'transparent',
-      animationDuration: 1200,
-      animationEasing: 'cubicOut',
-      tooltip: { show: false },
-      polar: { center: ['50%','52%'], radius: '120%' },
-      angleAxis: {
-        type: 'value',
-        min: 0,
-        max: 100,
-        show: false,
-        startAngle: 90,
-        clockwise: true
-      },
-      radiusAxis: {
-        type: 'value',
-        min: 0,
-        max: MAX_RADIUS,
-        show: false
-      },
-      series: [
-        // 极光扇区
-        {
-          id: 'aurora',
-          type: 'custom',
-          coordinateSystem: 'none',
-          data: [1],
-          renderItem: function(params, api){
-            var progress = viewState.auroraProgress;
-            var cx = api.getWidth()/2;
-            var cy = api.getHeight()*0.52;
-            var maxR = Math.min(api.getWidth(), api.getHeight())*0.50*viewState.zoom;
-            var rInner = maxR*0.18*progress;
-            var rOuter = maxR*(0.30 + 0.42*progress);
-            var rot = viewState.rotationDeg * Math.PI/180;
-
-            var children = [];
-            ['Subscription','Solar','AdsDevices'].forEach(function(id){
-              var lay = macroLayout[id];
-              var startRad = (lay.start/100)*Math.PI*2 - Math.PI/2 + rot;
-              var endRad   = (lay.end/100)*Math.PI*2   - Math.PI/2 + rot;
-              for (var layer=0; layer<3; layer++){
-                var inner = rInner + layer*maxR*0.01;
-                var outer = rOuter + layer*maxR*0.015;
-                var alphaMul = 1 - layer*0.35;
-                var grad;
-                if (id === 'Subscription') {
-                  grad = new echarts.graphic.LinearGradient(0.5,0.0,0.5,1,[
-                    {offset:0,  color:'rgba(34,211,238,' + (0.96*alphaMul) + ')'},
-                    {offset:0.5,color:'rgba(59,130,246,' + (0.40*alphaMul) + ')'},
-                    {offset:1,  color:'rgba(15,23,42,0)'}
-                  ]);
-                } else if (id === 'Solar') {
-                  grad = new echarts.graphic.LinearGradient(0.5,0.0,0.5,1,[
-                    {offset:0,  color:'rgba(190,242,100,' + (0.96*alphaMul) + ')'},
-                    {offset:0.5,color:'rgba(45,212,191,' + (0.40*alphaMul) + ')'},
-                    {offset:1,  color:'rgba(15,23,42,0)'}
-                  ]);
-                } else {
-                  grad = new echarts.graphic.LinearGradient(0.5,0.0,0.5,1,[
-                    {offset:0,  color:'rgba(244,114,182,' + (0.96*alphaMul) + ')'},
-                    {offset:0.5,color:'rgba(251,191,36,' + (0.45*alphaMul) + ')'},
-                    {offset:1,  color:'rgba(15,23,42,0)'}
-                  ]);
-                }
-                children.push({
-                  type:'sector',
-                  shape:{cx:cx,cy:cy,r0:inner,r:outer,startAngle:startRad,endAngle:endRad},
-                  style:{
-                    fill:grad,
-                    stroke:'none',
-                    shadowBlur:80*progress,
-                    shadowColor:lay.color
-                  }
-                });
+      return {
+        type: 'group',
+        children: [
+          {
+            type: 'circle',
+            shape: { cx: cx, cy: cy, r: r },
+            style: {
+              fill: style.baseColor,
+              fillOpacity: style.opacity * 0.5,
+              stroke: style.baseColor,
+              lineWidth: 1.5,
+              shadowBlur: 0,
+              shadowColor: 'transparent'
+            },
+            emphasis: {
+              style: {
+                fillOpacity: 0.8,
+                lineWidth: 3,
+                shadowBlur: 20,
+                shadowColor: style.baseColor
               }
-            });
-            return {type:'group',children:children};
+            }
           },
-          silent:true,
-          zlevel:1
-        },
-
-        // 轨道圈
-        {
-          id:'rings',
-          type:'custom',
-          coordinateSystem:'none',
-          data:[0],
-          renderItem:function(params, api){
-            var cx = api.getWidth()/2;
-            var cy = api.getHeight()*0.52;
-            var maxR = Math.min(api.getWidth(), api.getHeight())*0.50*viewState.zoom;
-            var rings=[];
-            [0.32,0.46,0.60,0.74,0.88].forEach(function(rp){
-              rings.push({
-                type:'circle',
-                shape:{cx:cx,cy:cy,r:maxR*rp},
-                style:{fill:'none',stroke:'rgba(15,23,42,0.9)',lineWidth:1}
-              });
-            });
-            return {type:'group',children:rings};
+          {
+            type: 'circle',
+            shape: { cx: cx, cy: cy, r: r * 0.92 },
+            style: {
+              fill: 'none',
+              stroke: 'rgba(255,255,255,0.12)',
+              lineWidth: 1
+            },
+            silent: true
           },
-          silent:true,
-          zlevel:0
-        },
+          {
+            type: 'text',
+            style: {
+              text: node.name,
+              x: cx,
+              y: cy,
+              fontFamily: 'Barlow Condensed, sans-serif',
+              fontWeight: 600,
+              fontSize: fontSize,
+              textAlign: 'center',
+              textVerticalAlign: 'middle',
+              lineHeight: fontSize * 1.1,
+              fill: '#ffffff',
+              shadowBlur: 2,
+              shadowColor: 'rgba(0,0,0,0.85)'
+            }
+          }
+        ]
+      };
+    }
 
-        // 中央恒星
-        {
-          id:'star',
-          type:'custom',
-          coordinateSystem:'none',
-          data:[0],
-          renderItem:function(params, api){
-            var cx = api.getWidth()/2;
-            var cy = api.getHeight()*0.52;
-            var maxR = Math.min(api.getWidth(), api.getHeight())*0.50*viewState.zoom;
-            var haloR = maxR*0.16;
-            var starR = maxR*0.09;
-            return {
-              type:'group',
-              children:[
-                {
-                  type:'circle',
-                  shape:{cx:cx,cy:cy,r:haloR},
-                  style:{
-                    fill:new echarts.graphic.RadialGradient(0.5,0.5,1,[
-                      {offset:0,color:'rgba(248,250,252,0.8)'},
-                      {offset:0.4,color:'rgba(248,250,252,0.28)'},
-                      {offset:1,color:'rgba(15,23,42,0)'}
-                    ]),
-                    shadowBlur:70,
-                    shadowColor:'rgba(248,250,252,0.9)'
-                  }
-                },
-                {
-                  type:'circle',
-                  shape:{cx:cx,cy:cy,r:starR},
-                  style:{
-                    fill:'rgba(248,250,252,0.98)',
-                    shadowBlur:32,
-                    shadowColor:'rgba(248,250,252,0.95)'
-                  }
-                }
-              ]
-            };
-          },
-          silent:true,
-          zlevel:3
-        },
-
-        // 星场
-        {
-          type:'scatter',
-          name:'Starfield',
-          coordinateSystem:'polar',
-          data: starfield,
-          symbolSize:function(val,params){return params.data.symbolSize || 2;},
-          itemStyle:{color:'rgba(248,250,252,0.8)'},
-          silent:true,
-          zlevel:2,
-          animationDelay: 0
-        },
-
-        // 行星
-        {
-          type:'scatter',
-          name:'Planets',
-          coordinateSystem:'polar',
-          data: planetPoints,
-          symbolSize:26,
-          label:{
-            show:true,
-            formatter:'{b}',
-            position:'top',
-            color:'#e5e7eb',
-            fontFamily:'Barlow Condensed',
-            fontSize:14,
-            fontWeight:600
-          },
-          zlevel:4,
-          animationDelay: function(idx){ return 400 + idx*120; }
-        },
-
-        // Niche 链接行星
+    const option = {
+      backgroundColor: 'transparent',
+      tooltip: { show: false },
+      xAxis: { show: false, min: 0, max: 100 },
+      yAxis: { show: false, min: 0, max: 100 },
+      series: [
         {
           type: 'scatter',
-          name: 'NicheLinks',
-          coordinateSystem: 'polar',
-          data: nicheLinkPoints,
-          symbolSize: 22,
-          label: {
-            show: true,
-            formatter: '{b}',
-            position: 'top',
-            color: '#f9fafb',
-            fontFamily: 'Barlow Condensed',
-            fontSize: 12,
-            fontWeight: 600
+          coordinateSystem: 'cartesian2d',
+          data: stars,
+          symbolSize: function (val) { return val[2] * 3; },
+          itemStyle: {
+            color: '#ffffff',
+            opacity: 0.4
           },
-          zlevel: 4,
-          animationDelay: function(idx){ return 600 + idx*150; }
+          silent: true,
+          z: 0
         },
-
-        // KPI 星团
         {
-          type:'effectScatter',
-          name:'KPI Cluster',
-          coordinateSystem:'polar',
-          data: clusterPoints,
-          symbolSize:function(val,params){return params.data.symbolSize;},
-          rippleEffect:{
-            scale:2.3,
-            brushType:'stroke',
-            period:12
+          id: 'nicheNodes',
+          type: 'custom',
+          coordinateSystem: 'none',
+          data: nodes,
+          renderItem: renderItem,
+          animationEasing: 'elasticOut',
+          animationDelay: function (idx) { return 80 + idx * 80; },
+          z: 2,
+          emphasis: {
+            focus: 'self',
+            blurScope: 'coordinateSystem'
           },
-          zlevel:5,
-          animationDelay: function(idx){ return 800 + idx*25; }
+          blur: {
+            itemStyle: {
+              opacity: 0.12
+            }
+          }
         }
       ]
     };
 
-    chart.setOption(option);
+    nicheChart.setOption(option);
 
-    // 极光入场动画（配合初始动画）
-    (function animateAurora(){
-      var start = Date.now();
-      var duration = 1300;
-      function frame(){
-        var now = Date.now();
-        var t = (now-start)/duration;
-        if (t>1) t=1;
-        viewState.auroraProgress = t;
-        chart.setOption({
-          series:[{id:'aurora', data:[t]}]
-        }, false);
-        if (t<1) requestAnimationFrame(frame);
+    // 详情面板交互
+    const detailCard = document.getElementById('detail-card');
+    const els = {
+      role: document.getElementById('p-role'),
+      name: document.getElementById('p-name'),
+      desc: document.getElementById('p-desc'),
+      statusDot: document.getElementById('p-status-dot'),
+      statusText: document.getElementById('p-status-text')
+    };
+
+    nicheChart.on('mouseover', { seriesIndex: 1 }, function(params) {
+      const node = nodes[params.dataIndex];
+      if (!node) return;
+
+      els.name.innerText = node.name.replace('\n',' ');
+      els.desc.innerText = node.desc || 'No description available.';
+
+      let roleText = 'SUB NODE';
+      let color = '#94a3b8';
+
+      if (node.role === 'root') { roleText = 'CORE NODE';  color = '#06b6d4'; }
+      else if (node.role.includes('spatial')) { roleText = 'SPATIAL'; color = '#10b981'; }
+      else if (node.role.includes('market'))  { roleText = 'MARKET';  color = '#a855f7'; }
+
+      els.role.innerText = roleText;
+      els.role.style.color = color;
+      els.statusDot.style.background = color;
+      els.statusText.innerText = node.link ? 'Click to navigate' : 'Data node';
+
+      detailCard.classList.add('active');
+    });
+
+    // 点击空白处收起卡片
+    nicheChart.getZr().on('click', function(e) {
+      if (!e.target) {
+        detailCard.classList.remove('active');
+        nicheChart.dispatchAction({ type: 'downplay' });
       }
-      requestAnimationFrame(frame);
+    });
+
+    // 点击节点跳转
+    nicheChart.on('click', { seriesIndex: 1 }, function (params) {
+      const node = nodes[params.dataIndex];
+      if (node && node.link) {
+        window.location.href = node.link;
+      }
+    });
+
+    // 背景图表拖拽（移动整个生态位图）
+    (function enableDragging() {
+      const zr = nicheChart.getZr();
+      let dragging = false;
+      let lastX = 0;
+      let lastY = 0;
+
+      zr.on('mousedown', function (e) {
+        dragging = true;
+        lastX = e.offsetX;
+        lastY = e.offsetY;
+      });
+
+      zr.on('mouseup', function () { dragging = false; });
+      zr.on('globalout', function () { dragging = false; });
+
+      zr.on('mousemove', function (e) {
+        if (!dragging) return;
+        const dx = e.offsetX - lastX;
+        const dy = e.offsetY - lastY;
+        lastX = e.offsetX;
+        lastY = e.offsetY;
+
+        viewState.offsetX += dx;
+        viewState.offsetY += dy;
+
+        // 触发重绘（数据不变，只是重新 renderItem）
+        nicheChart.setOption({
+          series: [{ id: 'nicheNodes', data: nodes }]
+        }, false);
+      });
     })();
 
-    // 右下详情面板
-    var panel = document.getElementById('detail-panel');
-    chart.on('mousemove', function(params){
-      if (params.seriesName !== 'KPI Cluster') return;
-      if (!params.data || !params.data.info) return;
-
-      var d = params.data.info;
-
-      var elVal   = document.getElementById('p-val');
-      var elName  = document.getElementById('p-name');
-      var elTrend = document.getElementById('p-trend');
-      var elBiz   = document.getElementById('p-biz');
-      var elType  = document.getElementById('p-type');
-
-      elName.textContent = d.name;
-      elVal.textContent  = d.value.toLocaleString();
-
-      var color = '#e5e7eb';
-      if (d.trend === 'up')   color = '#f97316';
-      else if (d.trend === 'down') color = '#3b82f6';
-      elVal.style.color = color;
-
-      elTrend.textContent = d.trend ? d.trend.toUpperCase() : '--';
-      elTrend.style.color = color;
-      elTrend.style.background =
-        d.trend === 'up'   ? 'rgba(249,115,22,0.12)' :
-        d.trend === 'down' ? 'rgba(59,130,246,0.12)' :
-                             'rgba(148,163,184,0.15)';
-
-      elBiz.textContent  = d.biz;
-      elType.textContent = d.type;
-
-      panel.classList.add('active');
+    window.addEventListener('resize', function () {
+      nicheChart.resize();
     });
-
-    // 点击 Niche 链接行星跳转
-    chart.on('click', function(params){
-      if (params.seriesName === 'NicheLinks' && params.data && params.data.link) {
-        window.location.href = params.data.link;
-      }
-    });
-
-    // 2.5D 旋转（拖动）与缩放（滚轮）
-    var zr = chart.getZr();
-    var isDragging = false;
-    var lastX = 0;
-
-    zr.on('mousedown', function(e){
-      isDragging = true;
-      lastX = e.offsetX;
-    });
-    zr.on('mouseup', function(){ isDragging = false; });
-    zr.on('globalout', function(){ isDragging = false; });
-
-    zr.on('mousemove', function(e){
-      if (!isDragging) return;
-      var dx = e.offsetX - lastX;
-      lastX = e.offsetX;
-      viewState.rotationDeg = (viewState.rotationDeg + dx * 0.25) % 360;
-      chart.setOption({
-        angleAxis:{ startAngle: 90 + viewState.rotationDeg },
-        series:[
-          {id:'aurora', data:[viewState.auroraProgress]},
-          {id:'rings',  data:[0]},
-          {id:'star',   data:[0]}
-        ]
-      }, false);
-    });
-
-    var dom = chart.getDom();
-    dom.addEventListener('wheel', function(e){
-      e.preventDefault();
-      var delta = e.deltaY > 0 ? -0.08 : 0.08;
-      var z = viewState.zoom + delta;
-      if (z < 0.75) z = 0.75;
-      if (z > 1.35) z = 1.35;
-      viewState.zoom = z;
-      chart.setOption({
-        polar:{ radius: (120 * viewState.zoom) + '%' },
-        series:[
-          {id:'aurora', data:[viewState.auroraProgress]},
-          {id:'rings',  data:[0]},
-          {id:'star',   data:[0]}
-        ]
-      }, false);
-    }, { passive:false });
-
-    window.addEventListener('resize', function(){ chart.resize(); });
   </script>
 </body>
 </html>
