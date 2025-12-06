@@ -562,10 +562,14 @@
     offsetY: 0
   };
 
-  const baseOption = {
-    backgroundColor: 'transparent',
-    animationDuration: 1100,
-    animationEasing: 'cubicOut',
+const baseOption = {
+  backgroundColor: 'transparent',
+  // 首次加载有一个平滑渐变
+  animationDuration: 900,
+  animationEasing: 'cubicOut',
+  // 后续更新（缩放 / 拖动）不做动画，直接跳到目标位置
+  animationDurationUpdate: 0,
+  animationEasingUpdate: 'linear',
 
     tooltip: {
       trigger: 'item',
@@ -617,6 +621,7 @@
         id: 'share',
         name: 'Market Share',
         type: 'pie',
+        animationDurationUpdate: 0, 
         radius: [0, 0],      // 布局由 updateLayout 统一计算
         center: [0, 0],
         roseType: 'area',
@@ -646,6 +651,7 @@
         id: 'structure',
         name: 'Structure',
         type: 'sunburst',
+        animationDurationUpdate: 0, 
         radius: [0, 0],
         center: [0, 0],
         sort: null,
