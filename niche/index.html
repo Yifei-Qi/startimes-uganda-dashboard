@@ -5,7 +5,7 @@
   <title>Niche · Ecological Niche · StarTimes Uganda</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- 字体，与 Ecology Index 保持一致 -->
+  <!-- 字体，与其它页面统一 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -39,7 +39,6 @@
       overflow: hidden;
     }
 
-    /* 顶部栏 */
     .top-bar {
       position: fixed;
       inset: 0 0 auto 0;
@@ -129,6 +128,7 @@
       z-index: 1;
     }
 
+    /* 前景文案与右侧卡片 */
     .panel-layer {
       position: absolute;
       inset: 0;
@@ -187,8 +187,7 @@
       border-left: 3px solid rgba(148,163,184,0.6);
       margin-bottom: 24px;
     }
-
-    .hero-desc strong { color:#e5e7eb; font-weight:600; }
+    .hero-desc strong { color:#e5e7eb; }
 
     .hero-buttons {
       display:flex;
@@ -219,7 +218,6 @@
     }
     .hero-chip.spatial .chip-dot{ background:var(--c-spatial); }
     .hero-chip.market  .chip-dot{ background:var(--c-market); }
-
     .hero-chip:hover{
       border-color:#f9fafb;
       transform:translateY(-1px);
@@ -345,10 +343,10 @@
     <a class="back-btn" href="../index.html">Back to Universe</a>
   </div>
 
-  <!-- 背景 Niche 圆形细胞图 -->
+  <!-- 背景细胞图 -->
   <div id="niche-chart"></div>
 
-  <!-- 前景文案层 -->
+  <!-- 文案层 -->
   <div class="panel-layer">
     <section class="hero-block">
       <div class="hero-tag">NICHE · UGANDA</div>
@@ -408,8 +406,8 @@
         <span>Hint</span>
       </div>
       <div class="card-foot-hint">
-        蓝色为核心节点 <strong>Niche</strong>；绿色细胞为 <strong>Spatial Niche</strong> 相关类目；
-        橙色细胞为 <strong>Market Niche</strong> 相关类目。点击绿色或橙色大节点进入对应下一级页面。
+        蓝色为核心节点 Niche；绿色细胞为 Spatial Niche 相关类目；
+        橙色细胞为 Market Niche 相关类目。可点击绿色或橙色大节点进入对应下一级页面。
       </div>
     </aside>
   </div>
@@ -419,231 +417,228 @@
   <script src="https://cdn.jsdelivr.net/npm/d3-hierarchy@2.0.0/dist/d3-hierarchy.min.js"></script>
 
   <script>
-    // 初始化图表（ID 修正为 niche-chart）
-    var nicheChart = echarts.init(document.getElementById('niche-chart'));
+    window.addEventListener('DOMContentLoaded', function () {
+      var dom = document.getElementById('niche-chart');
+      if (!dom) {
+        console.error('容器 #niche-chart 未找到');
+        return;
+      }
+      var chart = echarts.init(dom);
 
-    // 层级数据
-    const nicheTree = {
-      name: '生态位 · Niche',
-      type: 'root',
-      value: 100,
-      children: [
-        {
-          name: '空间生态位 · Spatial niche',
-          type: 'spatial',
-          value: 40,
-          link: 'spatial.html',
-          children: [
-            {
-              name: '线下视觉 · Offline visual',
-              type: 'spatial-offline-visual',
-              value: 10,
-              children: [
-                { name: '户外大牌 · Outdoor billboard', value: 1 },
-                { name: '灯杆广告 · Light pole banners', value: 1 },
-                { name: '营业厅 / 代理商 · Flyers & posters', value: 1 },
-                { name: '纸媒 & 网媒 · Print & online media', value: 1 }
-              ]
-            },
-            {
-              name: '线下视觉 + 听觉 · Offline visual + audio',
-              type: 'spatial-offline-av',
-              value: 7,
-              children: [
-                { name: '路演 · Roadshow', value: 1 },
-                { name: '发布会 · Press conference', value: 1 }
-              ]
-            },
-            {
-              name: '线下听觉 · Offline audio',
-              type: 'spatial-offline-audio',
-              value: 6,
-              children: [
-                { name: '广播节目 · Radio spots', value: 1 },
-                { name: '呼叫中心 · Call center / IVR', value: 1 }
-              ]
-            },
-            {
-              name: '线上视觉 · Online visual',
-              type: 'spatial-online-visual',
-              value: 8,
-              children: [
-                { name: 'EPG 广告 · Opening / zapping / volume bar', value: 1 },
-                { name: 'OTT 开屏广告 · App splash', value: 1 },
-                { name: 'Mini banner · 小尺寸横幅', value: 1 }
-              ]
-            },
-            {
-              name: '线上视觉 + 听觉 · Online visual + audio',
-              type: 'spatial-online-av',
-              value: 7,
-              children: [
-                { name: 'TVC · Promo spots', value: 1 },
-                { name: '社媒 · Social / Facebook / X', value: 1 },
-                { name: 'WhatsApp 群发 · Broadcast list', value: 1 }
-              ]
-            }
-          ]
-        },
-        {
-          name: '市场生态位 · Market niche',
-          type: 'market',
-          value: 40,
-          link: 'market.html',
-          children: [
-            { name: '2.2.1 市场占有率 · Market share', value: 4 },
-            { name: '2.2.2 SWOT 分析 · SWOT analysis', value: 4 },
-            { name: '2.2.3 产品类型 / 属性 & 价格对比', value: 4 },
-            { name: '2.2.4 频道类型 / 数量 & 节目包价格对比', value: 4 },
-            { name: '2.2.5 最有竞争力的产品分析', value: 4 },
-            { name: '2.2.6 渠道对比 · Visual & social metrics', value: 4 }
-          ]
-        }
-      ]
-    };
+      // 层级数据
+      const nicheTree = {
+        name: '生态位 · Niche',
+        type: 'root',
+        value: 100,
+        children: [
+          {
+            name: '空间生态位 · Spatial niche',
+            type: 'spatial',
+            value: 40,
+            link: 'spatial.html',
+            children: [
+              {
+                name: '线下视觉 · Offline visual',
+                type: 'spatial-offline-visual',
+                value: 10,
+                children: [
+                  { name: '户外大牌 · Outdoor billboard', value: 1 },
+                  { name: '灯杆广告 · Light pole banners', value: 1 },
+                  { name: '营业厅 / 代理商 · Flyers & posters', value: 1 },
+                  { name: '纸媒 & 网媒 · Print & online media', value: 1 }
+                ]
+              },
+              {
+                name: '线下视觉 + 听觉 · Offline visual + audio',
+                type: 'spatial-offline-av',
+                value: 7,
+                children: [
+                  { name: '路演 · Roadshow', value: 1 },
+                  { name: '发布会 · Press conference', value: 1 }
+                ]
+              },
+              {
+                name: '线下听觉 · Offline audio',
+                type: 'spatial-offline-audio',
+                value: 6,
+                children: [
+                  { name: '广播节目 · Radio spots', value: 1 },
+                  { name: '呼叫中心 · Call center / IVR', value: 1 }
+                ]
+              },
+              {
+                name: '线上视觉 · Online visual',
+                type: 'spatial-online-visual',
+                value: 8,
+                children: [
+                  { name: 'EPG 广告 · Opening / zapping / volume bar', value: 1 },
+                  { name: 'OTT 开屏广告 · App splash', value: 1 },
+                  { name: 'Mini banner · 小尺寸横幅', value: 1 }
+                ]
+              },
+              {
+                name: '线上视觉 + 听觉 · Online visual + audio',
+                type: 'spatial-online-av',
+                value: 7,
+                children: [
+                  { name: 'TVC · Promo spots', value: 1 },
+                  { name: '社媒 · Social / Facebook / X', value: 1 },
+                  { name: 'WhatsApp 群发 · Broadcast list', value: 1 }
+                ]
+              }
+            ]
+          },
+          {
+            name: '市场生态位 · Market niche',
+            type: 'market',
+            value: 40,
+            link: 'market.html',
+            children: [
+              { name: '2.2.1 市场占有率 · Market share', value: 4 },
+              { name: '2.2.2 SWOT 分析 · SWOT analysis', value: 4 },
+              { name: '2.2.3 产品类型 / 属性 & 价格对比', value: 4 },
+              { name: '2.2.4 频道类型 / 数量 & 节目包价格对比', value: 4 },
+              { name: '2.2.5 最有竞争力的产品分析', value: 4 },
+              { name: '2.2.6 渠道对比 · Visual & social metrics', value: 4 }
+            ]
+          }
+        ]
+      };
 
-    // d3 pack 转换
-    function buildPackedNodes() {
-      const w = nicheChart.getWidth();
-      const h = nicheChart.getHeight();
+      function buildPackedNodes() {
+        const w = chart.getWidth();
+        const h = chart.getHeight();
+        const boxSize = Math.min(w * 0.8, h * 1.1);
+        const centerX = w * 0.6;
+        const centerY = h * 0.55;
 
-      const boxSize = Math.min(w * 0.75, h * 0.9);
-      const centerX = w * 0.62;
-      const centerY = h * 0.52;
+        const root = d3.hierarchy(nicheTree).sum(d => d.value || 1);
+        d3.pack()
+          .size([boxSize, boxSize])
+          .padding(8)(root);
 
-      const root = d3.hierarchy(nicheTree).sum(d => d.value || 1);
-      d3.pack()
-        .size([boxSize, boxSize])
-        .padding(8)(root);
-
-      const nodes = [];
-      root.descendants().forEach(node => {
-        nodes.push({
-          name: node.data.name,
-          depth: node.depth,
-          type: node.data.type || 'leaf',
-          link: node.data.link || null,
-          x: node.x - boxSize / 2 + centerX,
-          y: node.y - boxSize / 2 + centerY,
-          r: node.r
+        const nodes = [];
+        root.descendants().forEach(function (n) {
+          nodes.push({
+            name: n.data.name,
+            depth: n.depth,
+            type: n.data.type || 'leaf',
+            link: n.data.link || null,
+            x: n.x - boxSize / 2 + centerX,
+            y: n.y - boxSize / 2 + centerY,
+            r: n.r
+          });
         });
-      });
-      return nodes;
-    }
-
-    function getNodeStyle(node) {
-      let fill, stroke, glow;
-      const depth = node.depth;
-      const t = node.type;
-
-      if (depth === 0) {
-        fill = new echarts.graphic.RadialGradient(0.5, 0.35, 1, [
-          { offset: 0,   color: '#38bdf8' },
-          { offset: 0.6, color: '#0ea5e9' },
-          { offset: 1,   color: '#0369a1' }
-        ]);
-        stroke = 'rgba(191,219,254,0.9)';
-        glow   = 'rgba(59,130,246,0.85)';
-      } else if (t === 'spatial') {
-        fill = new echarts.graphic.RadialGradient(0.5, 0.3, 1, [
-          { offset: 0,   color: '#4ade80' },
-          { offset: 0.7, color: '#22c55e' },
-          { offset: 1,   color: '#15803d' }
-        ]);
-        stroke = 'rgba(187,247,208,0.9)';
-        glow   = 'rgba(34,197,94,0.85)';
-      } else if (t === 'market') {
-        fill = new echarts.graphic.RadialGradient(0.5, 0.3, 1, [
-          { offset: 0,   color: '#fdba74' },
-          { offset: 0.7, color: '#fb923c' },
-          { offset: 1,   color: '#c2410c' }
-        ]);
-        stroke = 'rgba(254,215,170,0.9)';
-        glow   = 'rgba(249,115,22,0.85)';
-      } else if (t && t.indexOf('online') === 0) {
-        fill = new echarts.graphic.RadialGradient(0.5, 0.3, 1, [
-          { offset: 0,   color: '#7dd3fc' },
-          { offset: 0.7, color: '#38bdf8' },
-          { offset: 1,   color: '#0f766e' }
-        ]);
-        stroke = 'rgba(191,219,254,0.9)';
-        glow   = 'rgba(56,189,248,0.8)';
-      } else if (t && t.indexOf('offline') === 0) {
-        fill = new echarts.graphic.RadialGradient(0.5, 0.3, 1, [
-          { offset: 0,   color: '#bbf7d0' },
-          { offset: 0.7, color: '#4ade80' },
-          { offset: 1,   color: '#166534' }
-        ]);
-        stroke = 'rgba(220,252,231,0.9)';
-        glow   = 'rgba(34,197,94,0.75)';
-      } else {
-        fill   = 'rgba(15,23,42,0.9)';
-        stroke = 'rgba(148,163,184,0.6)';
-        glow   = 'rgba(15,23,42,0.9)';
+        return nodes;
       }
 
-      const baseOpacity = depth === 0 ? 0.98 : depth === 1 ? 0.93 : 0.88;
+      function getNodeStyle(node) {
+        let fill, stroke, glow;
+        const t = node.type;
+        const d = node.depth;
 
-      return {
-        fill: fill,
-        stroke: stroke,
-        glow: glow,
-        opacity: baseOpacity
-      };
-    }
+        if (d === 0) {
+          fill = new echarts.graphic.RadialGradient(0.5, 0.35, 1, [
+            { offset: 0,   color: '#38bdf8' },
+            { offset: 0.6, color: '#0ea5e9' },
+            { offset: 1,   color: '#0369a1' }
+          ]);
+          stroke = 'rgba(191,219,254,0.9)';
+          glow   = 'rgba(59,130,246,0.9)';
+        } else if (t === 'spatial') {
+          fill = new echarts.graphic.RadialGradient(0.5, 0.3, 1, [
+            { offset: 0,   color: '#4ade80' },
+            { offset: 0.7, color: '#22c55e' },
+            { offset: 1,   color: '#15803d' }
+          ]);
+          stroke = 'rgba(187,247,208,0.9)';
+          glow   = 'rgba(34,197,94,0.9)';
+        } else if (t === 'market') {
+          fill = new echarts.graphic.RadialGradient(0.5, 0.3, 1, [
+            { offset: 0,   color: '#fdba74' },
+            { offset: 0.7, color: '#fb923c' },
+            { offset: 1,   color: '#c2410c' }
+          ]);
+          stroke = 'rgba(254,215,170,0.9)';
+          glow   = 'rgba(249,115,22,0.9)';
+        } else if (t && t.indexOf('online') === 0) {
+          fill = new echarts.graphic.RadialGradient(0.5, 0.3, 1, [
+            { offset: 0,   color: '#7dd3fc' },
+            { offset: 0.7, color: '#38bdf8' },
+            { offset: 1,   color: '#0f766e' }
+          ]);
+          stroke = 'rgba(191,219,254,0.9)';
+          glow   = 'rgba(56,189,248,0.8)';
+        } else if (t && t.indexOf('offline') === 0) {
+          fill = new echarts.graphic.RadialGradient(0.5, 0.3, 1, [
+            { offset: 0,   color: '#bbf7d0' },
+            { offset: 0.7, color: '#4ade80' },
+            { offset: 1,   color: '#166534' }
+          ]);
+          stroke = 'rgba(220,252,231,0.9)';
+          glow   = 'rgba(34,197,94,0.75)';
+        } else {
+          fill   = 'rgba(15,23,42,0.92)';
+          stroke = 'rgba(148,163,184,0.6)';
+          glow   = 'rgba(15,23,42,0.9)';
+        }
 
-    function renderNiche(nodes) {
-      const option = {
-        backgroundColor: 'transparent',
-        tooltip: {
-          trigger: 'item',
-          backgroundColor: 'rgba(15,23,42,0.95)',
-          borderColor: 'rgba(148,163,184,0.6)',
-          borderWidth: 1,
-          padding: 10,
-          textStyle: {
-            fontFamily: 'Barlow, system-ui, -apple-system, BlinkMacSystemFont',
-            fontSize: 11,
-            color: '#e5e7eb'
+        const baseOpacity = d === 0 ? 0.98 : d === 1 ? 0.93 : 0.88;
+
+        return { fill, stroke, glow, opacity: baseOpacity };
+      }
+
+      function render(nodes) {
+        const option = {
+          backgroundColor: 'transparent',
+          hoverLayerThreshold: Infinity,
+          tooltip: {
+            trigger: 'item',
+            backgroundColor: 'rgba(15,23,42,0.95)',
+            borderColor: 'rgba(148,163,184,0.6)',
+            borderWidth: 1,
+            padding: 10,
+            textStyle: {
+              fontFamily: 'Barlow, system-ui, -apple-system, BlinkMacSystemFont',
+              fontSize: 11,
+              color: '#e5e7eb'
+            },
+            formatter: function (p) {
+              const d = p.data;
+              return (
+                '<div style="font-weight:600;font-size:12px;margin-bottom:2px;">' +
+                d.name +
+                '</div>' +
+                (d.type === 'spatial'
+                  ? '<div style="color:#bbf7d0;">空间生态位 · 渠道 / 触点</div>'
+                  : d.type === 'market'
+                  ? '<div style="color:#fed7aa;">市场生态位 · 竞品 / 定价 / 包型</div>'
+                  : ''
+                ) +
+                (d.link
+                  ? '<div style="margin-top:4px;color:#93c5fd;">点击可进入下一级页面</div>'
+                  : ''
+                )
+              );
+            }
           },
-          formatter: function (params) {
-            const d = params.data;
-            return (
-              '<div style="font-weight:600;font-size:12px;margin-bottom:2px;">'
-                + d.name +
-              '</div>' +
-              (d.type === 'spatial'
-                ? '<div style="color:#bbf7d0;">空间生态位 · 渠道 / 触点</div>'
-                : d.type === 'market'
-                ? '<div style="color:#fed7aa;">市场生态位 · 竞品 / 定价 / 包型</div>'
-                : ''
-              ) +
-              (d.link
-                ? '<div style="margin-top:4px;color:#93c5fd;">点击可进入下一级页面</div>'
-                : ''
-              )
-            );
-          }
-        },
-        hoverLayerThreshold: Infinity,
-        series: [
-          {
+          series: [{
             type: 'custom',
             coordinateSystem: 'none',
             data: nodes,
+            zlevel: 1,
             emphasis: {
               focus: 'self',
               blurScope: 'global'
             },
             blur: {
-              itemStyle: {
-                opacity: 0.15
-              }
+              itemStyle: { opacity: 0.15 }
             },
             renderItem: function (params, api) {
-              const node = params.data;
-              const styleCfg = getNodeStyle(node);
-              const isLeaf = node.depth > 1 && node.r < 45;
+              var node = params.data;
+              if (!node) return;
+              var styleCfg = getNodeStyle(node);
+              var isLeaf = node.depth >= 2;
 
               return {
                 type: 'group',
@@ -659,7 +654,7 @@
                       fill: styleCfg.fill,
                       stroke: styleCfg.stroke,
                       lineWidth: node.depth === 0 ? 3 : 1.5,
-                      shadowBlur: node.depth === 0 ? 80 : 35,
+                      shadowBlur: node.depth === 0 ? 80 : 40,
                       shadowColor: styleCfg.glow,
                       opacity: styleCfg.opacity
                     }
@@ -688,30 +683,27 @@
                 ]
               };
             }
-          }
-        ]
-      };
+          }]
+        };
 
-      nicheChart.setOption(option);
-    }
-
-    // 初次渲染
-    var packedNodes = buildPackedNodes();
-    renderNiche(packedNodes);
-
-    // 点击带 link 的节点跳转
-    nicheChart.on('click', function (params) {
-      if (params.data && params.data.link) {
-        window.location.href = params.data.link;
+        chart.setOption(option, true);
       }
-    });
 
-    // 自适应
-    window.addEventListener('resize', function () {
-      nicheChart.resize();
-      packedNodes = buildPackedNodes();
-      nicheChart.setOption({
-        series: [{ data: packedNodes }]
+      var nodes = buildPackedNodes();
+      render(nodes);
+
+      chart.on('click', function (p) {
+        if (p.data && p.data.link) {
+          window.location.href = p.data.link;
+        }
+      });
+
+      window.addEventListener('resize', function () {
+        chart.resize();
+        nodes = buildPackedNodes();
+        chart.setOption({
+          series: [{ data: nodes }]
+        });
       });
     });
   </script>
