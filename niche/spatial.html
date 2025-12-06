@@ -5,7 +5,7 @@
   <title>Spatial Niche · Touchpoint Map · StarTimes Uganda</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- 字体 -->
+  <!-- 字体，与其它页面统一 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -30,6 +30,7 @@
       overflow: hidden;
     }
 
+    /* 顶部导航（与其它页面统一） */
     .top-bar {
       position: fixed;
       inset: 0 0 auto 0;
@@ -112,6 +113,7 @@
       transform:translateY(-2px);
     }
 
+    /* 布局 */
     #touch-chart {
       position:absolute;
       inset:0;
@@ -272,321 +274,310 @@
     </div>
   </div>
 
+<!-- 只需要 echarts，本页不用 d3 -->
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
 <script>
-  window.addEventListener('DOMContentLoaded', function () {
-    var chartDom = document.getElementById('touch-chart');
-    if (!chartDom) {
-      console.error('ECharts 容器 #touch-chart 未找到');
-      return;
+  var chartDom = document.getElementById('touch-chart');
+  var chart = echarts.init(chartDom);
+
+  // 触点数据
+  var touchpoints = [
+    // 线下视觉：Offline · Visual（绿色）
+    { name: '户外大牌\nOutdoor billboard',     cat: 'offline-visual',   x: -0.75, y: -0.55 },
+    { name: '灯杆广告\nLight pole banners',    cat: 'offline-visual',   x: -0.6,  y: -0.50 },
+    { name: '营业厅 / 代理商\nFlyers & posters', cat: 'offline-visual', x: -0.55, y: -0.68 },
+    { name: '纸媒 & 网媒\nPrint & online media', cat: 'offline-visual', x: -0.38, y: -0.52 },
+
+    // 线下视觉 + 听觉：Offline · Visual + Audio（橙色）
+    { name: '路演\nRoadshow',                 cat: 'offline-av',       x: -0.07, y:  0.03 },
+    { name: '发布会\nPress conference',       cat: 'offline-av',       x:  0.05, y:  0.03 },
+
+    // 线上听觉：Online · Audio（紫色）
+    { name: '广播节目\nRadio spots',          cat: 'online-audio',     x:  0.28, y:  0.55 },
+    { name: '呼叫中心\nCall center / IVR',    cat: 'online-audio',     x:  0.48, y:  0.68 },
+
+    // 线上视觉：Online · Visual（蓝色）
+    { name: 'EPG 广告\nOpening / zapping / volume bar', cat: 'online-visual', x: 0.45, y: -0.35 },
+    { name: 'OTT 开屏广告\nApp splash',       cat: 'online-visual',    x: 0.63, y: -0.27 },
+    { name: 'Mini banner\n小尺寸横幅',         cat: 'online-visual',    x: 0.80, y: -0.20 },
+
+    // 线上视觉 + 听觉：Online · Visual + Audio（粉红）
+    { name: 'TVC\nPromo spots',               cat: 'online-av',        x: 0.32, y:  0.03 },
+    { name: '社媒\nSocial / Facebook / X',     cat: 'online-av',        x: 0.55, y:  0.03 },
+    { name: 'WhatsApp 群发\nBroadcast list',   cat: 'online-av',        x: 0.82, y:  0.03 }
+  ];
+
+  var catStyle = {
+    'offline-visual': {
+      color: '#22c55e',
+      group: '线下视觉 · Offline visual'
+    },
+    'offline-av': {
+      color: '#f97316',
+      group: '线下视觉 + 听觉 · Offline visual + audio'
+    },
+    'online-audio': {
+      color: '#a855f7',
+      group: '线上听觉 · Online audio'
+    },
+    'online-visual': {
+      color: '#38bdf8',
+      group: '线上视觉 · Online visual'
+    },
+    'online-av': {
+      color: '#fb7185',
+      group: '线上视觉 + 听觉 · Online visual + audio'
     }
-    var chart = echarts.init(chartDom);
+  };
 
-    // 触点坐标：略微拉开，减少文字互相遮挡
-    var touchpoints = [
-      // 线下视觉：Offline · Visual（绿色）
-      { name: '户外大牌\nOutdoor billboard',         cat: 'offline-visual',   x: -0.8,  y: -0.55 },
-      { name: '灯杆广告\nLight pole banners',        cat: 'offline-visual',   x: -0.65, y: -0.65 },
-      { name: '营业厅 / 代理商\nFlyers & posters',   cat: 'offline-visual',   x: -0.55, y: -0.45 },
-      { name: '纸媒 & 网媒\nPrint & online media',   cat: 'offline-visual',   x: -0.35, y: -0.55 },
+  var scatterData = touchpoints.map(function (tp) {
+    return {
+      value: [tp.x, tp.y],
+      name: tp.name,
+      category: tp.cat,
+      itemStyle: { color: catStyle[tp.cat].color }
+    };
+  });
 
-      // 线下视觉 + 听觉：Offline · Visual + Audio（橙色），放在横轴稍微错开
-      { name: '路演\nRoadshow',                     cat: 'offline-av',       x: -0.15, y:  0.03 },
-      { name: '发布会\nPress conference',           cat: 'offline-av',       x:  0.02,  y: -0.03 },
-
-      // 线下听觉：Offline · Audio（紫色）
-      { name: '广播节目\nRadio spots',              cat: 'offline-audio',    x: -0.3,  y:  0.55 },
-      { name: '呼叫中心\nCall center / IVR',        cat: 'offline-audio',    x: -0.1,  y:  0.7  },
-
-      // 线上视觉：Online · Visual（蓝色）
-      { name: 'EPG 广告\nOpening / zapping / volume bar', cat: 'online-visual', x: 0.55, y: -0.45 },
-      { name: 'OTT 开屏广告\nApp splash',           cat: 'online-visual',    x: 0.72, y: -0.35 },
-      { name: 'Mini banner\n小尺寸横幅',             cat: 'online-visual',    x: 0.85, y: -0.25 },
-
-      // 线上视觉 + 听觉：Online · Visual + Audio（粉红），同样在横轴附近稍错开
-      { name: 'TVC\nPromo spots',                   cat: 'online-av',        x: 0.32, y:  0.04 },
-      { name: '社媒\nSocial / Facebook / X',         cat: 'online-av',        x: 0.55, y: -0.04 },
-      { name: 'WhatsApp 群发\nBroadcast list',       cat: 'online-av',        x: 0.8,  y:  0.05 }
-    ];
-
-    var catStyle = {
-      'offline-visual': {
-        color: '#22c55e',
-        group: '线下视觉 · Offline visual'
+  var option = {
+    backgroundColor: 'transparent',
+    grid: {
+      left: '40%',   // 图表整体靠右，避免遮挡左侧文案
+      right: '6%',
+      top: '16%',
+      bottom: '20%'
+    },
+    xAxis: {
+      type: 'value',
+      min: -1,
+      max: 1,
+      splitLine: { show: false },
+      axisLine: { show: false },
+      axisTick: { show: false },
+      axisLabel: { show: false }
+    },
+    yAxis: {
+      type: 'value',
+      min: -1,
+      max: 1,
+      splitLine: { show: false },
+      axisLine: { show: false },
+      axisTick: { show: false },
+      axisLabel: { show: false }
+    },
+    tooltip: {
+      trigger: 'item',
+      backgroundColor: 'rgba(15,23,42,0.96)',
+      borderColor: 'rgba(148,163,184,0.7)',
+      borderWidth: 1,
+      padding: 10,
+      textStyle: {
+        fontFamily: 'Barlow, -apple-system, BlinkMacSystemFont, system-ui',
+        fontSize: 11,
+        color: '#e5e7eb'
       },
-      'offline-av': {
-        color: '#f97316',
-        group: '线下视觉 + 听觉 · Offline visual + audio'
-      },
-      'offline-audio': {
-        color: '#a855f7',
-        group: '线下听觉 · Offline audio'
-      },
-      'online-visual': {
-        color: '#38bdf8',
-        group: '线上视觉 · Online visual'
-      },
-      'online-av': {
-        color: '#fb7185',
-        group: '线上视觉 + 听觉 · Online visual + audio'
+      formatter: function (params) {
+        var d = params.data;
+        var meta = catStyle[d.category] || {};
+        var x = d.value[0];
+        var y = d.value[1];
+
+        var pos = [];
+        pos.push(x < 0 ? 'Offline' : 'Online');
+        if (y > 0.2) pos.push('Audio');
+        else if (y < -0.2) pos.push('Visual');
+        else pos.push('Audio + Visual');
+
+        return (
+          '<div style="font-weight:600;font-size:12px;margin-bottom:4px;">' +
+            d.name.replace('\\n', ' · ') +
+          '</div>' +
+          (meta.group
+            ? '<div style="color:#a5b4fc;">' + meta.group + '</div>'
+            : ''
+          ) +
+          '<div style="color:#9ca3af;margin-top:4px;">象限：' + pos.join(' · ') + '</div>'
+        );
       }
-    };
+    },
+    series: [
+      // 坐标轴 + 箭头 + 轴端文字
+      {
+        type: 'custom',
+        coordinateSystem: 'cartesian2d',
+        data: [0],
+        silent: true,
+        zlevel: 1,
+        renderItem: function (params, api) {
+          var xLeft  = api.coord([-1, 0]);
+          var xRight = api.coord([ 1, 0]);
+          var yBottom= api.coord([ 0,-1]);
+          var yTop   = api.coord([ 0, 1]);
+          var arrow = 10;
 
-    var scatterData = touchpoints.map(function (tp) {
-      return {
-        value: [tp.x, tp.y],
-        name: tp.name,
-        category: tp.cat,
-        itemStyle: { color: catStyle[tp.cat].color }
-      };
-    });
-
-    var option = {
-      backgroundColor: 'transparent',
-      grid: {
-        left: '40%',
-        right: '6%',
-        top: '16%',
-        bottom: '20%'
-      },
-      xAxis: {
-        type: 'value',
-        min: -1,
-        max: 1,
-        splitLine: { show: false },
-        axisLine: { show: false },
-        axisTick: { show: false },
-        axisLabel: { show: false }
-      },
-      yAxis: {
-        type: 'value',
-        min: -1,
-        max: 1,
-        splitLine: { show: false },
-        axisLine: { show: false },
-        axisTick: { show: false },
-        axisLabel: { show: false }
-      },
-      tooltip: {
-        trigger: 'item',
-        backgroundColor: 'rgba(15,23,42,0.96)',
-        borderColor: 'rgba(148,163,184,0.7)',
-        borderWidth: 1,
-        padding: 10,
-        textStyle: {
-          fontFamily: 'Barlow, -apple-system, BlinkMacSystemFont, system-ui',
-          fontSize: 11,
-          color: '#e5e7eb'
-        },
-        formatter: function (params) {
-          var d = params.data;
-          var meta = catStyle[d.category] || {};
-          var x = d.value[0];
-          var y = d.value[1];
-
-          var pos = [];
-          pos.push(x < 0 ? 'Offline' : 'Online');
-          if (y > 0.25) pos.push('Audio');
-          else if (y < -0.25) pos.push('Visual');
-          else pos.push('Audio + Visual');
-
-          return (
-            '<div style="font-weight:600;font-size:12px;margin-bottom:4px;">' +
-              d.name.replace('\\n', ' · ') +
-            '</div>' +
-            (meta.group
-              ? '<div style="color:#a5b4fc;">' + meta.group + '</div>'
-              : ''
-            ) +
-            '<div style="color:#9ca3af;margin-top:4px;">象限：' + pos.join(' · ') + '</div>'
-          );
-        }
-      },
-      series: [
-        // 坐标轴 + 四个箭头 + 端点文字
-        {
-          type: 'custom',
-          coordinateSystem: 'cartesian2d',
-          data: [0],
-          silent: true,
-          zlevel: 1,
-          renderItem: function (params, api) {
-            var xLeft   = api.coord([-1, 0]);
-            var xRight  = api.coord([ 1, 0]);
-            var yBottom = api.coord([ 0,-1]);
-            var yTop    = api.coord([ 0, 1]);
-            var arrow   = 10;
-
-            return {
-              type: 'group',
-              children: [
-                // 横轴
-                {
-                  type: 'line',
-                  shape: { x1: xLeft[0], y1: xLeft[1], x2: xRight[0], y2: xRight[1] },
-                  style: { stroke: 'rgba(148,163,184,0.9)', lineWidth: 1.3 }
+          return {
+            type: 'group',
+            children: [
+              // 横轴
+              {
+                type: 'line',
+                shape: { x1: xLeft[0], y1: xLeft[1], x2: xRight[0], y2: xRight[1] },
+                style: { stroke: 'rgba(148,163,184,0.9)', lineWidth: 1.4 }
+              },
+              // 纵轴
+              {
+                type: 'line',
+                shape: { x1: yBottom[0], y1: yBottom[1], x2: yTop[0], y2: yTop[1] },
+                style: { stroke: 'rgba(148,163,184,0.9)', lineWidth: 1.4 }
+              },
+              // 横轴箭头（Online 端）
+              {
+                type: 'polygon',
+                shape: {
+                  points: [
+                    [xRight[0], xRight[1]],
+                    [xRight[0] - arrow, xRight[1] - arrow * 0.5],
+                    [xRight[0] - arrow, xRight[1] + arrow * 0.5]
+                  ]
                 },
-                // 纵轴
-                {
-                  type: 'line',
-                  shape: { x1: yBottom[0], y1: yBottom[1], x2: yTop[0], y2: yTop[1] },
-                  style: { stroke: 'rgba(148,163,184,0.9)', lineWidth: 1.3 }
+                style: { fill: 'rgba(148,163,184,0.95)' }
+              },
+              // 纵轴箭头（Audio 端）
+              {
+                type: 'polygon',
+                shape: {
+                  points: [
+                    [yTop[0], yTop[1]],
+                    [yTop[0] - arrow * 0.5, yTop[1] + arrow],
+                    [yTop[0] + arrow * 0.5, yTop[1] + arrow]
+                  ]
                 },
-                // 右箭头（Online）
-                {
-                  type: 'polygon',
-                  shape: {
-                    points: [
-                      [xRight[0], xRight[1]],
-                      [xRight[0] - arrow, xRight[1] - arrow * 0.5],
-                      [xRight[0] - arrow, xRight[1] + arrow * 0.5]
-                    ]
-                  },
-                  style: { fill: 'rgba(148,163,184,0.9)' }
-                },
-                // 左箭头（Offline）
-                {
-                  type: 'polygon',
-                  shape: {
-                    points: [
-                      [xLeft[0], xLeft[1]],
-                      [xLeft[0] + arrow, xLeft[1] - arrow * 0.5],
-                      [xLeft[0] + arrow, xLeft[1] + arrow * 0.5]
-                    ]
-                  },
-                  style: { fill: 'rgba(148,163,184,0.9)' }
-                },
-                // 上箭头（Audio）
-                {
-                  type: 'polygon',
-                  shape: {
-                    points: [
-                      [yTop[0], yTop[1]],
-                      [yTop[0] - arrow * 0.5, yTop[1] + arrow],
-                      [yTop[0] + arrow * 0.5, yTop[1] + arrow]
-                    ]
-                  },
-                  style: { fill: 'rgba(148,163,184,0.9)' }
-                },
-                // 下箭头（Visual）
-                {
-                  type: 'polygon',
-                  shape: {
-                    points: [
-                      [yBottom[0], yBottom[1]],
-                      [yBottom[0] - arrow * 0.5, yBottom[1] - arrow],
-                      [yBottom[0] + arrow * 0.5, yBottom[1] - arrow]
-                    ]
-                  },
-                  style: { fill: 'rgba(148,163,184,0.9)' }
-                },
-                // 轴端文字
-                {
-                  type: 'text',
-                  style: {
-                    text: 'OFFLINE',
-                    x: xLeft[0] - 6,
-                    y: xLeft[1] + 20,
-                    textAlign: 'right',
-                    textVerticalAlign: 'middle',
-                    fontFamily: 'Barlow Condensed',
-                    fontSize: 11,
-                    letterSpacing: 1,
-                    fill: 'rgba(148,163,184,0.9)'
-                  }
-                },
-                {
-                  type: 'text',
-                  style: {
-                    text: 'ONLINE',
-                    x: xRight[0] + 6,
-                    y: xRight[1] + 20,
-                    textAlign: 'left',
-                    textVerticalAlign: 'middle',
-                    fontFamily: 'Barlow Condensed',
-                    fontSize: 11,
-                    letterSpacing: 1,
-                    fill: 'rgba(148,163,184,0.9)'
-                  }
-                },
-                {
-                  type: 'text',
-                  style: {
-                    text: 'VISUAL',
-                    x: yBottom[0] - 6,
-                    y: yBottom[1] + 22,
-                    textAlign: 'right',
-                    textVerticalAlign: 'middle',
-                    fontFamily: 'Barlow Condensed',
-                    fontSize: 11,
-                    letterSpacing: 1,
-                    fill: 'rgba(148,163,184,0.9)'
-                  }
-                },
-                {
-                  type: 'text',
-                  style: {
-                    text: 'AUDIO',
-                    x: yTop[0] - 6,
-                    y: yTop[1] - 20,
-                    textAlign: 'right',
-                    textVerticalAlign: 'middle',
-                    fontFamily: 'Barlow Condensed',
-                    fontSize: 11,
-                    letterSpacing: 1,
-                    fill: 'rgba(148,163,184,0.9)'
-                  }
+                style: { fill: 'rgba(148,163,184,0.95)' }
+              },
+              // OFFLINE
+              {
+                type: 'text',
+                style: {
+                  text: 'OFFLINE',
+                  x: xLeft[0],
+                  y: xLeft[1] + 22,
+                  textAlign: 'center',
+                  textVerticalAlign: 'middle',
+                  fontFamily: 'Barlow Condensed',
+                  fontSize: 13,
+                  fontWeight: 500,
+                  letterSpacing: 2,
+                  fill: 'rgba(229,231,235,0.95)'
                 }
-              ]
-            };
-          }
-        },
-        // 触点：行星扩散光晕 + 更大的文字
-        {
-          type: 'effectScatter',
-          data: scatterData,
-          symbolSize: 16,
-          zlevel: 2,
-          rippleEffect: {
-            scale: 2.3,
-            brushType: 'stroke',
-            period: 10
-          },
-          label: {
-            show: true,
-            color: '#e5e7eb',
-            fontFamily: 'Barlow, -apple-system, system-ui',
-            fontSize: 13,
-            formatter: '{b}',
-            // 文字位置：根据是否落在横轴 / 纵轴上自动调整
-            position: function (param) {
-              var v = param.data.value || [];
-              var x = v[0], y = v[1];
-              // 接近横轴
-              if (Math.abs(y) < 0.03) {
-                return x >= 0 ? 'top' : 'bottom';
+              },
+              // ONLINE
+              {
+                type: 'text',
+                style: {
+                  text: 'ONLINE',
+                  x: xRight[0],
+                  y: xRight[1] + 22,
+                  textAlign: 'center',
+                  textVerticalAlign: 'middle',
+                  fontFamily: 'Barlow Condensed',
+                  fontSize: 13,
+                  fontWeight: 500,
+                  letterSpacing: 2,
+                  fill: 'rgba(229,231,235,0.95)'
+                }
+              },
+              // VISUAL
+              {
+                type: 'text',
+                style: {
+                  text: 'VISUAL',
+                  x: yBottom[0],
+                  y: yBottom[1] + 26,
+                  textAlign: 'center',
+                  textVerticalAlign: 'middle',
+                  fontFamily: 'Barlow Condensed',
+                  fontSize: 13,
+                  fontWeight: 500,
+                  letterSpacing: 2,
+                  fill: 'rgba(229,231,235,0.95)'
+                }
+              },
+              // AUDIO
+              {
+                type: 'text',
+                style: {
+                  text: 'AUDIO',
+                  x: yTop[0],
+                  y: yTop[1] - 26,
+                  textAlign: 'center',
+                  textVerticalAlign: 'middle',
+                  fontFamily: 'Barlow Condensed',
+                  fontSize: 13,
+                  fontWeight: 500,
+                  letterSpacing: 2,
+                  fill: 'rgba(229,231,235,0.95)'
+                }
               }
-              // 接近纵轴
-              if (Math.abs(x) < 0.03) {
-                return y >= 0 ? 'right' : 'left';
-              }
-              // 其他情况：默认靠右
-              return 'right';
-            }
-          },
-          itemStyle: {
-            borderWidth: 0,
-            shadowBlur: 18,
-            shadowColor: 'rgba(15,23,42,0.95)'
-          }
+            ]
+          };
         }
-      ]
-    };
+      },
+      // 触点散点（带行星光晕）
+      {
+        type: 'effectScatter',
+        data: scatterData,
+        symbol: 'circle',
+        symbolSize: 16,
+        zlevel: 2,
+        rippleEffect: {
+          period: 6,
+          scale: 2.2,
+          brushType: 'stroke'
+        },
+        label: {
+          show: true,
+          position: 'right',
+          formatter: '{b}',
+          color: '#f9fafb',
+          fontFamily: 'Barlow, -apple-system, system-ui',
+          fontSize: 12
+        },
+        labelLayout: function (params) {
+          var v = params.data.value || [0,0];
+          var x = v[0], y = v[1];
+          var dx = 0, dy = 0;
 
-    chart.setOption(option);
-    window.addEventListener('resize', function () {
-      chart.resize();
-    });
+          // 靠近横轴：文字上下错开
+          if (Math.abs(y) < 0.12) {
+            dy = y >= 0 ? -12 : 12;
+          }
+
+          // 靠近纵轴：文字左右错开
+          if (Math.abs(x) < 0.12) {
+            dx = x >= 0 ? 12 : -12;
+          }
+
+          // 普通象限：按左右象限稍微再偏一点
+          if (Math.abs(x) >= 0.12 && Math.abs(y) >= 0.12) {
+            dx += x >= 0 ? 10 : -10;
+          }
+
+          return { dx: dx, dy: dy };
+        },
+        itemStyle: {
+          borderWidth: 2,
+          borderColor: 'rgba(15,23,42,1)',
+          shadowBlur: 18,
+          shadowColor: 'rgba(15,23,42,0.9)'
+        }
+      }
+    ]
+  };
+
+  chart.setOption(option);
+
+  window.addEventListener('resize', function () {
+    chart.resize();
   });
 </script>
 
