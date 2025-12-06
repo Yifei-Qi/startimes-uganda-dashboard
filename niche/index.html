@@ -49,7 +49,6 @@
       position: relative;
     }
 
-    /* 顶部导航栏 */
     .top-bar {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -351,7 +350,6 @@
     var chartDom = document.getElementById('niche-chart');
     var nicheChart = echarts.init(chartDom);
 
-    // --- 节点数据 ---
     const nodes = [
       {
         id: 'niche-root',
@@ -392,18 +390,18 @@
       { id: 'm-6', name: 'Channel\nCompare', role: 'market-sub', desc: '分渠道销售表现对比。', fx: 0.66, fy: 0.10, fr: 0.18, depth: 2 }
     ];
 
-    // 星星背景
     const stars = [];
     for (let i = 0; i < 150; i++) {
       stars.push([Math.random() * 100, Math.random() * 100, Math.random()]);
     }
 
-    // 视图状态：拖拽偏移 + 入场进度
     const viewState = {
       offsetX: 80,
       offsetY: 0,
-      enter: 0 // 0~1 入场缩放进度
+      enter: 0
     };
+
+    let auroraPhase = 0;
 
     function getNodeStyle(node) {
       const colors = {
@@ -427,10 +425,7 @@
       return { baseColor, opacity };
     }
 
-    function renderItem(params, api) {
-      const node = nodes[params.dataIndex];
-      if (!node) return;
-
+    function computeCenterAndBaseR(api) {
       const w = api.getWidth();
       const h = api.getHeight();
       const minSide = Math.min(w, h);
@@ -443,8 +438,22 @@
       const finalCx0 = isMobile ? w * 0.5 : cx0;
       const finalCy0 = isMobile ? h * 0.6 : cy0;
 
-      const cx = finalCx0 + node.fx * baseR + viewState.offsetX;
-      const cy = finalCy0 + node.fy * baseR + viewState.offsetY;
+      return {
+        baseR,
+        isMobile,
+        cx0: finalCx0 + viewState.offsetX,
+        cy0: finalCy0 + viewState.offsetY
+      };
+    }
+
+    function renderItem(params, api) {
+      const node = nodes[params.dataIndex];
+      if (!node) return;
+
+      const { baseR, isMobile, cx0, cy0 } = computeCenterAndBaseR(api);
+
+      const cx = cx0 + node.fx * baseR;
+      const cy = cy0 + node.fy * baseR;
 
       const enter = viewState.enter || 0.001;
       const rBase = baseR * node.fr * (isMobile ? 0.85 : 1);
@@ -478,7 +487,7 @@
             shape: { cx: cx, cy: cy, r: r * 0.92 },
             style: {
               fill: 'none',
-              stroke: 'rgba(255,255,255,0.12 * enter)',
+              stroke: 'rgba(255,255,255,' + (0.12 * enter) + ')',
               lineWidth: 1
             },
             silent: true
@@ -505,6 +514,46 @@
       };
     }
 
+    // 动态极光环
+    function renderAurora(params, api) {
+      const { baseR, cx0, cy0 } = computeCenterAndBaseR(api);
+
+      const p = (Math.sin(auroraPhase) + 1) / 2; // 0~1
+      const outerR = baseR * (1.08 + 0.04 * p);
+      const innerR = baseR * (0.85 + 0.02 * p);
+
+      const alphaCore = 0.4 + 0.25 * p;
+
+      return {
+        type: 'group',
+        children: [
+          {
+            type: 'circle',
+            shape: { cx: cx0, cy: cy0, r: outerR },
+            style: {
+              fill: new echarts.graphic.RadialGradient(0.5, 0.5, 1, [
+                { offset: 0.0, color: 'rgba(15,23,42,0)' },
+                { offset: 0.55, color: 'rgba(56,189,248,' + (0.15 * alphaCore) + ')' },
+                { offset: 0.9, color: 'rgba(56,189,248,0)' }
+              ]),
+              stroke: 'none',
+              shadowBlur: 90,
+              shadowColor: 'rgba(56,189,248,' + (0.45 * alphaCore) + ')'
+            }
+          },
+          {
+            type: 'circle',
+            shape: { cx: cx0, cy: cy0, r: innerR },
+            style: {
+              fill: 'none',
+              stroke: 'rgba(148,227,255,' + (0.25 + 0.35 * p) + ')',
+              lineWidth: 2
+            }
+          }
+        ]
+      };
+    }
+
     const option = {
       backgroundColor: 'transparent',
       tooltip: { show: false },
@@ -524,6 +573,15 @@
           z: 0
         },
         {
+          id: 'auroraRing',
+          type: 'custom',
+          coordinateSystem: 'none',
+          data: [0],
+          renderItem: renderAurora,
+          silent: true,
+          z: 1
+        },
+        {
           id: 'nicheNodes',
           type: 'custom',
           coordinateSystem: 'none',
@@ -536,7 +594,7 @@
 
     nicheChart.setOption(option);
 
-    // 入场动效：节点从小到大缩放出现
+    // 入场缩放动画
     (function runEnterAnimation() {
       const start = Date.now();
       const duration = 1100;
@@ -546,14 +604,28 @@
         if (t > 1) t = 1;
         viewState.enter = t;
         nicheChart.setOption({
-          series: [{ id: 'nicheNodes', data: nodes }]
+          series: [
+            { id: 'nicheNodes', data: nodes },
+            { id: 'auroraRing', data: [0] }
+          ]
         }, false);
         if (t < 1) requestAnimationFrame(frame);
       }
       requestAnimationFrame(frame);
     })();
 
-    // 详情面板交互
+    // 极光呼吸动画
+    (function animateAurora() {
+      function frame() {
+        auroraPhase += 0.03;
+        nicheChart.setOption({
+          series: [{ id: 'auroraRing', data: [0] }]
+        }, false);
+        requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    })();
+
     const detailCard = document.getElementById('detail-card');
     const els = {
       role: document.getElementById('p-role'),
@@ -563,15 +635,13 @@
       statusText: document.getElementById('p-status-text')
     };
 
-    // 悬停：忽略根节点 Niche
-    nicheChart.on('mouseover', { seriesIndex: 1 }, function(params) {
+    nicheChart.on('mouseover', { seriesIndex: 2 }, function(params) {
       const node = nodes[params.dataIndex];
       if (!node) return;
 
       if (node.role === 'root') {
-        // 对根节点，移除高亮和信息展示
         detailCard.classList.remove('active');
-        nicheChart.dispatchAction({ type: 'downplay', seriesIndex: 1 });
+        nicheChart.dispatchAction({ type: 'downplay', seriesIndex: 2 });
         return;
       }
 
@@ -592,22 +662,20 @@
       detailCard.classList.add('active');
     });
 
-    // 点击空白收起
     nicheChart.getZr().on('click', function(e) {
       if (!e.target) {
         detailCard.classList.remove('active');
       }
     });
 
-    // 点击节点跳转：根节点无链接
-    nicheChart.on('click', { seriesIndex: 1 }, function (params) {
+    nicheChart.on('click', { seriesIndex: 2 }, function (params) {
       const node = nodes[params.dataIndex];
       if (node && node.link) {
         window.location.href = node.link;
       }
     });
 
-    // 背景拖拽（移动图）
+    // 背景拖拽（节点 + 极光一起移动）
     (function enableDragging() {
       const zr = nicheChart.getZr();
       let dragging = false;
@@ -634,7 +702,10 @@
         viewState.offsetY += dy;
 
         nicheChart.setOption({
-          series: [{ id: 'nicheNodes', data: nodes }]
+          series: [
+            { id: 'nicheNodes', data: nodes },
+            { id: 'auroraRing', data: [0] }
+          ]
         }, false);
       });
     })();
