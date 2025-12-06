@@ -5,7 +5,7 @@
   <title>Market Niche · Competitive Landscape · StarTimes Uganda</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- 字体，与 Niche / Ecology 保持一致 -->
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -13,24 +13,23 @@
   <style>
     :root {
       --bg-dark: #050816;
-      --glass-bg: rgba(15, 23, 42, 0.85);
-      --glass-border: rgba(255, 255, 255, 0.08);
-      --glass-shadow: 0 18px 50px rgba(0, 0, 0, 0.85);
+      --glass-bg: rgba(15, 23, 42, 0.86);
+      --glass-border: rgba(148, 163, 184, 0.3);
+      --glass-shadow: 0 18px 50px rgba(0,0,0,0.8);
 
-      --text-main: #f1f5f9;
+      --text-main: #f9fafb;
       --text-muted: #94a3b8;
 
-      --c-star:  #06b6d4; /* StarTimes Cyan */
-      --c-dstv:  #f97316; /* DStv / GOtv Amber */
-      --c-azam:  #a855f7; /* Azam Purple */
-      --c-zuku:  #22c55e; /* Zuku Green */
+      --c-root:    #06b6d4;
+      --c-spatial: #10b981;
+      --c-market:  #a855f7;
 
       --font-din:  'Barlow', sans-serif;
       --font-cond: 'Barlow Condensed', sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { margin:0; padding:0; box-sizing:border-box; }
 
     html, body {
       height: 100%;
@@ -40,19 +39,20 @@
 
     body {
       font-family: var(--font-din);
+      background: var(--bg-dark);
       color: var(--text-main);
-      background: radial-gradient(circle at 50% 55%, #020617 0%, #000 70%);
+      /* 星云背景 */
       background-image:
         radial-gradient(circle at 15% 10%, rgba(56,189,248,0.18) 0, transparent 45%),
-        radial-gradient(circle at 80% 90%, rgba(147,51,234,0.16) 0, transparent 50%),
-        radial-gradient(circle at 50% 55%, #020617 0%, #020617 40%, #000 85%);
+        radial-gradient(circle at 85% 80%, rgba(168,85,247,0.18) 0, transparent 50%),
+        radial-gradient(circle at 50% 50%, #020617 0, #020617 60%, #000 100%);
       position: relative;
     }
 
-    /* 顶部导航，与 Niche 统一 */
+    /* 顶部导航，与 ecology / niche 对齐 */
     .top-bar {
       position: fixed;
-      top: 0; left: 0; right: 0;
+      inset: 0 0 auto 0;
       height: 72px;
       padding: 0 40px;
       display: flex;
@@ -62,18 +62,17 @@
       z-index: 20;
       pointer-events: none;
     }
-
     .brand {
       pointer-events: auto;
-      display: flex;
-      flex-direction: column;
+      display:flex;
+      flex-direction:column;
     }
     .brand-path {
       font-family: var(--font-cond);
       font-size: 11px;
       letter-spacing: 1.5px;
       text-transform: uppercase;
-      color: #38bdf8;
+      color: var(--c-root);
       opacity: .95;
       margin-bottom: 4px;
       font-weight: 600;
@@ -130,114 +129,90 @@
       transform:translateY(-2px);
     }
 
-    /* 图表容器 */
-    #market-chart {
+    /* 主布局：左文案 + 右图表 */
+    .page-layout {
       position:absolute;
-      inset:0;
-      z-index:1;
+      left:0; right:0; top:72px; bottom:0;
+      padding:32px 40px 32px;
+      display:flex;
+      gap:32px;
     }
 
-    /* UI 层 */
-    .panel-layer {
-      position:absolute;
-      inset:0;
-      padding:40px;
-      z-index:10;
+    .panel-left {
+      width:360px;
+      max-width:380px;
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-start;
       pointer-events:none;
     }
 
-    .hero {
-      position:absolute;
-      top:96px;
-      left:50px;
-      max-width:420px;
-      pointer-events:none;
-      text-shadow:0 12px 40px rgba(0,0,0,0.9);
-    }
     .hero-label {
       font-family:var(--font-cond);
       font-size:12px;
       font-weight:700;
       letter-spacing:1.5px;
       text-transform:uppercase;
-      color:#38bdf8;
-      margin-bottom:12px;
+      color:var(--c-market);
+      margin-bottom:10px;
     }
     .hero-title {
       font-family:var(--font-cond);
-      font-size:52px;
+      font-size:44px;
       font-weight:700;
-      line-height:.9;
-      letter-spacing:-1px;
+      line-height:0.9;
+      letter-spacing:-0.5px;
       text-transform:uppercase;
-      margin-bottom:22px;
+      margin-bottom:18px;
       background:linear-gradient(180deg,#f9fafb 0%,#9ca3af 100%);
       -webkit-background-clip:text;
       -webkit-text-fill-color:transparent;
     }
-    .hero-desc {
+    .hero-subtitle {
+      font-family:var(--font-cond);
       font-size:14px;
+      letter-spacing:1px;
+      text-transform:uppercase;
+      color:rgba(148,163,184,0.95);
+      margin-bottom:10px;
+    }
+    .hero-desc {
+      font-size:13px;
       line-height:1.7;
       color:var(--text-muted);
-      padding-left:18px;
-      border-left:3px solid rgba(148,163,184,0.55);
+      padding-left:16px;
+      border-left:3px solid rgba(148,163,184,0.6);
+      margin-bottom:20px;
     }
     .hero-desc strong{color:#e5e7eb;font-weight:500;}
 
-    .hero-tags{
-      margin-top:18px;
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
+    .hero-list {
+      list-style:none;
+      font-size:12px;
+      line-height:1.6;
+      color:rgba(148,163,184,0.95);
+      margin-bottom:20px;
     }
-    .hero-tag{
+    .hero-list li::before{
+      content:'• ';
+      color:rgba(148,163,184,0.9);
+    }
+
+    /* 信息卡片：不会盖住图表，固定在左列 */
+    .info-card {
       pointer-events:auto;
-      font-family:var(--font-cond);
-      font-size:11px;
-      letter-spacing:1px;
-      text-transform:uppercase;
-      padding:5px 14px;
-      border-radius:999px;
-      border:1px solid rgba(148,163,184,0.7);
-      background:rgba(15,23,42,0.9);
-      color:#e5e7eb;
-      box-shadow:0 8px 20px rgba(0,0,0,0.7);
-    }
-
-    .hero-tag span.dot{
-      display:inline-block;
-      width:7px;
-      height:7px;
-      border-radius:999px;
-      margin-right:6px;
-    }
-
-    /* 右下：详情玻璃卡片，与 Niche 统一风格 */
-    .glass-card {
-      position:absolute;
-      right:50px;
-      bottom:50px;
-      width:340px;
-      padding:26px 26px 22px;
-      border-radius:28px;
+      margin-top:8px;
+      padding:22px 20px 20px;
+      border-radius:24px;
       background:var(--glass-bg);
       border:1px solid var(--glass-border);
-      backdrop-filter:blur(22px);
-      -webkit-backdrop-filter:blur(22px);
       box-shadow:var(--glass-shadow);
-      pointer-events:auto;
-      opacity:0;
-      transform:translateY(20px);
-      transition:all .4s cubic-bezier(0.19,1,0.22,1);
+      backdrop-filter:blur(20px);
+      -webkit-backdrop-filter:blur(20px);
     }
-    .glass-card.active{
-      opacity:1;
-      transform:translateY(0);
-    }
-
-    .card-label{
+    .info-header {
       font-family:var(--font-cond);
-      font-size:12px;
+      font-size:11px;
       letter-spacing:1.4px;
       text-transform:uppercase;
       color:rgba(148,163,184,0.9);
@@ -245,92 +220,90 @@
       justify-content:space-between;
       margin-bottom:6px;
     }
-    .card-title{
+    .info-header-tag {
+      color:var(--c-root);
+    }
+    .info-title {
       font-family:var(--font-cond);
-      font-size:26px;
+      font-size:24px;
       font-weight:600;
-      text-transform:uppercase;
-      letter-spacing:.6px;
       margin-bottom:10px;
+      text-transform:uppercase;
     }
-    .card-meta{
-      font-family:var(--font-mono);
-      font-size:11px;
-      color:rgba(148,163,184,0.95);
-      margin-bottom:12px;
+    .info-line {
       display:flex;
-      gap:10px;
-      flex-wrap:wrap;
+      justify-content:space-between;
+      font-size:12px;
+      margin-bottom:4px;
+      color:rgba(226,232,240,0.95);
     }
-    .card-meta span.badge{
-      padding:2px 8px;
-      border-radius:999px;
-      border:1px solid rgba(148,163,184,0.6);
+    .info-label {
+      color:rgba(148,163,184,0.9);
+      font-family:var(--font-cond);
+      text-transform:uppercase;
+      letter-spacing:0.8px;
+      font-size:11px;
     }
-    .card-section-title{
+    .info-swot-title {
+      margin-top:8px;
+      font-family:var(--font-cond);
+      font-size:11px;
+      color:rgba(148,163,184,0.9);
+      letter-spacing:1px;
+      text-transform:uppercase;
+    }
+    .info-swot-list {
+      margin-top:4px;
+      padding-left:14px;
+      font-size:12px;
+      color:rgba(226,232,240,0.92);
+      line-height:1.5;
+    }
+
+    .panel-right {
+      flex:1;
+      position:relative;
+      min-width:0;
+    }
+    #market-chart {
+      position:absolute;
+      inset:0;
+    }
+
+    .axis-hint {
+      position:absolute;
+      left:0;
+      bottom:0;
       font-family:var(--font-cond);
       font-size:11px;
       letter-spacing:1.2px;
       text-transform:uppercase;
-      color:rgba(148,163,184,0.9);
-      margin-top:8px;
-      margin-bottom:4px;
-    }
-    .card-swot{
-      font-size:12px;
-      line-height:1.55;
-      color:rgba(241,245,249,0.92);
-    }
-    .card-swot p{margin-bottom:4px;}
-    .card-swot b{color:#e5e7eb;}
-
-    .card-hint{
-      margin-top:10px;
-      font-family:var(--font-mono);
-      font-size:10px;
       color:rgba(148,163,184,0.8);
-      display:flex;
-      align-items:center;
-      gap:6px;
-    }
-    .status-dot{
-      width:7px;height:7px;border-radius:999px;background:#38bdf8;
-    }
-
-    .hint-line{
-      position:absolute;
-      left:50px;
-      bottom:32px;
-      font-family:var(--font-cond);
-      font-size:11px;
-      letter-spacing:1.5px;
-      text-transform:uppercase;
-      color:rgba(148,163,184,0.9);
-      display:flex;
-      gap:10px;
-      align-items:center;
       pointer-events:none;
-    }
-    .hint-line::before{
-      content:'';
-      width:120px;
-      height:1px;
-      background:linear-gradient(90deg,rgba(148,163,184,0.45),transparent);
     }
 
     @media (max-width: 900px){
-      .top-bar{padding:0 18px;height:64px;}
-      .panel-layer{padding:70px 18px 18px;}
-      .hero{top:86px;left:20px;right:20px;max-width:none;}
-      .hero-title{font-size:40px;}
-      .glass-card{right:18px;left:18px;bottom:20px;width:auto;}
+      .page-layout{
+        flex-direction:column;
+        padding:24px 18px 18px;
+      }
+      .panel-left{
+        width:auto;
+        max-width:none;
+      }
+      .panel-right{
+        height:340px;
+      }
+      .hero-title{
+        font-size:36px;
+      }
       .breadcrumb{display:none;}
     }
   </style>
 </head>
 <body>
 
-  <!-- 顶部栏 -->
+  <!-- 顶部导航 -->
   <div class="top-bar">
     <div class="brand">
       <div class="brand-path">STARTIMES / UGANDA / NICHE / MARKET</div>
@@ -346,455 +319,351 @@
     <a class="back-btn" href="./index.html">Back to Niche</a>
   </div>
 
-  <!-- 图表 -->
-  <div id="market-chart"></div>
+  <!-- 主内容 -->
+  <main class="page-layout">
+    <!-- 左侧文案 + 信息卡 -->
+    <section class="panel-left">
+      <div>
+        <div class="hero-label">2.2 MARKET NICHE · PAY TV</div>
+        <h1 class="hero-title">Competitive<br>Landscape</h1>
+        <div class="hero-subtitle">StarTimes vs DStv / GOtv / Azam TV / Zuku TV</div>
+        <p class="hero-desc">
+          本页把乌干达 Pay TV 市场放在一张图里：<strong>内圈</strong>是运营商整体市场份额，
+          <strong>外圈</strong>拆解为价格带、内容深度、本地内容、体育版权、覆盖与渠道等维度，
+          同时看到<span style="white-space:nowrap;">「占有率 × 结构优势」</span>。
+        </p>
+        <ul class="hero-list">
+          <li><strong>2.2.1 市场占有率：</strong>基于 Ipsos NAMS 2023.6 与公司内部估算。</li>
+          <li><strong>2.2.2 SWOT 概览：</strong>悬停运营商或外圈维度，可在下方卡片看到简要 SWOT。</li>
+          <li><strong>2.2.3–2.2.6：</strong>后续小节将分别展开「产品类型与价格带、频道 / 节目包、最优产品、渠道对比」。</li>
+        </ul>
+      </div>
 
-  <!-- 说明 & 详情层 -->
-  <div class="panel-layer">
-    <section class="hero">
-      <div class="hero-label">MARKET NICHE · UGANDA</div>
-      <h1 class="hero-title">
-        Market<br>Constellation
-      </h1>
-      <p class="hero-desc">
-        本页把乌干达 Pay TV 主要玩家放在同一张二维坐标上：横轴是
-        <strong>价格带 / ARPU（从低到高）</strong>，纵轴代表
-        <strong>内容高端度（从基础频道到旗舰体育与国际内容）</strong>，
-        气泡大小表示大致<strong>用户规模 / 市场盘子</strong>。<br><br>
-        StarTimes 作为价格带与覆盖双领先者，与 DStv / GOtv、
-        Azam TV、Zuku TV 在不同象限占据不同的“市场生态位”。
-        悬停查看各品牌 SWOT 概要，后续可以从此进入更细节的
-        <strong>市场占有率、产品结构与渠道对比</strong> 分页。
-      </p>
+      <!-- 动态信息卡 -->
+      <div class="info-card" id="info-card">
+        <div class="info-header">
+          <span id="card-segment">VALUE / MASS MARKET</span>
+          <span class="info-header-tag" id="card-position">LOW PRICE · WIDE COVERAGE</span>
+        </div>
+        <div class="info-title" id="card-name">StarTimes</div>
 
-      <div class="hero-tags">
-        <div class="hero-tag">
-          <span class="dot" style="background:var(--c-star);"></span>
-          <span>StarTimes · Value Leader</span>
+        <div class="info-line">
+          <span class="info-label">估算市场份额</span>
+          <span id="card-share">55%</span>
         </div>
-        <div class="hero-tag">
-          <span class="dot" style="background:var(--c-dstv);"></span>
-          <span>DStv / GOtv · Premium Sports</span>
+        <div class="info-line">
+          <span class="info-label">主力价格带</span>
+          <span id="card-price">低价包 · 家庭装</span>
         </div>
-        <div class="hero-tag">
-          <span class="dot" style="background:var(--c-azam);"></span>
-          <span>Azam · Local Content</span>
+        <div class="info-line">
+          <span class="info-label">内容 / 频道结构</span>
+          <span id="card-content">本地 + 国际体育均衡，涵盖 DTT / DTH</span>
         </div>
-        <div class="hero-tag">
-          <span class="dot" style="background:var(--c-zuku);"></span>
-          <span>Zuku · Legacy / Niche</span>
-        </div>
+
+        <div class="info-swot-title">SWOT SNAPSHOT</div>
+        <ul class="info-swot-list" id="card-swot">
+          <li>价格竞争力强，覆盖城市 + 乡镇主流用户。</li>
+          <li>体育与本地内容组合，对 DSTv / GOtv 形成替代。</li>
+          <li>ARPU 较低，对内容投入与运营效率有压力。</li>
+        </ul>
       </div>
     </section>
 
-    <div class="glass-card" id="detail-card">
-      <div class="card-label">
-        <span id="dc-role">OPERATOR</span>
-        <span id="dc-tag">POSITIONING</span>
-      </div>
-      <div class="card-title" id="dc-name">Brand</div>
-      <div class="card-meta" id="dc-meta">
-        <!-- filled by JS -->
-      </div>
+    <!-- 右侧图表 -->
+    <section class="panel-right">
+      <div id="market-chart"></div>
+      <div class="axis-hint">FROM MARKET SHARE → PRODUCT → CHANNELS</div>
+    </section>
+  </main>
 
-      <div class="card-section-title">SWOT SNAPSHOT</div>
-      <div class="card-swot" id="dc-swot">
-        <!-- filled by JS -->
-      </div>
-
-      <div class="card-hint">
-        <span class="status-dot" id="dc-dot"></span>
-        <span>Hover bubbles to compare · 数据待调研部分为占位估算</span>
-      </div>
-    </div>
-
-    <div class="hint-line">
-      <span>FROM MARKET SHARE → PRODUCT → CHANNELS</span>
-    </div>
-  </div>
-
-  <!-- ECharts -->
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
   <script>
-    var chartDom = document.getElementById('market-chart');
-    var chart = echarts.init(chartDom);
+    // 内圈：市场份额（Ipsos 2023.6 占比，略做平滑）
+    const shareData = [
+      { name: 'StarTimes', value: 55 },
+      { name: 'GOtv',      value: 16 },
+      { name: 'Zuku TV',   value: 12 },
+      { name: 'DStv',      value: 12 },
+      { name: 'Azam TV',   value: 5 }
+    ];
 
-    // === 数据占位：可根据实际调研随时调整 ===
-    // 价格 & 内容评分使用 0–100 标尺（相对值），size 表示大致规模/份额
-    var brands = [
+    // 颜色统一一套，内外圈复用
+    const brandColors = {
+      'StarTimes': '#fbbf24',  // amber
+      'GOtv':      '#22c55e',  // green
+      'Zuku TV':   '#0ea5e9',  // sky
+      'DStv':      '#3b82f6',  // blue
+      'Azam TV':   '#a855f7'   // violet
+    };
+
+    // 外圈：各运营商内部优势维度（0–10 估算评分，占位可后续替换）
+    const brandStruct = [
       {
-        id: 'startimes',
         name: 'StarTimes',
-        op: 'StarTimes Uganda',
-        color: getComputedStyle(document.documentElement).getPropertyValue('--c-star').trim(),
-        priceScore: 30,      // 低价
-        contentScore: 60,    // 中等偏上
-        size: 90,            // 最大盘子
-        shareText: '≈60% TV households',
-        arpuText: '低 ARPU · 高渗透',
-        role: 'VALUE / MASS MARKET',
-        tag: 'Low price · Wide coverage',
-        swot: {
-          s: '价格竞争力强，DTT + DTH 覆盖 265 万家庭，本地语与非洲内容丰富。',
-          w: '高端体育与部分国际旗舰频道弱于 DStv，中高收入人群“身份感”不足。',
-          o: 'DSTV 调价与经济下行带来降级需求，可通过跨界打包（手机 / 太阳能）放大增长。',
-          t: 'IPTV / 盗播挤压传统付费空间，本地玩家加大投入时会在价格+本地化上形成挤压。'
-        }
+        share: 55,
+        segment: 'Value / Mass Market',
+        position: 'Low price · Wide coverage',
+        priceBand: '低价 / 亲民 ARPU',
+        contentProfile: '本地频道 + 国际体育 + 电影剧集均衡',
+        swot: [
+          'S：价格竞争力强，DTT + DTH 覆盖 200 万+家庭。',
+          'W：高端国际体育版权相对弱于 DSTv。',
+          'O：农村和二线城镇增量空间大，可继续下沉与数字化收费。',
+          'T：OTT 与盗版内容挤压，宏观经济波动影响续费能力。'
+        ],
+        // 评分：价格、内容丰富度、本地内容、体育版权、覆盖与渠道
+        dimensions: [
+          { name: 'Price',           score: 9 },
+          { name: 'Content depth',   score: 7 },
+          { name: 'Local content',   score: 8 },
+          { name: 'Sports rights',   score: 7 },
+          { name: 'Coverage / sales',score: 9 }
+        ]
       },
       {
-        id: 'dstv',
         name: 'DStv',
-        op: 'MultiChoice Uganda',
-        color: getComputedStyle(document.documentElement).getPropertyValue('--c-dstv').trim(),
-        priceScore: 90,      // 高价
-        contentScore: 95,    // 最高端
-        size: 65,            // 盘子略小
-        shareText: '≈40–45 万活跃解码器',
-        arpuText: '高 ARPU · 高端人群',
-        role: 'PREMIUM SPORTS / HIGH-END',
-        tag: 'Sports & international premium',
-        swot: {
-          s: '顶级国际体育与旗舰频道垄断，高端都市中产的“默认选择”，ARPU 高。',
-          w: '价格门槛高，经济波动时易被降级；地面覆盖与低价市场不具优势。',
-          o: '可通过 OTT / 移动端延伸高端内容覆盖更多屏幕，加强与运营商合作。',
-          t: '家庭预算下滑、汇率波动导致付费能力受限，部分用户向 StarTimes / Azam 倾斜。'
-        }
+        share: 12,
+        segment: 'Premium Satellite',
+        position: 'High ARPU · Premium sports',
+        priceBand: '高价 / 城市中高端',
+        contentProfile: '顶级国际体育 + 电影剧集为主',
+        swot: [
+          'S：国际体育版权和高端内容最强。',
+          'W：终端价格和月费高，渗透率受限。',
+          'O：体育发烧友与高端家庭持续愿付费。',
+          'T：经济压力期易被低价产品替代或停用。'
+        ],
+        dimensions: [
+          { name: 'Price',           score: 4 },
+          { name: 'Content depth',   score: 9 },
+          { name: 'Local content',   score: 5 },
+          { name: 'Sports rights',   score: 10 },
+          { name: 'Coverage / sales',score: 7 }
+        ]
       },
       {
-        id: 'gotv',
         name: 'GOtv',
-        op: 'MultiChoice Uganda',
-        color: getComputedStyle(document.documentElement).getPropertyValue('--c-dstv').trim(),
-        priceScore: 55,
-        contentScore: 65,
-        size: 70,
-        shareText: '≈80 万+ 装机规模',
-        arpuText: '中低价 · 城市地面',
-        role: 'BASIC PAY TV',
-        tag: 'Entry to MultiChoice ecosystem',
-        swot: {
-          s: '依托 MultiChoice 内容库，地面信号覆盖城市与城郊，品牌认知强。',
-          w: '在极低价段仍高于 StarTimes DTT 入门包，本地语内容不如 StarTimes 丰富。',
-          o: '可通过与 DSTV 套餐联动、交叉升级来提升生命周期价值。',
-          t: '价格敏感用户容易向 StarTimes 或 Azam 流失。'
-        }
+        share: 16,
+        segment: 'Urban Terrestrial',
+        position: 'DStv lite · Sports focus',
+        priceBand: '中价 / 城市与城郊',
+        contentProfile: '部分 DSTv 体育 + 娱乐内容迁移',
+        swot: [
+          'S：依托 DSTv 内容库，体育体验较强。',
+          'W：频道与价格带与 StarTimes 重合，差异度有限。',
+          'O：城市青年与租房人群仍有提升空间。',
+          'T：与地面数字 TV、IPTV 及 OTT 多重竞争。'
+        ],
+        dimensions: [
+          { name: 'Price',           score: 6 },
+          { name: 'Content depth',   score: 7 },
+          { name: 'Local content',   score: 5 },
+          { name: 'Sports rights',   score: 8 },
+          { name: 'Coverage / sales',score: 6 }
+        ]
       },
       {
-        id: 'azam',
         name: 'Azam TV',
-        op: 'Azam Media',
-        color: getComputedStyle(document.documentElement).getPropertyValue('--c-azam').trim(),
-        priceScore: 40,
-        contentScore: 55,
-        size: 40,
-        shareText: '区域玩家 · 规模中等',
-        arpuText: '低价 · 本地体育',
-        role: 'REGIONAL / LOCAL CONTENT',
-        tag: 'Low price · Local sports',
-        swot: {
-          s: '本地体育与本地语内容组合强，价格低，结构简单易理解。',
-          w: '国际旗舰内容与品牌影响力弱，分销渠道在乌干达有限。',
-          o: '如果加大乌干达市场投入，可在“本地体育+低价”上抢占农村与工薪阶层。',
-          t: '受制于资金与版权资源，与 DStv 在体育上正面冲突风险较大。'
-        }
+        share: 5,
+        segment: 'Regional / Local Sports',
+        position: 'Regional sports · Swahili focus',
+        priceBand: '中低价 / 局部市场',
+        contentProfile: '本地体育与区域内容为主',
+        swot: [
+          'S：在东非部分市场拥有本地体育优势。',
+          'W：在乌干达整体份额小，品牌心智弱。',
+          'O：可在球迷圈层做深度运营补位。',
+          'T：受频点资源、销售网络与现金流制约。'
+        ],
+        dimensions: [
+          { name: 'Price',           score: 7 },
+          { name: 'Content depth',   score: 5 },
+          { name: 'Local content',   score: 7 },
+          { name: 'Sports rights',   score: 6 },
+          { name: 'Coverage / sales',score: 4 }
+        ]
       },
       {
-        id: 'zuku',
-        name: 'Zuku',
-        op: 'Wananchi Group',
-        color: getComputedStyle(document.documentElement).getPropertyValue('--c-zuku').trim(),
-        priceScore: 50,
-        contentScore: 45,
-        size: 20,
-        shareText: '小众 / 区域性用户',
-        arpuText: '与宽带绑定',
-        role: 'LEGACY / NICHE',
-        tag: 'Pay-TV as add-on',
-        swot: {
-          s: '与宽带业务绑定，适合部分城市用户“顺带用电视”。',
-          w: '品牌在乌干达存在感弱，内容库与用户体验较传统。',
-          o: '通过宽带+OTT 升级，有机会重塑产品形态。',
-          t: '在纯 Pay TV 维度上竞争力有限，容易被主流平台替代。'
-        }
+        name: 'Zuku TV',
+        share: 12,
+        segment: 'Legacy / Niche',
+        position: 'Cable heritage · Broadband bundle',
+        priceBand: '中价 / 传统用户',
+        contentProfile: '部分有线电视与宽带绑售',
+        swot: [
+          'S：在有线网络覆盖区仍有一批老用户。',
+          'W：品牌老化，内容与设备升级有限。',
+          'O：与宽带 / 光纤捆绑仍有一定粘性价值。',
+          'T：受 OTT 和价格竞争挤压，份额持续被侵蚀。'
+        ],
+        dimensions: [
+          { name: 'Price',           score: 6 },
+          { name: 'Content depth',   score: 6 },
+          { name: 'Local content',   score: 4 },
+          { name: 'Sports rights',   score: 5 },
+          { name: 'Coverage / sales',score: 5 }
+        ]
       }
     ];
 
-    // 把数据转换成 ECharts scatter 数据
-    var scatterData = brands.map(function (b) {
+    // Sunburst 数据结构：一层运营商，一层维度
+    const sunburstData = brandStruct.map(brand => {
       return {
-        value: [b.priceScore, b.contentScore],
-        name: b.name,
-        brandId: b.id,
-        operator: b.op,
-        symbolSize: 26 + b.size * 0.3, // size 放大一点
-        itemStyle: {
-          color: b.color,
-          borderColor: 'rgba(248,250,252,0.95)',
-          borderWidth: 2,
-          shadowBlur: 22,
-          shadowColor: b.color
-        },
-        emphasis: {
+        name: brand.name,
+        value: brand.share, // 用 share 做区域权重的基准
+        itemStyle: { color: brandColors[brand.name] },
+        children: brand.dimensions.map(dim => ({
+          name: dim.name,
+          value: dim.score,
+          score: dim.score,
           itemStyle: {
-            shadowBlur: 36,
-            shadowColor: b.color,
-            borderWidth: 3
+            color: brandColors[brand.name],
+            opacity: 0.35 + dim.score * 0.05   // 分数越高越实
+          },
+          label: {
+            show: dim.score >= 7   // 优势维度才显示名称
           }
-        }
+        }))
       };
     });
 
-    var option = {
+    const chartDom = document.getElementById('market-chart');
+    const chart = echarts.init(chartDom);
+
+    const option = {
       backgroundColor: 'transparent',
-      animationDuration: 900,
-      animationEasing: 'quadraticOut',
-      grid: {
-        left: '32%',
-        right: '8%',
-        top: '16%',
-        bottom: '18%'
-      },
-      xAxis: {
-        type: 'value',
-        min: 0,
-        max: 100,
-        name: '价格 / ARPU → 高',
-        nameLocation: 'end',
-        nameGap: 18,
-        nameTextStyle: {
-          fontFamily: 'Barlow Condensed',
-          fontSize: 12,
-          letterSpacing: 1.4,
-          color: 'rgba(148,163,184,0.95)'
-        },
-        axisLine: {
-          show: true,
-          lineStyle: { color: 'rgba(148,163,184,0.85)' }
-        },
-        axisTick: { show: false },
-        axisLabel: {
-          color: 'rgba(148,163,184,0.85)',
-          fontSize: 10,
-          formatter: function (val) {
-            if (val === 0) return '低';
-            if (val === 50) return '';
-            if (val === 100) return '';
-            return '';
-          }
-        },
-        splitLine: {
-          show: false
-        }
-      },
-      yAxis: {
-        type: 'value',
-        min: 0,
-        max: 100,
-        name: '内容高端度 → 高',
-        nameLocation: 'end',
-        nameGap: 20,
-        nameTextStyle: {
-          fontFamily: 'Barlow Condensed',
-          fontSize: 12,
-          letterSpacing: 1.4,
-          color: 'rgba(148,163,184,0.95)'
-        },
-        axisLine: {
-          show: true,
-          lineStyle: { color: 'rgba(148,163,184,0.85)' }
-        },
-        axisTick: { show: false },
-        axisLabel: {
-          color: 'rgba(148,163,184,0.85)',
-          fontSize: 10,
-          formatter: function (val) {
-            if (val === 0) return '基础';
-            if (val === 50) return '';
-            if (val === 100) return '';
-            return '';
-          }
-        },
-        splitLine: { show: false }
-      },
-      tooltip: {
-        trigger: 'item',
-        backgroundColor: 'rgba(15,23,42,0.96)',
-        borderColor: 'rgba(148,163,184,0.7)',
-        borderWidth: 1,
-        padding: 10,
-        textStyle: {
-          fontFamily: 'Barlow, system-ui',
-          fontSize: 11,
-          color: '#e5e7eb'
-        },
-        formatter: function (params) {
-          var b = brands.find(function (x) { return x.name === params.name; });
-          if (!b) return params.name;
-          return [
-            '<div style="font-weight:600;font-size:12px;margin-bottom:4px;">' + b.name + ' · ' + b.op + '</div>',
-            '<div style="color:#9ca3af;margin-bottom:4px;">价格带：' + Math.round(b.priceScore) + ' / 100 · 内容高端度：' + Math.round(b.contentScore) + ' / 100</div>',
-            '<div style="color:#e5e7eb;">规模：' + b.shareText + '</div>',
-            '<div style="color:#9ca3af;margin-top:2px;">定位：' + b.tag + '</div>'
-          ].join('');
-        }
-      },
+      animationDuration: 1200,
+      animationEasing: 'cubicOut',
+
+      tooltip: { show: false },
+
+      // 组合图：内圈玫瑰图 + 外圈 Sunburst
       series: [
-        // 背景分区（价格 / 内容象限，带淡色）
         {
-          type: 'custom',
-          coordinateSystem: 'cartesian2d',
-          silent: true,
-          data: [0],
-          renderItem: function (params, api) {
-            var x0 = api.coord([0, 0]);
-            var xMid = api.coord([50, 0]);
-            var xMax = api.coord([100, 0]);
-            var y0 = api.coord([0, 0]);
-            var yMid = api.coord([0, 50]);
-            var yMax = api.coord([0, 100]);
-
-            var w = api.getWidth();
-            var h = api.getHeight();
-
-            var shapes = [];
-
-            function rect(x1, y1, x2, y2, color) {
-              shapes.push({
-                type: 'rect',
-                shape: { x: x1, y: y1, width: x2 - x1, height: y2 - y1 },
-                style: {
-                  fill: color,
-                  stroke: 'none'
-                }
-              });
-            }
-
-            // 低价&基础内容（左下）
-            rect(
-              api.coord([0, 0])[0],
-              api.coord([0, 0])[1],
-              api.coord([50, 0])[0],
-              api.coord([0, 50])[1],
-              'rgba(15,23,42,0.7)'
-            );
-            // 低价&高内容（左上）—— StarTimes / Azam 生态位
-            rect(
-              api.coord([0, 50])[0],
-              api.coord([0, 50])[1],
-              api.coord([50, 50])[0],
-              api.coord([0, 100])[1],
-              'rgba(34,197,94,0.04)'
-            );
-            // 高价&基础内容（右下）
-            rect(
-              api.coord([50, 0])[0],
-              api.coord([50, 0])[1],
-              api.coord([100, 0])[0],
-              api.coord([0, 50])[1],
-              'rgba(248,250,252,0.02)'
-            );
-            // 高价&高内容（右上）—— DStv / GOtv
-            rect(
-              api.coord([50, 50])[0],
-              api.coord([50, 50])[1],
-              api.coord([100, 50])[0],
-              api.coord([0, 100])[1],
-              'rgba(56,189,248,0.05)'
-            );
-
-            return { type: 'group', children: shapes };
-          },
-          zlevel: 0
-        },
-
-        // 主散点
-        {
-          type: 'scatter',
-          name: 'Market Players',
-          data: scatterData,
-          zlevel: 2,
-          label: {
-            show: true,
-            formatter: '{b}',
-            color: '#e5e7eb',
-            fontFamily: 'Barlow Condensed',
-            fontSize: 13,
-            fontWeight: 600,
-            position: 'top',
-            distance: 8
-          },
+          name: 'Market Share',
+          type: 'pie',
+          radius: ['8%','26%'],
+          center: ['62%','50%'],    // 整体右移给左侧文字留空间
+          roseType: 'area',
           itemStyle: {
-            borderWidth: 2,
-            shadowBlur: 20
-          }
+            borderColor: 'rgba(15,23,42,0.9)',
+            borderWidth: 2
+          },
+          label: {
+            color: '#e5e7eb',
+            fontFamily: 'Barlow Condensed, sans-serif',
+            fontSize: 11,
+            formatter: '{b}\n{d}%'
+          },
+          labelLine: {
+            length: 6,
+            length2: 6
+          },
+          data: shareData.map(d => ({
+            name: d.name,
+            value: d.value,
+            itemStyle: { color: brandColors[d.name] }
+          }))
+        },
+        {
+          name: 'Structure',
+          type: 'sunburst',
+          center: ['62%','50%'],
+          radius: ['32%','82%'],
+          sort: null,
+          nodeClick: false,
+          emphasis: { focus: 'ancestor' },
+          data: sunburstData,
+          label: {
+            rotate: 'radial',
+            color: '#f9fafb',
+            fontFamily: 'Barlow Condensed, sans-serif',
+            fontSize: 10
+          },
+          levels: [
+            {}, // root
+            {   // 运营商层
+              r0: '32%',
+              r:  '46%',
+              itemStyle: {
+                borderWidth: 3,
+                borderColor: 'rgba(15,23,42,0.85)'
+              },
+              label: {
+                fontSize: 14,
+                fontWeight: 600,
+                color: '#e5e7eb'
+              }
+            },
+            {   // 维度层
+              r0: '46%',
+              r:  '82%',
+              itemStyle: {
+                borderWidth: 1,
+                borderColor: 'rgba(15,23,42,0.7)'
+              }
+            }
+          ]
         }
       ]
     };
 
     chart.setOption(option);
 
-    // === 右下详情卡交互 ===
-    var card = document.getElementById('detail-card');
-    var elRole = document.getElementById('dc-role');
-    var elTag = document.getElementById('dc-tag');
-    var elName = document.getElementById('dc-name');
-    var elMeta = document.getElementById('dc-meta');
-    var elSwot = document.getElementById('dc-swot');
-    var elDot  = document.getElementById('dc-dot');
+    // 信息卡更新
+    const els = {
+      seg: document.getElementById('card-segment'),
+      pos: document.getElementById('card-position'),
+      name: document.getElementById('card-name'),
+      share: document.getElementById('card-share'),
+      price: document.getElementById('card-price'),
+      content: document.getElementById('card-content'),
+      swot: document.getElementById('card-swot')
+    };
 
-    function updateCard(brandId) {
-      var b = brands.find(function (x) { return x.id === brandId; });
+    const brandMap = {};
+    brandStruct.forEach(b => { brandMap[b.name] = b; });
+
+    function updateCard(brandName) {
+      const b = brandMap[brandName];
       if (!b) return;
-      card.classList.add('active');
+      els.seg.textContent = b.segment;
+      els.pos.textContent = b.position;
+      els.name.textContent = b.name;
+      els.share.textContent = b.share + '%';
+      els.price.textContent = b.priceBand;
+      els.content.textContent = b.contentProfile;
 
-      elRole.textContent = b.role;
-      elTag.textContent  = b.tag;
-      elName.textContent = b.name;
-
-      elRole.style.color = b.color;
-      elTag.style.color  = b.color;
-      elDot.style.background = b.color;
-
-      elMeta.innerHTML = '';
-      var metaHtml = ''
-        + '<span class="badge">运营商：' + b.op + '</span>'
-        + '<span class="badge">价格带评分：' + Math.round(b.priceScore) + '/100</span>'
-        + '<span class="badge">内容高端度：' + Math.round(b.contentScore) + '/100</span>'
-        + '<span class="badge">规模：' + b.shareText + '</span>'
-        + '<span class="badge">' + b.arpuText + '</span>';
-      elMeta.innerHTML = metaHtml;
-
-      elSwot.innerHTML =
-        '<p><b>S · 优势：</b>' + b.swot.s + '</p>' +
-        '<p><b>W · 劣势：</b>' + b.swot.w + '</p>' +
-        '<p><b>O · 机会：</b>' + b.swot.o + '</p>' +
-        '<p><b>T · 威胁：</b>' + b.swot.t + '</p>';
+      els.swot.innerHTML = '';
+      (b.swot || []).forEach(line => {
+        const li = document.createElement('li');
+        li.textContent = line;
+        els.swot.appendChild(li);
+      });
     }
 
-    // 初始默认展示 StarTimes
-    updateCard('startimes');
+    // 初始化默认显示 StarTimes
+    updateCard('StarTimes');
 
-    chart.on('mouseover', function (params) {
-      if (params.seriesType !== 'scatter') return;
-      var brand = brands.find(function (x) { return x.name === params.name; });
-      if (!brand) return;
-      updateCard(brand.id);
-    });
+    // 悬停交互：内圈或外圈任意节点，更新卡片
+    chart.on('mouseover', function(params){
+      let brandName = null;
 
-    // 点击品牌预留后续跳转（可接到更细节子页面）
-    chart.on('click', function (params) {
-      if (params.seriesType !== 'scatter') return;
-      var b = brands.find(function (x) { return x.name === params.name; });
-      if (!b) return;
+      if (params.seriesName === 'Market Share') {
+        brandName = params.name;
+      } else if (params.seriesType === 'sunburst') {
+        const path = params.treePathInfo || [];
+        if (path.length >= 2) {
+          brandName = path[1].name; // 运营商在 path[1]
+        }
+      }
 
-      // 示例：点击 StarTimes 进入 product / channel 深挖页面
-      if (b.id === 'startimes') {
-        // 未来可以替换成实际 URL，例如 './market-startimes.html'
-        // window.location.href = './market-startimes.html';
+      if (brandName && brandMap[brandName]) {
+        updateCard(brandName);
       }
     });
 
-    window.addEventListener('resize', function () {
+    window.addEventListener('resize', function(){
       chart.resize();
     });
   </script>
