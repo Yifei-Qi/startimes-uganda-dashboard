@@ -456,53 +456,53 @@
   <!-- ECharts：径向内容树 -->
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
 <script>
-  // ===== 1. 初始化 =====
+  // ===== 1. init =====
   var chart = echarts.init(document.getElementById('chart-container'));
 
-  // ===== 2. 内容树数据：一棵 Content Engine → Rights / Localisation / Channels / Bouquets 的树 =====
+  // ===== 2. 内容树数据 =====
   var contentTree = {
     name: 'Content Engine',
-    desc: '上游版权采购、自制、本地化加工与频道编排的统一中枢。',
+    desc: '统一处理版权采购、自制、本地化与频道编排的内容中枢。',
     children: [
       {
         name: 'Distribution & Monetisation',
-        desc: '通过 DVB / DTT / DTH / OTT / App 等多渠道分发内容，并与订阅、广告变现打通。',
+        desc: '通过 DVB / DTT / DTH / OTT / App 等渠道，把内容变成收视与收入。',
         children: [
           {
             name: 'DTT / DTH / OTT Bouquets',
-            desc: '将内容打包成不同价位与定位的节目包：DTT Copa / Nova / Basic / Classic；DTH Nova / Smart / Super / Special 等。'
+            desc: '把多维内容组合成不同价位与定位的节目包：Copa / Nova / Basic / Classic 以及 Nova / Smart / Super / Special 等。'
           },
           {
             name: 'StarTimes ON · OTT',
-            desc: '移动端 OTT 平台，与线性频道打通，支持点播、回看和付费专区。'
+            desc: '移动端 OTT 平台，与线性频道联动，支持点播、回看和付费专区。'
           },
           {
             name: 'Ads Inventory',
-            desc: '频道时段、赛事赞助、开机画面、OTT 开屏等广告库存。'
+            desc: '频道时段、赞助位、开机画面、StarTimes ON 开屏等广告库存。'
           }
         ]
       },
       {
         name: 'International Rights',
-        desc: '从国际市场购买体育、影视、少儿等节目的版权。',
+        desc: '从国际市场采购体育、影视、少儿等版权作为“上游内容源”。',
         children: [
           {
             name: 'Top Leagues & Global Sports',
-            desc: '五大联赛 / 欧战 / NBA 等高价值体育版权，用于体育频道与赛事专栏。'
+            desc: '五大联赛等高价值体育版权，主要服务体育频道与赛事专栏。'
           },
           {
             name: 'Movies & Series',
-            desc: '欧美与亚洲电影、连续剧资源，用于电影台与综合台编排。'
+            desc: '国际电影与剧集，用于电影台与综合台编排。'
           },
           {
             name: 'Kids & Animation',
-            desc: '面向儿童与家庭的动画、教育类节目，为少儿频道与早晚带提供内容。'
+            desc: '儿童与家庭向的动画、教育内容，为少儿频道提供节目。'
           }
         ]
       },
       {
         name: 'African & Local Leagues',
-        desc: '围绕非洲本地与区域联赛的体育版权布局。',
+        desc: '非洲区域与本地联赛资源，构成“非洲体育矩阵”。',
         children: [
           {
             name: 'Ugandan Leagues',
@@ -510,73 +510,71 @@
           },
           {
             name: 'CECAFA / AFCON Qualifiers',
-            desc: '东中非区域赛事与国家队预选赛，强化区域影响力。'
+            desc: '东中非赛事与国家队预选赛，提升区域影响力。'
           },
           {
             name: 'Other African Domestic Leagues',
-            desc: '其他非洲国家联赛，用于完善 StarTimes 非洲体育矩阵。'
+            desc: '其他非洲国家联赛，用于补全 StarTimes 非洲体育布局。'
           }
         ]
       },
       {
         name: 'Owned & Local Channels',
-        desc: '乌干达本地自办频道与合作频道。',
+        desc: '乌干达自办频道 + 深度合作频道，把内容打造成“可识别品牌”。',
         children: [
           {
-            name: 'Movie / Series Thematic Channel',
-            desc: '以非洲与国际剧集为主的主题频道，可搭配 Luganda 配音与字幕。'
+            name: 'Movie / Series Channel',
+            desc: '以非洲与国际剧集为主的电影/连续剧频道，可搭配 Luganda 配音。'
           },
           {
             name: 'Sports Hub (Local + Intl)',
-            desc: '集合本地联赛与国际版权的体育频道，是体育类用户的主入口。'
+            desc: '集合本地联赛与国际版权的体育频道，是体育用户的主入口。'
           }
         ]
       },
       {
         name: 'Localisation Factory',
-        desc: '将国际内容变成乌干达观众“听得懂、看得爽”的加工工厂。',
+        desc: '把国际内容加工成乌干达本地观众“听得懂、看得爽”的版本。',
         children: [
           {
             name: 'Dubbing & Voice',
-            desc: 'Luganda / English / Swahili 等多语种配音与旁白制作。'
+            desc: 'Luganda / English / Swahili 等多语种配音和旁白。'
           },
           {
             name: 'Editing & Packaging',
-            desc: '本地化剪辑、版式包装、片头片花制作，让内容更贴近本地审美。'
+            desc: '本地化剪辑、包装、片头片花，让频道风格统一。'
           },
           {
             name: 'Scheduling',
-            desc: '根据受众习惯与节目评级做编排，衔接节目包与广告排期。'
+            desc: '根据收视习惯与分级做排期，衔接节目包和广告资源。'
           }
         ]
       }
     ]
   };
 
-  // ===== 3. 配置：放大字号、紧凑布局、支持缩放拖拽、悬停提示 =====
+  // ===== 3. 配置 =====
   var option = {
     backgroundColor: 'transparent',
     tooltip: {
       trigger: 'item',
       confine: true,
-      borderWidth: 0,
       backgroundColor: 'rgba(15,23,42,0.95)',
+      borderWidth: 0,
       textStyle: {
         fontFamily: 'Barlow',
-        fontSize: 12
+        fontSize: 12,
+        color: '#e5e7eb'
       },
-      formatter: function (params) {
-        var d = params.data || {};
-        var title = d.name || '';
+      formatter: function (p) {
+        var d = p.data || {};
+        var name = d.name || '';
         var desc = d.desc || '';
-        if (!title) return '';
-        return '<strong style="font-family: \\'Barlow Condensed\\'; font-size:13px;">'
-          + title +
-          '</strong>' +
-          (desc
-            ? '<br/><span style="color:#94a3b8; font-size:11px; line-height:1.6;">'
-              + desc + '</span>'
-            : '');
+        if (!name) return '';
+        if (!desc) return name;
+        return name + '<br/>' +
+          '<span style="color:#94a3b8;font-size:11px;line-height:1.6;">' +
+          desc + '</span>';
       }
     },
     series: [
@@ -584,38 +582,42 @@
         type: 'tree',
         data: [contentTree],
 
-        // 让整棵树集中在中上部，给底部节目包留出空间
-        top: '12%',
-        bottom: '24%',
-        left: '16%',
-        right: '22%',
-
         layout: 'radial',
-        roam: true,                 // 可以拖拽、缩放
-        nodeClick: 'zoomToNode',    // 点击节点放大到该节点
+        top: '14%',      // 树整体往上提
+        bottom: '26%',   // 给底部节目包留空间
+        left: '18%',
+        right: '24%',
+
+        roam: true,              // 支持拖拽 + 缩放
+        nodeClick: 'zoomToNode', // 点击节点聚焦
         initialTreeDepth: 2,
         animationDuration: 800,
         animationEasing: 'cubicOut',
 
         symbol: 'circle',
-        symbolSize: 10,
+        symbolSize: function (value, params) {
+          // 根节点稍大，叶子略小
+          var depth = params.dataIndexPath ? params.dataIndexPath.length : 1;
+          if (depth <= 1) return 12;
+          if (depth === 2) return 10;
+          return 8;
+        },
         itemStyle: {
           color: '#38bdf8',
           borderColor: 'rgba(15,23,42,0.9)',
           borderWidth: 1.5,
-          shadowBlur: 16,
+          shadowBlur: 12,
           shadowColor: 'rgba(15,23,42,0.9)'
         },
         lineStyle: {
           color: 'rgba(148,163,184,0.7)',
           width: 1.2,
-          curveness: 0.2
+          curveness: 0.25
         },
-
         label: {
           show: true,
           fontFamily: 'Barlow Condensed',
-          fontSize: 13,             // 放大文字
+          fontSize: 13,
           color: '#e5e7eb',
           distance: 8
         },
@@ -634,6 +636,7 @@
     chart.resize();
   });
 </script>
+
 
 </body>
 </html>
