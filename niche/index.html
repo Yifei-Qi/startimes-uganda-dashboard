@@ -415,257 +415,330 @@
   </div>
 
   <!-- ECharts + d3-hierarchy -->
-  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/d3-hierarchy@3.1.2/dist/d3-hierarchy.min.js"></script>
-  <script>
-    // 1. 层级数据：完全覆盖你提供的目录条目
-    const nicheData = {
-      name: '生态位 · Niche',
-      key: 'root',
-      children: [
-        {
-          name: '空间生态位 · Spatial niche',
-          key: 'spatial',
-          link: './spatial.html',
-          children: [
-            {
-              name: '线下视觉 · Offline · Visual',
-              key: 'spatial',
-              children: [
-                { name: '户外大牌 · Outdoor billboard', key: 'spatial' },
-                { name: '灯杆广告 · Lamp pole ads', key: 'spatial' },
-                { name: '营业厅 & 代理商 · Shopfront & agents (flyer / poster / standee)', key: 'spatial' },
-                { name: '纸媒 & 网上媒体 · Print & online press', key: 'spatial' }
-              ]
-            },
-            {
-              name: '线上视觉 · Online · Visual',
-              key: 'spatial',
-              children: [
-                { name: 'EPG 开机 / 频道切换 / 音量条广告 · EPG opening / zapping / volume ads', key: 'spatial' },
-                { name: 'OTT 开屏广告 · OTT opening screen', key: 'spatial' },
-                { name: 'Mini banner 广告 · Mini banner', key: 'spatial' }
-              ]
-            },
-            {
-              name: '线下听觉 · Offline · Audio',
-              key: 'spatial',
-              children: [
-                { name: '广播 · Radio spots', key: 'spatial' },
-                { name: '呼叫中心 · Call center / IVR', key: 'spatial' }
-              ]
-            },
-            {
-              name: '线上视觉 + 听觉 · Online · Audio + Visual',
-              key: 'spatial',
-              children: [
-                { name: 'TVC / Promo 片 · TVC & promo', key: 'spatial' },
-                { name: '社交媒体视频 · Social media (Facebook / X)', key: 'spatial' },
-                { name: 'WhatsApp 群发 · WhatsApp broadcast', key: 'spatial' }
-              ]
-            },
-            {
-              name: '线下视觉 + 听觉 · Offline · Audio + Visual',
-              key: 'spatial',
-              children: [
-                { name: '路演 · Roadshow', key: 'spatial' },
-                { name: '发布会 · Press conference', key: 'spatial' }
-              ]
-            }
-          ]
-        },
-        {
-          name: '市场生态位 · Market niche',
-          key: 'market',
-          link: './market.html',
-          children: [
-            { name: '2.2.1 市场占有率 · Market share', key: 'market' },
-            { name: '2.2.2 SWOT 分析 · SWOT analysis', key: 'market' },
-            { name: '2.2.3 产品类型属性 & 价格对比 · Product & price comparison', key: 'market' },
-            { name: '2.2.4 频道类型 / 数量 & 节目包价格对比 · Channel & bouquet comparison', key: 'market' },
-            { name: '2.2.5 最有竞争力的产品 · 机顶盒 / 节目 / 自办频道', key: 'market' },
-            { name: '2.2.6 渠道对比 · Visual design & social reach', key: 'market' },
-            {
-              name: '竞品品牌 · Competitors',
-              key: 'market',
-              children: [
-                { name: 'StarTimes', key: 'market' },
-                { name: 'DStv', key: 'market' },
-                { name: 'GOtv', key: 'market' },
-                { name: 'AzamTV', key: 'market' },
-                { name: 'Zuku TV', key: 'market' }
-              ]
-            }
-          ]
-        }
-      ]
-    };
+<!-- ECharts & d3-hierarchy -->
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-hierarchy@2.0.0/dist/d3-hierarchy.min.js"></script>
 
-    // 2. 使用 d3-hierarchy 做 circle packing 布局
-    const chartDom = document.getElementById('niche-chart');
-    const chart = echarts.init(chartDom);
-
-    function buildPackedData() {
-      const width  = chartDom.clientWidth  || window.innerWidth;
-      const height = chartDom.clientHeight || window.innerHeight;
-
-      const pack = d3.pack()
-        .size([width, height])
-        .padding(18);
-
-      const root = d3.hierarchy(nicheData)
-        .sum(d => d.children ? 0 : 1)
-        .sort((a, b) => b.value - a.value);
-
-      pack(root);
-
-      const nodes = [];
-      root.each(d => {
-        nodes.push({
-          name: d.data.name,
-          value: [d.x, d.y],
-          symbolSize: d.r * 2,
-          depth: d.depth,
-          link: d.data.link || null,
-          key: d.data.key || (d.parent ? d.parent.data.key : null)
-        });
-      });
-
-      const xs = nodes.map(n => n.value[0]);
-      const ys = nodes.map(n => n.value[1]);
-      const xMin = Math.min.apply(null, xs) - 40;
-      const xMax = Math.max.apply(null, xs) + 40;
-      const yMin = Math.min.apply(null, ys) - 40;
-      const yMax = Math.max.apply(null, ys) + 40;
-
-      return { nodes, xMin, xMax, yMin, yMax };
-    }
-
-    function render() {
-      const packed = buildPackedData();
-      const nodes  = packed.nodes;
-
-      const option = {
-        backgroundColor: 'transparent',
-        tooltip: {
-          trigger: 'item',
-          formatter: ({ data }) => data.name
-        },
-        xAxis: {
-          type: 'value',
-          min: packed.xMin,
-          max: packed.xMax,
-          show: false
-        },
-        yAxis: {
-          type: 'value',
-          min: packed.yMin,
-          max: packed.yMax,
-          show: false
-        },
-        dataZoom: [
+<script>
+  // 生态位分层数据 ------------------------------------
+  const nicheTree = {
+    name: '生态位 · Niche',
+    value: 100,
+    group: 'root',
+    url: null,
+    children: [
+      {
+        name: '空间生态位 · Spatial niche',
+        value: 50,
+        group: 'spatial',
+        url: './spatial/index.html',
+        children: [
           {
-            type: 'inside',
-            xAxisIndex: 0,
-            yAxisIndex: 0,
-            zoomOnMouseWheel: true,
-            moveOnMouseMove: true,
-            moveOnMouseWheel: false
-          }
-        ],
-        series: [
+            name: '线上视觉 · Online visual',
+            value: 12,
+            group: 'spatial-axis',
+            children: [
+              { name: 'EPG 开机 / 频道切换 / 音量条广告', value: 3 },
+              { name: 'OTT 开屏广告 · App splash', value: 3 },
+              { name: 'Mini banner 广告', value: 3 }
+            ]
+          },
           {
-            type: 'scatter',
-            coordinateSystem: 'cartesian2d',
-            symbol: 'circle',
-            data: nodes,
-            zlevel: 2,
-            label: {
-              show: true,
-              formatter: function (params) {
-                const d = params.data;
-                if (d.depth === 0) return '{root|' + d.name + '}';
-                if (d.depth === 1) return '{lvl1|' + d.name + '}';
-                // 小节点为避免拥挤，仅显示中文部分
-                const parts = d.name.split('·');
-                return '{lvl2|' + (parts[0] || d.name).trim() + '}';
-              },
-              align: 'center',
-              verticalAlign: 'middle',
-              rich: {
-                root: {
-                  fontFamily: 'Barlow Condensed',
-                  fontSize: 24,
-                  fontWeight: 700,
-                  color: '#f9fafb',
-                  lineHeight: 22
-                },
-                lvl1: {
-                  fontFamily: 'Barlow Condensed',
-                  fontSize: 16,
-                  fontWeight: 600,
-                  color: '#f9fafb',
-                  lineHeight: 18
-                },
-                lvl2: {
-                  fontFamily: 'Barlow',
-                  fontSize: 11,
-                  fontWeight: 400,
-                  color: '#e5e7eb',
-                  lineHeight: 12
-                }
-              }
-            },
-            itemStyle: {
-              color: function (params) {
-                const d = params.data;
-                if (d.depth === 0) return 'rgba(56,189,248,0.96)'; // root
-                if (d.depth === 1) {
-                  return d.key === 'spatial'
-                    ? 'rgba(34,197,94,0.95)'
-                    : 'rgba(249,115,22,0.95)';
-                }
-                if (d.key === 'spatial') {
-                  return 'rgba(74,222,128,0.92)';
-                }
-                if (d.key === 'market') {
-                  return 'rgba(251,146,60,0.92)';
-                }
-                return 'rgba(148,163,184,0.85)';
-              },
-              borderColor: 'rgba(15,23,42,0.9)',
-              borderWidth: 1,
-              shadowBlur: 24,
-              shadowColor: 'rgba(0,0,0,0.9)'
-            },
-            emphasis: {
-              scale: 1.05,
-              itemStyle: {
-                shadowBlur: 40,
-                shadowColor: 'rgba(248,250,252,0.95)'
-              }
-            }
+            name: '线上听觉 · Online audio',
+            value: 9,
+            group: 'spatial-axis',
+            children: [
+              { name: '广播 · Radio spots', value: 4 },
+              { name: '呼叫中心 · Call center / IVR', value: 4 }
+            ]
+          },
+          {
+            name: '线下视觉 · Offline visual',
+            value: 14,
+            group: 'spatial-axis',
+            children: [
+              { name: '户外大牌 · Outdoor billboard', value: 3 },
+              { name: '灯杆广告 · Light pole banners', value: 3 },
+              { name: '营业厅 / 代理商 · Flyers & posters', value: 4 },
+              { name: '纸媒 & 网站 · Print & online media', value: 4 }
+            ]
+          },
+          {
+            name: '线下听觉 · Offline audio',
+            value: 6,
+            group: 'spatial-axis',
+            children: [
+              { name: '店内广播 / 公共广播 · PA', value: 3 }
+            ]
+          },
+          {
+            name: '线上视觉 + 听觉 · Online A/V',
+            value: 16,
+            group: 'spatial-mixed',
+            children: [
+              { name: 'TVC · Promo spots', value: 6 },
+              { name: '社媒 · Social / Facebook / X', value: 5 },
+              { name: 'WhatsApp 群发 · Broadcast list', value: 5 }
+            ]
+          },
+          {
+            name: '线下视觉 + 听觉 · Offline A/V',
+            value: 12,
+            group: 'spatial-mixed',
+            children: [
+              { name: '路演 · Roadshow', value: 6 },
+              { name: '发布会 · Press conference', value: 6 }
+            ]
           }
         ]
-      };
+      },
+      {
+        name: '市场生态位 · Market niche',
+        value: 50,
+        group: 'market',
+        url: './market/index.html',
+        children: [
+          {
+            name: 'StarTimes',
+            value: 12,
+            group: 'brand',
+            children: [
+              { name: '市场占有率 · Market share', value: 2 },
+              { name: 'SWOT 分析', value: 2 },
+              { name: '产品类型 / 属性 / 价格对比', value: 2 },
+              { name: '频道类型与节目包对比', value: 2 },
+              { name: '最有竞争力的产品', value: 2 },
+              { name: '渠道 & 社媒对比', value: 2 }
+            ]
+          },
+          {
+            name: 'DStv',
+            value: 10,
+            group: 'brand',
+            children: [
+              { name: '市场占有率 · Market share', value: 2 },
+              { name: 'SWOT 分析', value: 2 },
+              { name: '产品类型 / 属性 / 价格对比', value: 2 },
+              { name: '频道类型与节目包对比', value: 2 },
+              { name: '最有竞争力的产品', value: 1 },
+              { name: '渠道 & 社媒对比', value: 1 }
+            ]
+          },
+          {
+            name: 'GOtv',
+            value: 10,
+            group: 'brand',
+            children: [
+              { name: '市场占有率 · Market share', value: 2 },
+              { name: 'SWOT 分析', value: 2 },
+              { name: '产品类型 / 属性 / 价格对比', value: 2 },
+              { name: '频道类型与节目包对比', value: 2 },
+              { name: '最有竞争力的产品', value: 1 },
+              { name: '渠道 & 社媒对比', value: 1 }
+            ]
+          },
+          {
+            name: 'AzamTV',
+            value: 9,
+            group: 'brand',
+            children: [
+              { name: '市场占有率 · Market share', value: 2 },
+              { name: 'SWOT 分析', value: 2 },
+              { name: '产品类型 / 属性 / 价格对比', value: 2 },
+              { name: '频道类型与节目包对比', value: 1 },
+              { name: '最有竞争力的产品', value: 1 },
+              { name: '渠道 & 社媒对比', value: 1 }
+            ]
+          },
+          {
+            name: 'Zuku TV',
+            value: 9,
+            group: 'brand',
+            children: [
+              { name: '市场占有率 · Market share', value: 2 },
+              { name: 'SWOT 分析', value: 2 },
+              { name: '产品类型 / 属性 / 价格对比', value: 2 },
+              { name: '频道类型与节目包对比', value: 1 },
+              { name: '最有竞争力的产品', value: 1 },
+              { name: '渠道 & 社媒对比', value: 1 }
+            ]
+          }
+        ]
+      }
+    ]
+  };
 
-      chart.setOption(option, true);
+  // d3 层级 & 展开为一维节点 -------------------------
+  const root = d3.hierarchy(nicheTree)
+    .sum(d => d.value || 1)
+    .sort((a, b) => b.value - a.value);
+
+  const nodes = root.descendants();
+  const flatData = nodes.map(n => ({
+    name: n.data.name,
+    url: n.data.url || null,
+    group: n.data.group || null
+  }));
+
+  // 颜色映射，尽量贴近 Ecology index 的逻辑
+  function getNodeColor(node) {
+    if (node.depth === 0) return '#38bdf8';              // 中心 Niche：冷蓝
+    const level1 = node.ancestors()[1];
+    if (!level1) return '#38bdf8';
+    if (level1.data.group === 'spatial') return '#22c55e'; // Spatial：荧光绿
+    if (level1.data.group === 'market')  return '#fb923c'; // Market：暖橙
+    return '#64748b';
+  }
+
+  // 重新布局标记
+  let needsLayout = true;
+
+  function layoutNodes(api) {
+    const fullW = api.getWidth();
+    const fullH = api.getHeight();
+    const size  = Math.min(fullW, fullH) * 0.9;
+
+    d3.pack()
+      .size([size, size])
+      .padding(8)(root);
+
+    // 把圆群整体偏右一些，避免压住左侧文案
+    const offsetX = fullW * 0.55 - size / 2;
+    const offsetY = fullH * 0.52 - size / 2;
+
+    root.each(node => {
+      node.x += offsetX;
+      node.y += offsetY;
+    });
+    needsLayout = false;
+  }
+
+  // ECharts 初始化 ------------------------------------
+  const nicheChart = echarts.init(document.getElementById('chart-container'));
+
+  function renderItem(params, api) {
+    if (needsLayout) {
+      layoutNodes(api);
     }
 
-    render();
+    const node = nodes[params.dataIndex];
+    const r = node.r;
+    const cx = node.x;
+    const cy = node.y;
+    const depth = node.depth;
+    const baseColor = getNodeColor(node);
 
-    // 点击节点：若包含 link，则跳转对应下级页面
-    chart.on('click', function (params) {
-      const data = params.data;
-      if (data && data.link) {
-        window.location.href = data.link;
+    const bright = echarts.color.lift(baseColor, 0.4); // 更亮一点
+    const fillGradient = new echarts.graphic.RadialGradient(
+      0.35, 0.3, 1,
+      [
+        { offset: 0,   color: echarts.color.lift(bright, 0.2) },
+        { offset: 0.55,color: baseColor },
+        { offset: 1,   color: 'rgba(5,10,25,0.1)' }
+      ]
+    );
+
+    const opacity = 0.95 - depth * 0.07;
+
+    return {
+      type: 'group',
+      children: [
+        {
+          type: 'circle',
+          shape: { cx, cy, r },
+          style: {
+            fill: fillGradient,
+            stroke: 'rgba(15,23,42,0.65)',
+            lineWidth: depth === 0 ? 2 : 1,
+            opacity: opacity,
+            shadowBlur: depth === 0 ? 80 : (depth === 1 ? 50 : 30),
+            shadowColor: baseColor
+          }
+        },
+        {
+          type: 'text',
+          style: {
+            x: cx,
+            y: cy,
+            text: node.data.name,
+            fontFamily: 'Barlow Condensed, system-ui, -apple-system, BlinkMacSystemFont',
+            fontSize: Math.max(r * 0.19, depth === 0 ? 24 : 12),
+            fontWeight: depth <= 1 ? 600 : 400,
+            align: 'center',
+            verticalAlign: 'middle',
+            fill: '#f9fafb',
+            opacity: 0.96,
+            lineHeight: 18
+          }
+        }
+      ],
+      // 不把节点“顶上去”，而是通过 focus/blur 做整体高亮
+      focus: new Uint32Array([params.dataIndex])
+    };
+  }
+
+  const option = {
+    backgroundColor: 'transparent',
+    tooltip: {
+      show: true,
+      formatter: function (p) {
+        const node = nodes[p.dataIndex];
+        return node.data.name;
       }
-    });
+    },
+    hoverLayerThreshold: Infinity,
+    series: [
+      // 背景星点（直接照搬 Ecology index 的感觉即可）
+      {
+        type: 'scatter',
+        coordinateSystem: 'none',
+        silent: true,
+        symbolSize: function () { return 1 + Math.random() * 2.5; },
+        itemStyle: { color: 'rgba(248,250,252,0.6)' },
+        data: (function () {
+          const pts = [];
+          for (let i = 0; i < 220; i++) {
+            pts.push([
+              Math.random() * nicheChart.getWidth(),
+              Math.random() * nicheChart.getHeight()
+            ]);
+          }
+          return pts;
+        })()
+      },
+      // 圆形细胞图
+      {
+        type: 'custom',
+        coordinateSystem: 'none',
+        renderItem: renderItem,
+        data: flatData,
+        zlevel: 2,
+        emphasis: {
+          focus: 'self',
+          blurScope: 'global'
+        }
+      }
+    ]
+  };
 
-    window.addEventListener('resize', function () {
-      chart.resize();
-      render();
-    });
-  </script>
+  nicheChart.setOption(option);
+
+  // 点击节点跳转（空间生态位 / 市场生态位会跳到对应二级页）
+  nicheChart.on('click', function (params) {
+    if (params.seriesType !== 'custom') return;
+    const node = nodes[params.dataIndex];
+    const url = node.data.url;
+    if (url) {
+      window.location.href = url;
+    }
+  });
+
+  // 窗口缩放时重新布局
+  window.addEventListener('resize', function () {
+    needsLayout = true;
+    nicheChart.resize();
+  });
+</script>
+
 </body>
 </html>
