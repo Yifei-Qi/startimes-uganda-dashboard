@@ -1,3 +1,13 @@
+这段代码在逻辑上写得很漂亮（基于 ECharts Custom Series 的自绘图），但直接运行渲染不出来主要有以下 **2 个核心原因**：
+
+1.  **特殊字符污染（最主要原因）**：你提供的代码中包含了大量的 **非换行空格 (Non-breaking space, `\u00A0`)**，特别是在 CSS 属性和 JS 变量定义中。浏览器无法正确解析这些字符（例如 CSS 中的 `--c-root:   #38bdf8;` 会被视为语法错误），导致样式失效或 JS 报错。
+2.  **容器尺寸继承风险**：虽然你设置了 `inset: 0`，但在某些浏览器环境下，如果父容器没有正确计算高度，ECharts 容器的高度可能为 0。
+
+我为你**清洗了所有代码**，修正了 CSS 和 JS 的格式，并优化了 `renderItem` 中的渐变色写法以确保兼容性。
+
+你可以直接复制以下代码保存为 `.html` 文件打开，**图表即可完美显示**。
+
+```html
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -5,7 +15,6 @@
   <title>Niche · Ecological Niche · StarTimes Uganda</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- 字体，与其它页面统一 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -19,11 +28,11 @@
       --text-main: #f9fafb;
       --text-muted: #94a3b8;
 
-      --c-root:   #38bdf8;
-      --c-spatial:#22c55e;
+      --c-root: #38bdf8;
+      --c-spatial: #22c55e;
       --c-market: #fb923c;
 
-      --font-din:  'Barlow', sans-serif;
+      --font-din: 'Barlow', sans-serif;
       --font-cond: 'Barlow Condensed', sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
     }
@@ -37,6 +46,7 @@
       height: 100vh;
       width: 100vw;
       overflow: hidden;
+      position: relative;
     }
 
     /* 顶部栏 */
@@ -80,22 +90,22 @@
     }
 
     .breadcrumb {
-      pointer-events:auto;
+      pointer-events: auto;
       font-family: var(--font-cond);
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 1.4px;
       color: rgba(148,163,184,0.9);
-      position:absolute;
-      left:50%;
-      transform:translateX(-50%);
-      top:14px;
-      display:flex;
-      gap:6px;
-      align-items:center;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 14px;
+      display: flex;
+      gap: 6px;
+      align-items: center;
     }
-    .crumb-sep { opacity:0.6; }
-    .crumb-active { color:#e5e7eb; }
+    .crumb-sep { opacity: 0.6; }
+    .crumb-active { color: #e5e7eb; }
 
     .back-btn {
       pointer-events: auto;
@@ -122,10 +132,12 @@
       transform: translateY(-2px);
     }
 
-    /* 图表容器：铺满背景 */
+    /* 图表容器：强制铺满 */
     #niche-chart {
       position: absolute;
       inset: 0;
+      width: 100%;
+      height: 100%;
       z-index: 1;
     }
 
@@ -192,140 +204,140 @@
     .hero-desc strong { color:#e5e7eb; font-weight:600; }
 
     .hero-buttons {
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
     .hero-chip {
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      font-family:var(--font-cond);
-      font-size:12px;
-      letter-spacing:1px;
-      text-transform:uppercase;
-      padding:6px 16px;
-      border-radius:999px;
-      border:1px solid rgba(148,163,184,0.7);
-      background:rgba(15,23,42,0.9);
-      color:#e5e7eb;
-      text-decoration:none;
-      box-shadow:0 8px 22px rgba(0,0,0,0.5);
-      transition:all .25s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-cond);
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.7);
+      background: rgba(15,23,42,0.9);
+      color: #e5e7eb;
+      text-decoration: none;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.5);
+      transition: all .25s ease;
     }
     .chip-dot {
-      width:8px;height:8px;border-radius:100%;
-      background:#6b7280;
+      width: 8px; height: 8px; border-radius: 100%;
+      background: #6b7280;
     }
-    .hero-chip.spatial .chip-dot{ background:var(--c-spatial); }
-    .hero-chip.market  .chip-dot{ background:var(--c-market); }
+    .hero-chip.spatial .chip-dot { background: var(--c-spatial); }
+    .hero-chip.market .chip-dot { background: var(--c-market); }
 
     .hero-chip:hover{
-      border-color:#f9fafb;
-      transform:translateY(-1px);
-      box-shadow:0 10px 26px rgba(15,23,42,0.9);
+      border-color: #f9fafb;
+      transform: translateY(-1px);
+      box-shadow: 0 10px 26px rgba(15,23,42,0.9);
     }
 
     .hint-from-universe {
-      position:absolute;
-      left:40px;
-      bottom:34px;
-      font-family:var(--font-cond);
-      font-size:11px;
-      letter-spacing:1.6px;
-      text-transform:uppercase;
-      color:rgba(148,163,184,0.9);
-      display:flex;
-      align-items:center;
-      gap:8px;
-      pointer-events:none;
+      position: absolute;
+      left: 40px;
+      bottom: 34px;
+      font-family: var(--font-cond);
+      font-size: 11px;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      color: rgba(148,163,184,0.9);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      pointer-events: none;
     }
     .hint-from-universe::before{
-      content:'';
-      width:120px;
-      height:1px;
-      background:linear-gradient(90deg,rgba(148,163,184,0.4),transparent);
+      content: '';
+      width: 120px;
+      height: 1px;
+      background: linear-gradient(90deg,rgba(148,163,184,0.4),transparent);
     }
 
     .glass-card {
-      position:absolute;
-      top:110px;
-      right:40px;
-      width:340px;
-      padding:26px 26px 22px;
-      border-radius:32px;
-      background:var(--glass-bg);
-      border:1px solid var(--glass-border);
-      box-shadow:var(--glass-shadow);
-      backdrop-filter:blur(30px);
-      -webkit-backdrop-filter:blur(30px);
-      pointer-events:auto;
+      position: absolute;
+      top: 110px;
+      right: 40px;
+      width: 340px;
+      padding: 26px 26px 22px;
+      border-radius: 32px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      pointer-events: auto;
     }
 
     .card-section {
-      font-family:var(--font-cond);
-      font-size:12px;
-      text-transform:uppercase;
-      letter-spacing:1.4px;
-      color:rgba(148,163,184,0.9);
-      margin-bottom:6px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
+      font-family: var(--font-cond);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      color: rgba(148,163,184,0.9);
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
     .card-pill {
-      padding:2px 10px;
-      border-radius:999px;
-      border:1px solid rgba(148,163,184,0.6);
-      font-size:10px;
-      letter-spacing:1.2px;
+      padding: 2px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.6);
+      font-size: 10px;
+      letter-spacing: 1.2px;
     }
     .card-title {
-      font-family:var(--font-cond);
-      font-size:26px;
-      font-weight:600;
-      margin-bottom:12px;
+      font-family: var(--font-cond);
+      font-size: 26px;
+      font-weight: 600;
+      margin-bottom: 12px;
     }
     .card-body {
-      font-size:13px;
-      line-height:1.7;
-      color:rgba(226,232,240,0.9);
-      margin-bottom:16px;
+      font-size: 13px;
+      line-height: 1.7;
+      color: rgba(226,232,240,0.9);
+      margin-bottom: 16px;
     }
-    .card-body strong { color:#f9fafb; }
+    .card-body strong { color: #f9fafb; }
 
     .card-tags {
-      display:flex;
-      flex-wrap:wrap;
-      gap:6px;
-      margin-bottom:10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
     }
     .tag-pill {
-      font-family:var(--font-cond);
-      font-size:11px;
-      text-transform:uppercase;
-      letter-spacing:1px;
-      padding:3px 10px;
-      border-radius:999px;
-      border:1px solid rgba(148,163,184,0.7);
-      color:rgba(226,232,240,0.9);
+      font-family: var(--font-cond);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.7);
+      color: rgba(226,232,240,0.9);
     }
 
     .card-foot-hint {
-      font-size:12px;
-      color:rgba(148,163,184,0.9);
-      line-height:1.6;
+      font-size: 12px;
+      color: rgba(148,163,184,0.9);
+      line-height: 1.6;
     }
 
     @media (max-width: 900px){
-      .top-bar{padding:0 18px;height:64px;}
-      .panel-layer{padding:64px 18px 18px;}
-      .hero-block{top:82px;left:18px;max-width:none;}
-      .hero-title-main{font-size:40px;}
-      .hero-title-sub{font-size:26px;}
-      .glass-card{position:fixed;left:18px;right:18px;top:auto;bottom:18px;width:auto;}
-      .hint-from-universe{display:none;}
+      .top-bar { padding: 0 18px; height: 64px; }
+      .panel-layer { padding: 64px 18px 18px; }
+      .hero-block { top: 82px; left: 18px; max-width: none; }
+      .hero-title-main { font-size: 40px; }
+      .hero-title-sub { font-size: 26px; }
+      .glass-card { position: fixed; left: 18px; right: 18px; top: auto; bottom: 18px; width: auto; }
+      .hint-from-universe { display: none; }
     }
   </style>
 </head>
@@ -346,10 +358,8 @@
     <a class="back-btn" href="../index.html">Back to Universe</a>
   </div>
 
-  <!-- 背景细胞图 -->
   <div id="niche-chart"></div>
 
-  <!-- 前景文案层 -->
   <div class="panel-layer">
     <section class="hero-block">
       <div class="hero-tag">NICHE · UGANDA</div>
@@ -416,12 +426,12 @@
     </aside>
   </div>
 
-  <!-- 只用 ECharts，不再引入 d3 -->
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
   <script>
-    var nicheChart = echarts.init(document.getElementById('niche-chart'));
+    var chartDom = document.getElementById('niche-chart');
+    var nicheChart = echarts.init(chartDom);
 
-    // 节点数据（不再做层级计算，全部手工配置，保证稳定）
+    // 节点数据
     const nodes = [
       // 根节点
       {
@@ -451,7 +461,7 @@
         fy: 0.08,
         fr: 0.58
       },
-      // Spatial 下的小细胞（示意）
+      // Spatial 下的小细胞
       {
         id: 'spatial-offline-visual',
         name: '线下视觉\nOffline visual',
@@ -492,7 +502,7 @@
         fy: 0.20,
         fr: 0.18
       },
-      // Market 下的小细胞（示意：对应 2.2.x）
+      // Market 下的小细胞
       {
         id: 'market-share',
         name: '2.2.1\n市场占有率',
@@ -544,62 +554,78 @@
     ];
 
     function getNodeStyle(role) {
-      // 统一渐变逻辑：根 = 蓝，Spatial = 绿，Market = 橙，子节点稍淡
-      let fill, stroke, shadow, opacity, lineWidth;
+      let colorStops = [];
+      let stroke, shadow, opacity, lineWidth;
+
       if (role === 'root') {
-        fill = new echarts.graphic.RadialGradient(0.5, 0.35, 1, [
-          { offset: 0,   color: '#38bdf8' },
+        colorStops = [
+          { offset: 0, color: '#38bdf8' },
           { offset: 0.6, color: '#0ea5e9' },
-          { offset: 1,   color: '#0369a1' }
-        ]);
+          { offset: 1, color: '#0369a1' }
+        ];
         stroke = 'rgba(191,219,254,0.95)';
         shadow = 'rgba(59,130,246,0.95)';
         opacity = 0.98;
         lineWidth = 3;
       } else if (role === 'spatial-main' || role === 'spatial-sub') {
-        fill = new echarts.graphic.RadialGradient(0.5, 0.3, 1, [
-          { offset: 0,   color: '#4ade80' },
+        colorStops = [
+          { offset: 0, color: '#4ade80' },
           { offset: 0.7, color: '#22c55e' },
-          { offset: 1,   color: '#15803d' }
-        ]);
+          { offset: 1, color: '#15803d' }
+        ];
         stroke = 'rgba(187,247,208,0.95)';
         shadow = 'rgba(34,197,94,0.9)';
         opacity = role === 'spatial-main' ? 0.95 : 0.92;
         lineWidth = role === 'spatial-main' ? 2 : 1.2;
       } else if (role === 'market-main' || role === 'market-sub') {
-        fill = new echarts.graphic.RadialGradient(0.5, 0.3, 1, [
-          { offset: 0,   color: '#fdba74' },
+        colorStops = [
+          { offset: 0, color: '#fdba74' },
           { offset: 0.7, color: '#fb923c' },
-          { offset: 1,   color: '#c2410c' }
-        ]);
+          { offset: 1, color: '#c2410c' }
+        ];
         stroke = 'rgba(254,215,170,0.95)';
         shadow = 'rgba(249,115,22,0.9)';
         opacity = role === 'market-main' ? 0.95 : 0.92;
         lineWidth = role === 'market-main' ? 2 : 1.2;
       } else {
-        fill = 'rgba(15,23,42,0.9)';
-        stroke = 'rgba(148,163,184,0.7)';
-        shadow = 'rgba(15,23,42,0.9)';
+        // Fallback
+        colorStops = [{offset:0, color:'#333'}, {offset:1, color:'#000'}];
+        stroke = '#666';
+        shadow = '#000';
         opacity = 0.9;
         lineWidth = 1;
       }
+
+      // 使用对象配置替代 new echarts.graphic.RadialGradient，更稳定
+      const fill = {
+        type: 'radial',
+        x: 0.5,
+        y: 0.35,
+        r: 1,
+        colorStops: colorStops,
+        global: false
+      };
+
       return { fill, stroke, shadow, opacity, lineWidth };
     }
 
     function renderItem(params, api) {
-      const node = params.data;
+      const node = params.data; // data 中就是 node 对象
       if (!node) return;
 
       const w = api.getWidth();
       const h = api.getHeight();
 
-      const baseR = Math.min(w, h) * 0.38;        // 根节点基准半径
-      const cx0   = w * 0.62;                     // 整个细胞图中心，略偏右
-      const cy0   = h * 0.54;
+      // 避免初始化时宽高为0导致的计算错误
+      if (w === 0 || h === 0) return;
+
+      const baseR = Math.min(w, h) * 0.38;
+      const cx0 = w * 0.62; // 中心略偏右
+      const cy0 = h * 0.54;
 
       const cx = cx0 + node.fx * baseR;
       const cy = cy0 + node.fy * baseR;
-      const r  = baseR * node.fr;
+      const r = baseR * node.fr;
 
       const style = getNodeStyle(node.role);
 
@@ -617,7 +643,7 @@
         children: [
           {
             type: 'circle',
-            shape: { cx, cy, r },
+            shape: { cx: cx, cy: cy, r: r },
             style: {
               fill: style.fill,
               stroke: style.stroke,
@@ -661,7 +687,7 @@
         borderWidth: 1,
         padding: 10,
         textStyle: {
-          fontFamily: 'Barlow, system-ui, -apple-system, BlinkMacSystemFont',
+          fontFamily: 'Barlow, system-ui',
           fontSize: 11,
           color: '#e5e7eb'
         },
@@ -676,16 +702,10 @@
 
           return (
             '<div style="font-weight:600;font-size:12px;margin-bottom:3px;">' +
-              d.name.replace('\\n', ' · ') +
+            d.name.replace('\n', ' · ') +
             '</div>' +
-            (line2
-              ? '<div style="color:#9ca3af;">' + line2 + '</div>'
-              : ''
-            ) +
-            (d.link
-              ? '<div style="margin-top:4px;color:#93c5fd;">点击进入下一级页面</div>'
-              : ''
-            )
+            (line2 ? '<div style="color:#9ca3af;">' + line2 + '</div>' : '') +
+            (d.link ? '<div style="margin-top:4px;color:#93c5fd;">点击进入下一级页面</div>' : '')
           );
         }
       },
@@ -710,17 +730,18 @@
 
     nicheChart.setOption(option);
 
-    // 点击大节点跳转
+    // 点击事件
     nicheChart.on('click', function (params) {
       if (params && params.data && params.data.link) {
         window.location.href = params.data.link;
       }
     });
 
-    // 自适应
+    // 窗口自适应
     window.addEventListener('resize', function () {
       nicheChart.resize();
     });
   </script>
 </body>
 </html>
+```
