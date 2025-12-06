@@ -295,7 +295,7 @@
       // 中心节点（英文标题、放大字号、去掉黑色边框）
       nodes.push({
         id: 'core',
-        name: 'MARKET\nSYSTEM',
+        name: 'StarTimes UGANDA\nMARKET SYSTEM',
         x: cx,
         y: cy,
         symbolSize: rCore,
@@ -308,10 +308,10 @@
         label: {
           show: true,
           fontFamily: 'Barlow Condensed, sans-serif',
-          fontSize: 26,          // 比顶部标题更大
+          fontSize: 40,          // 比顶部标题更大
           fontWeight: 700,
           color: '#ffffff',
-          lineHeight: 22
+          lineHeight: 30
         },
         tooltip: {
           formatter: 'StarTimes Uganda · Market System<br/>整合 Ecology 与 Niche 两大系统的总览入口'
@@ -323,7 +323,7 @@
       var ring1 = [
         {
           id: 'eco',
-          name: 'Ecology\n业务生态',
+          name: 'Ecology\n生态',
           angle: -35 * Math.PI / 180,
           color: '#facc15',
           link: 'ecology/index.html',
@@ -331,7 +331,7 @@
         },
         {
           id: 'niche',
-          name: 'Niche\n生态位体系',
+          name: 'Niche\n生态位',
           angle: (180+35) * Math.PI / 180,
           color: '#22c55e',
           link: 'niche/index.html',
@@ -347,21 +347,21 @@
           name: n.name,
           x: x,
           y: y,
-          symbolSize: minSide * 0.08,   // 略放大
+          symbolSize: minSide * 0.1,   // 略放大
           itemStyle: {
             color: n.color,
             shadowBlur: 40,
             shadowColor: n.color,
             borderColor: 'rgba(15,23,42,0.7)',
-            borderWidth: 2
+            borderWidth: 0
           },
           label: {
             show: true,
             fontFamily: 'Barlow Condensed, sans-serif',
-            fontSize: 18,              // 放大标签字号
+            fontSize: 26,              // 放大标签字号
             fontWeight: 600,
             color: '#ffffff',          // 文字改为白色
-            lineHeight: 16
+            lineHeight: 22
           },
           link: n.link,
           tooltip: { formatter: n.tip },
@@ -430,7 +430,7 @@
             shadowBlur: 24,
             shadowColor: 'rgba(168,85,247,0.9)',
             borderColor: 'rgba(15,23,42,0.9)',
-            borderWidth: 2
+            borderWidth: 0
           },
           label: {
             show: true,
@@ -470,7 +470,7 @@
             shadowBlur: 18,
             shadowColor: 'rgba(15,23,42,0.9)',
             borderColor: 'rgba(15,23,42,0.9)',
-            borderWidth: 2
+            borderWidth: 0
           },
           label: {
             show: true,
