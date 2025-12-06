@@ -2,35 +2,44 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <title>Spatial Niche · Touchpoint Map · StarTimes Uganda</title>
+  <title>Niche · Ecological Niche · StarTimes Uganda</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- 字体，与其它页面统一 -->
+  <!-- 字体，与 Ecology Index 保持一致 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
   <style>
     :root {
       --bg-dark: #050816;
+      --glass-bg: rgba(15, 23, 42, 0.88);
+      --glass-border: rgba(148, 163, 184, 0.4);
+      --glass-shadow: 0 18px 60px rgba(0, 0, 0, 0.85);
       --text-main: #f9fafb;
       --text-muted: #94a3b8;
+
+      --c-root:   #38bdf8;
+      --c-spatial:#22c55e;
+      --c-market: #fb923c;
+
       --font-din:  'Barlow', sans-serif;
       --font-cond: 'Barlow Condensed', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      background: radial-gradient(circle at 15% 0%, #0b1120 0%, #020617 55%, #000 100%);
-      color: var(--text-main);
       font-family: var(--font-din);
+      color: var(--text-main);
+      background: radial-gradient(circle at 20% 0%, #0b1020 0%, #050816 60%, #020617 100%);
       height: 100vh;
       width: 100vw;
       overflow: hidden;
     }
 
-    /* 顶部导航 */
+    /* 顶部栏 */
     .top-bar {
       position: fixed;
       inset: 0 0 auto 0;
@@ -39,8 +48,8 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: linear-gradient(to bottom, rgba(5,8,22,0.96), transparent);
       z-index: 20;
+      background: linear-gradient(to bottom, rgba(5,8,22,0.96), transparent);
       pointer-events: none;
     }
 
@@ -53,10 +62,10 @@
     .brand-path {
       font-family: var(--font-cond);
       font-size: 11px;
-      letter-spacing: 1.5px;
+      letter-spacing: 1.6px;
       text-transform: uppercase;
       color: #38bdf8;
-      opacity: .95;
+      opacity: 0.95;
       margin-bottom: 4px;
       font-weight: 600;
     }
@@ -65,18 +74,18 @@
       font-family: var(--font-cond);
       font-size: 18px;
       font-weight: 600;
-      letter-spacing: .6px;
+      letter-spacing: 0.6px;
       text-transform: uppercase;
       color: #e5e7eb;
     }
 
     .breadcrumb {
       pointer-events:auto;
-      font-family:var(--font-cond);
-      font-size:11px;
-      letter-spacing:1.4px;
-      text-transform:uppercase;
-      color:rgba(148,163,184,0.9);
+      font-family: var(--font-cond);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      color: rgba(148,163,184,0.9);
       position:absolute;
       left:50%;
       transform:translateX(-50%);
@@ -85,8 +94,8 @@
       gap:6px;
       align-items:center;
     }
-    .crumb-sep{opacity:.6;}
-    .crumb-active{color:#e5e7eb;}
+    .crumb-sep { opacity:0.6; }
+    .crumb-active { color:#e5e7eb; }
 
     .back-btn {
       pointer-events: auto;
@@ -106,126 +115,216 @@
       transition: all .25s ease;
     }
     .back-btn:hover {
-      background:#38bdf8;
-      color:#020617;
-      border-color:#38bdf8;
-      box-shadow:0 10px 28px rgba(56,189,248,0.5);
-      transform:translateY(-2px);
+      background: var(--c-root);
+      color: #020617;
+      border-color: var(--c-root);
+      box-shadow: 0 10px 28px rgba(56,189,248,0.5);
+      transform: translateY(-2px);
     }
 
-    /* 布局 */
-    #touch-chart {
-      position:absolute;
-      inset:0;
-      z-index:1;
+    /* 背景图表容器 */
+    #niche-chart {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
     }
 
     .panel-layer {
-      position:absolute;
-      inset:0;
-      padding:80px 40px 40px;
-      z-index:10;
-      pointer-events:none;
+      position: absolute;
+      inset: 0;
+      padding: 72px 40px 40px;
+      z-index: 10;
+      pointer-events: none;
     }
 
     .hero-block {
-      position:absolute;
-      top:96px;
-      left:40px;
-      max-width:420px;
-      pointer-events:auto;
-      text-shadow:0 14px 40px rgba(0,0,0,0.85);
+      position: absolute;
+      top: 110px;
+      left: 40px;
+      max-width: 440px;
+      pointer-events: auto;
+      text-shadow: 0 14px 40px rgba(0,0,0,0.9);
     }
 
-    .hero-label {
-      font-family:var(--font-cond);
-      font-size:12px;
-      font-weight:700;
-      letter-spacing:1.5px;
-      text-transform:uppercase;
-      color:#38bdf8;
-      margin-bottom:10px;
+    .hero-tag {
+      font-family: var(--font-cond);
+      font-size: 12px;
+      font-weight: 700;
+      color: #38bdf8;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
     }
 
-    .hero-title {
-      font-family:var(--font-cond);
-      font-size:52px;
-      font-weight:700;
-      line-height:.9;
-      letter-spacing:-1px;
-      text-transform:uppercase;
-      margin-bottom:22px;
+    .hero-title-lines {
+      margin-bottom: 20px;
     }
-
-    .hero-title span:nth-child(1){
-      display:block;
-      background:linear-gradient(180deg,#f9fafb 0%,#d1d5db 100%);
-      -webkit-background-clip:text;
-      -webkit-text-fill-color:transparent;
+    .hero-title-main {
+      font-family: var(--font-cond);
+      font-size: 52px;
+      font-weight: 700;
+      line-height: 0.9;
+      letter-spacing: -0.5px;
+      text-transform: uppercase;
+      background: linear-gradient(180deg,#f9fafb 0%,#9ca3af 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
-    .hero-title span:nth-child(2){
-      display:block;
-      background:linear-gradient(180deg,#f9fafb 0%,#9ca3af 100%);
-      -webkit-background-clip:text;
-      -webkit-text-fill-color:transparent;
+    .hero-title-sub {
+      font-family: var(--font-cond);
+      font-size: 32px;
+      font-weight: 600;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: rgba(148,163,184,0.9);
     }
 
     .hero-desc {
-      font-size:14px;
-      line-height:1.7;
-      color:var(--text-muted);
-      padding-left:18px;
-      border-left:3px solid rgba(148,163,184,0.6);
-      margin-bottom:22px;
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text-muted);
+      padding-left: 18px;
+      border-left: 3px solid rgba(148,163,184,0.6);
+      margin-bottom: 24px;
     }
 
-    .hero-desc strong{color:#e5e7eb;font-weight:600;}
+    .hero-desc strong { color:#e5e7eb; font-weight:600; }
 
-    .hero-chips{
+    .hero-buttons {
       display:flex;
       flex-wrap:wrap;
-      gap:8px;
-      margin-bottom:18px;
-    }
-    .hero-chip{
-      font-family:var(--font-cond);
-      font-size:11px;
-      letter-spacing:1px;
-      text-transform:uppercase;
-      padding:6px 14px;
-      border-radius:999px;
-      border:1px solid rgba(148,163,184,0.7);
-      background:rgba(15,23,42,0.95);
-      color:#e5e7eb;
-      box-shadow:0 8px 22px rgba(0,0,0,0.6);
+      gap:10px;
     }
 
-    .hint-line{
+    .hero-chip {
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      font-family:var(--font-cond);
+      font-size:12px;
+      letter-spacing:1px;
+      text-transform:uppercase;
+      padding:6px 16px;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.7);
+      background:rgba(15,23,42,0.9);
+      color:#e5e7eb;
+      text-decoration:none;
+      box-shadow:0 8px 22px rgba(0,0,0,0.5);
+      transition:all .25s ease;
+    }
+    .chip-dot {
+      width:8px;height:8px;border-radius:100%;
+      background:#6b7280;
+    }
+    .hero-chip.spatial .chip-dot{ background:var(--c-spatial); }
+    .hero-chip.market  .chip-dot{ background:var(--c-market); }
+
+    .hero-chip:hover{
+      border-color:#f9fafb;
+      transform:translateY(-1px);
+      box-shadow:0 10px 26px rgba(15,23,42,0.9);
+    }
+
+    .hint-from-universe {
       position:absolute;
       left:40px;
-      bottom:32px;
+      bottom:34px;
       font-family:var(--font-cond);
       font-size:11px;
-      letter-spacing:1.5px;
+      letter-spacing:1.6px;
       text-transform:uppercase;
       color:rgba(148,163,184,0.9);
       display:flex;
-      gap:10px;
       align-items:center;
+      gap:8px;
       pointer-events:none;
     }
-    .hint-line::before{
+    .hint-from-universe::before{
       content:'';
       width:120px;
       height:1px;
-      background:linear-gradient(90deg,rgba(148,163,184,0.5),transparent);
+      background:linear-gradient(90deg,rgba(148,163,184,0.4),transparent);
     }
 
-    @media (max-width:900px){
+    .glass-card {
+      position:absolute;
+      top:110px;
+      right:40px;
+      width:340px;
+      padding:26px 26px 22px;
+      border-radius:32px;
+      background:var(--glass-bg);
+      border:1px solid var(--glass-border);
+      box-shadow:var(--glass-shadow);
+      backdrop-filter:blur(30px);
+      -webkit-backdrop-filter:blur(30px);
+      pointer-events:auto;
+    }
+
+    .card-section {
+      font-family:var(--font-cond);
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:1.4px;
+      color:rgba(148,163,184,0.9);
+      margin-bottom:6px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+    .card-pill {
+      padding:2px 10px;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.6);
+      font-size:10px;
+      letter-spacing:1.2px;
+    }
+    .card-title {
+      font-family:var(--font-cond);
+      font-size:26px;
+      font-weight:600;
+      margin-bottom:12px;
+    }
+    .card-body {
+      font-size:13px;
+      line-height:1.7;
+      color:rgba(226,232,240,0.9);
+      margin-bottom:16px;
+    }
+    .card-body strong { color:#f9fafb; }
+
+    .card-tags {
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+      margin-bottom:10px;
+    }
+    .tag-pill {
+      font-family:var(--font-cond);
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      padding:3px 10px;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.7);
+      color:rgba(226,232,240,0.9);
+    }
+
+    .card-foot-hint {
+      font-size:12px;
+      color:rgba(148,163,184,0.9);
+      line-height:1.6;
+    }
+
+    @media (max-width: 900px){
       .top-bar{padding:0 18px;height:64px;}
-      .panel-layer{padding:70px 18px 18px;}
-      .hero-block{position:static;max-width:none;margin-right:0;}
-      #touch-chart{top:280px;}
+      .panel-layer{padding:64px 18px 18px;}
+      .hero-block{top:82px;left:18px;max-width:none;}
+      .hero-title-main{font-size:40px;}
+      .hero-title-sub{font-size:26px;}
+      .glass-card{position:fixed;left:18px;right:18px;top:auto;bottom:18px;width:auto;}
+      .hint-from-universe{display:none;}
     }
   </style>
 </head>
@@ -233,304 +332,388 @@
 
   <div class="top-bar">
     <div class="brand">
-      <div class="brand-path">STARTIMES / UGANDA / NICHE / SPATIAL</div>
-      <div class="brand-title">Spatial Niche · Touchpoint Map</div>
+      <div class="brand-path">STARTIMES / UGANDA / NICHE</div>
+      <div class="brand-title">Ecological Niche</div>
     </div>
 
     <div class="breadcrumb">
       <span>Data Space</span><span class="crumb-sep">/</span>
       <span>Niche</span><span class="crumb-sep">/</span>
-      <span class="crumb-active">Spatial Niche</span>
+      <span class="crumb-active">Ecological Niche</span>
     </div>
 
-    <a class="back-btn" href="./index.html">Back to Niche</a>
+    <a class="back-btn" href="../index.html">Back to Universe</a>
   </div>
 
-  <div id="touch-chart"></div>
+  <!-- 背景 Niche 圆形细胞图 -->
+  <div id="niche-chart"></div>
 
+  <!-- 前景文案层 -->
   <div class="panel-layer">
     <section class="hero-block">
-      <div class="hero-label">SPATIAL NICHE · UGANDA</div>
-      <h1 class="hero-title">
-        <span>FROM SCREEN</span>
-        <span>TO STREET</span>
-      </h1>
-      <p class="hero-desc">
-        「空间生态位」不是单一广告渠道，而是把乌干达市场上 StarTimes
-        可触达的线上 / 线下 视觉 / 听觉触点放在同一张坐标图里：左右代表从线下场景到线上场景，
-        上下代表从纯视觉到纯听觉。每一个点，是我们可以叠加内容与品牌叙事的一个位置。
-      </p>
-
-      <div class="hero-chips">
-        <div class="hero-chip">Offline · Billboard / Roadshow</div>
-        <div class="hero-chip">On-screen · EPG / Opening ads</div>
-        <div class="hero-chip">Audio · Radio / Call center</div>
-        <div class="hero-chip">Digital · TVC / Social / WhatsApp</div>
+      <div class="hero-tag">NICHE · UGANDA</div>
+      <div class="hero-title-lines">
+        <div class="hero-title-main">生态位</div>
+        <div class="hero-title-sub">NICHE</div>
+      </div>
+      <div class="hero-desc">
+        「生态位」回答的问题是：StarTimes 在乌干达本地媒体与娱乐生态里的
+        <strong>位置问题</strong>。本页拆成两条主线：<strong>空间生态位</strong> 关注渠道 / 触点与媒体场景的分布；
+        <strong>市场生态位</strong> 关注竞争格局、套餐价格与打包方式。中心蓝色节点代表 Niche，
+        绿色细胞为 <strong>Spatial Niche</strong>，橙色细胞为 <strong>Market Niche</strong>。
+        可从图中任意节点放大，或进入下一级页面。
+      </div>
+      <div class="hero-buttons">
+        <a href="./spatial.html" class="hero-chip spatial">
+          <span class="chip-dot"></span>
+          <span>Spatial Niche · 渠道 &amp; 触点</span>
+        </a>
+        <a href="./market.html" class="hero-chip market">
+          <span class="chip-dot"></span>
+          <span>Market Niche · 竞品 &amp; 包型</span>
+        </a>
       </div>
     </section>
 
-    <div class="hint-line">
-      <span>FROM NICHE INDEX → TOUCHPOINT MAP</span>
+    <div class="hint-from-universe">
+      <span>FROM UNIVERSE → NICHE MAP</span>
     </div>
+
+    <aside class="glass-card">
+      <div class="card-section">
+        <span>Niche · Overview</span>
+        <span class="card-pill">Core Node</span>
+      </div>
+      <div class="card-title">生态位 · Niche</div>
+      <div class="card-body">
+        核心节点：统一思考 StarTimes 在乌干达的「<strong>位置问题</strong>」。
+        向下拆分为 <strong>空间生态位</strong>（渠道 / 触点 / 媒体场景）与
+        <strong>市场生态位</strong>（竞品 / 价格 / 打包方式）。两条主线共同决定品牌在本地娱乐生态中的
+        生存空间与增长机会。
+      </div>
+
+      <div class="card-section" style="margin-top:2px;margin-bottom:6px;">
+        <span>Positioning</span>
+      </div>
+      <div class="card-tags">
+        <span class="tag-pill" style="border-color:rgba(34,197,94,0.7);color:#bbf7d0;">
+          Spatial Niche · 渠道 / 触点
+        </span>
+        <span class="tag-pill" style="border-color:rgba(249,115,22,0.7);color:#fed7aa;">
+          Market Niche · 竞品 / 定价 / 包型
+        </span>
+      </div>
+
+      <div class="card-section" style="margin-top:4px;margin-bottom:4px;">
+        <span>Hint</span>
+      </div>
+      <div class="card-foot-hint">
+        蓝色为核心节点 <strong>Niche</strong>；绿色细胞为 <strong>Spatial Niche</strong> 相关类目；
+        橙色细胞为 <strong>Market Niche</strong> 相关类目。点击绿色或橙色大节点进入对应下一级页面。
+      </div>
+    </aside>
   </div>
 
+  <!-- ECharts & d3-hierarchy -->
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3-hierarchy@2.0.0/dist/d3-hierarchy.min.js"></script>
+
   <script>
-    // 注意：这里的 ID 必须和上面的 div 一致 —— 'touch-chart'
-    var chartDom = document.getElementById('touch-chart');
-    var chart = echarts.init(chartDom);
+    // 初始化图表（ID 修正为 niche-chart）
+    var nicheChart = echarts.init(document.getElementById('niche-chart'));
 
-    var touchpoints = [
-      { name: '户外大牌\nOutdoor billboard',     cat: 'offline-visual',   x: -0.75, y: -0.6 },
-      { name: '灯杆广告\nLight pole banners',    cat: 'offline-visual',   x: -0.6,  y: -0.55 },
-      { name: '营业厅 / 代理商\nFlyers & posters', cat: 'offline-visual', x: -0.55, y: -0.7 },
-      { name: '纸媒 & 网媒\nPrint & online media', cat: 'offline-visual', x: -0.4,  y: -0.5 },
-
-      { name: '路演\nRoadshow',                 cat: 'offline-av',       x: -0.15, y:  0.02 },
-      { name: '发布会\nPress conference',       cat: 'offline-av',       x: -0.03, y:  0.02 },
-
-      { name: '广播节目\nRadio spots',          cat: 'offline-audio',    x: -0.25, y:  0.55 },
-      { name: '呼叫中心\nCall center / IVR',    cat: 'offline-audio',    x: -0.1,  y:  0.65 },
-
-      { name: 'EPG 广告\nOpening / zapping / volume bar', cat: 'online-visual', x: 0.55, y: -0.45 },
-      { name: 'OTT 开屏广告\nApp splash',       cat: 'online-visual',    x: 0.7,  y: -0.35 },
-      { name: 'Mini banner\n小尺寸横幅',         cat: 'online-visual',    x: 0.8,  y: -0.25 },
-
-      { name: 'TVC\nPromo spots',               cat: 'online-av',        x: 0.35, y:  0.02 },
-      { name: '社媒\nSocial / Facebook / X',     cat: 'online-av',        x: 0.55, y:  0.02 },
-      { name: 'WhatsApp 群发\nBroadcast list',   cat: 'online-av',        x: 0.8,  y:  0.02 }
-    ];
-
-    var catStyle = {
-      'offline-visual': {
-        color: '#22c55e',
-        group: '线下视觉 · Offline visual'
-      },
-      'offline-av': {
-        color: '#f97316',
-        group: '线下视觉 + 听觉 · Offline visual + audio'
-      },
-      'offline-audio': {
-        color: '#a855f7',
-        group: '线下听觉 · Offline audio'
-      },
-      'online-visual': {
-        color: '#38bdf8',
-        group: '线上视觉 · Online visual'
-      },
-      'online-av': {
-        color: '#fb7185',
-        group: '线上视觉 + 听觉 · Online visual + audio'
-      }
-    };
-
-    var scatterData = touchpoints.map(function (tp) {
-      return {
-        value: [tp.x, tp.y],
-        name: tp.name,
-        category: tp.cat,
-        itemStyle: { color: catStyle[tp.cat].color }
-      };
-    });
-
-    var option = {
-      backgroundColor: 'transparent',
-      grid: {
-        left: '40%',
-        right: '6%',
-        top: '16%',
-        bottom: '20%'
-      },
-      xAxis: {
-        type: 'value',
-        min: -1,
-        max: 1,
-        splitLine: { show: false },
-        axisLine: { show: false },
-        axisTick: { show: false },
-        axisLabel: { show: false }
-      },
-      yAxis: {
-        type: 'value',
-        min: -1,
-        max: 1,
-        splitLine: { show: false },
-        axisLine: { show: false },
-        axisTick: { show: false },
-        axisLabel: { show: false }
-      },
-      tooltip: {
-        trigger: 'item',
-        backgroundColor: 'rgba(15,23,42,0.96)',
-        borderColor: 'rgba(148,163,184,0.7)',
-        borderWidth: 1,
-        padding: 10,
-        textStyle: {
-          fontFamily: 'Barlow, -apple-system, BlinkMacSystemFont, system-ui',
-          fontSize: 11,
-          color: '#e5e7eb'
-        },
-        formatter: function (params) {
-          var d = params.data;
-          var meta = catStyle[d.category] || {};
-          var x = d.value[0];
-          var y = d.value[1];
-
-          var pos = [];
-          pos.push(x < 0 ? 'Offline' : 'Online');
-          if (y > 0.2) pos.push('Audio');
-          else if (y < -0.2) pos.push('Visual');
-          else pos.push('Audio + Visual');
-
-          return (
-            '<div style="font-weight:600;font-size:12px;margin-bottom:4px;">' +
-              d.name.replace('\\n', ' · ') +
-            '</div>' +
-            (meta.group
-              ? '<div style="color:#a5b4fc;">' + meta.group + '</div>'
-              : ''
-            ) +
-            '<div style="color:#9ca3af;margin-top:4px;">象限：' + pos.join(' · ') + '</div>'
-          );
-        }
-      },
-      series: [
+    // 层级数据
+    const nicheTree = {
+      name: '生态位 · Niche',
+      type: 'root',
+      value: 100,
+      children: [
         {
-          type: 'custom',
-          coordinateSystem: 'cartesian2d',
-          data: [0],
-          silent: true,
-          zlevel: 1,
-          renderItem: function (params, api) {
-            var xLeft  = api.coord([-1, 0]);
-            var xRight = api.coord([ 1, 0]);
-            var yBottom= api.coord([ 0,-1]);
-            var yTop   = api.coord([ 0, 1]);
-            var arrow = 10;
-
-            return {
-              type: 'group',
+          name: '空间生态位 · Spatial niche',
+          type: 'spatial',
+          value: 40,
+          link: 'spatial.html',
+          children: [
+            {
+              name: '线下视觉 · Offline visual',
+              type: 'spatial-offline-visual',
+              value: 10,
               children: [
-                {
-                  type: 'line',
-                  shape: { x1: xLeft[0], y1: xLeft[1], x2: xRight[0], y2: xRight[1] },
-                  style: { stroke: 'rgba(148,163,184,0.9)', lineWidth: 1.3 }
-                },
-                {
-                  type: 'line',
-                  shape: { x1: yBottom[0], y1: yBottom[1], x2: yTop[0], y2: yTop[1] },
-                  style: { stroke: 'rgba(148,163,184,0.9)', lineWidth: 1.3 }
-                },
-                {
-                  type: 'polygon',
-                  shape: {
-                    points: [
-                      [xRight[0], xRight[1]],
-                      [xRight[0] - arrow, xRight[1] - arrow * 0.5],
-                      [xRight[0] - arrow, xRight[1] + arrow * 0.5]
-                    ]
-                  },
-                  style: { fill: 'rgba(148,163,184,0.9)' }
-                },
-                {
-                  type: 'polygon',
-                  shape: {
-                    points: [
-                      [yTop[0], yTop[1]],
-                      [yTop[0] - arrow * 0.5, yTop[1] + arrow],
-                      [yTop[0] + arrow * 0.5, yTop[1] + arrow]
-                    ]
-                  },
-                  style: { fill: 'rgba(148,163,184,0.9)' }
-                },
-                {
-                  type: 'text',
-                  style: {
-                    text: 'OFFLINE',
-                    x: xLeft[0] - 6,
-                    y: xLeft[1] + 18,
-                    textAlign: 'right',
-                    textVerticalAlign: 'middle',
-                    fontFamily: 'Barlow Condensed',
-                    fontSize: 11,
-                    letterSpacing: 1,
-                    fill: 'rgba(148,163,184,0.9)'
-                  }
-                },
-                {
-                  type: 'text',
-                  style: {
-                    text: 'ONLINE',
-                    x: xRight[0] + 6,
-                    y: xRight[1] + 18,
-                    textAlign: 'left',
-                    textVerticalAlign: 'middle',
-                    fontFamily: 'Barlow Condensed',
-                    fontSize: 11,
-                    letterSpacing: 1,
-                    fill: 'rgba(148,163,184,0.9)'
-                  }
-                },
-                {
-                  type: 'text',
-                  style: {
-                    text: 'VISUAL',
-                    x: yBottom[0] - 6,
-                    y: yBottom[1] + 18,
-                    textAlign: 'right',
-                    textVerticalAlign: 'middle',
-                    fontFamily: 'Barlow Condensed',
-                    fontSize: 11,
-                    letterSpacing: 1,
-                    fill: 'rgba(148,163,184,0.9)'
-                  }
-                },
-                {
-                  type: 'text',
-                  style: {
-                    text: 'AUDIO',
-                    x: yTop[0] - 6,
-                    y: yTop[1] - 18,
-                    textAlign: 'right',
-                    textVerticalAlign: 'middle',
-                    fontFamily: 'Barlow Condensed',
-                    fontSize: 11,
-                    letterSpacing: 1,
-                    fill: 'rgba(148,163,184,0.9)'
-                  }
-                }
+                { name: '户外大牌 · Outdoor billboard', value: 1 },
+                { name: '灯杆广告 · Light pole banners', value: 1 },
+                { name: '营业厅 / 代理商 · Flyers & posters', value: 1 },
+                { name: '纸媒 & 网媒 · Print & online media', value: 1 }
               ]
-            };
-          }
+            },
+            {
+              name: '线下视觉 + 听觉 · Offline visual + audio',
+              type: 'spatial-offline-av',
+              value: 7,
+              children: [
+                { name: '路演 · Roadshow', value: 1 },
+                { name: '发布会 · Press conference', value: 1 }
+              ]
+            },
+            {
+              name: '线下听觉 · Offline audio',
+              type: 'spatial-offline-audio',
+              value: 6,
+              children: [
+                { name: '广播节目 · Radio spots', value: 1 },
+                { name: '呼叫中心 · Call center / IVR', value: 1 }
+              ]
+            },
+            {
+              name: '线上视觉 · Online visual',
+              type: 'spatial-online-visual',
+              value: 8,
+              children: [
+                { name: 'EPG 广告 · Opening / zapping / volume bar', value: 1 },
+                { name: 'OTT 开屏广告 · App splash', value: 1 },
+                { name: 'Mini banner · 小尺寸横幅', value: 1 }
+              ]
+            },
+            {
+              name: '线上视觉 + 听觉 · Online visual + audio',
+              type: 'spatial-online-av',
+              value: 7,
+              children: [
+                { name: 'TVC · Promo spots', value: 1 },
+                { name: '社媒 · Social / Facebook / X', value: 1 },
+                { name: 'WhatsApp 群发 · Broadcast list', value: 1 }
+              ]
+            }
+          ]
         },
         {
-          type: 'scatter',
-          data: scatterData,
-          symbolSize: 14,
-          zlevel: 2,
-          label: {
-            show: true,
-            position: 'right',
-            formatter: '{b}',
-            color: '#e5e7eb',
-            fontFamily: 'Barlow, -apple-system, system-ui',
-            fontSize: 11
-          },
-          itemStyle: {
-            borderWidth: 0,
-            shadowBlur: 10,
-            shadowColor: 'rgba(15,23,42,0.9)'
-          }
+          name: '市场生态位 · Market niche',
+          type: 'market',
+          value: 40,
+          link: 'market.html',
+          children: [
+            { name: '2.2.1 市场占有率 · Market share', value: 4 },
+            { name: '2.2.2 SWOT 分析 · SWOT analysis', value: 4 },
+            { name: '2.2.3 产品类型 / 属性 & 价格对比', value: 4 },
+            { name: '2.2.4 频道类型 / 数量 & 节目包价格对比', value: 4 },
+            { name: '2.2.5 最有竞争力的产品分析', value: 4 },
+            { name: '2.2.6 渠道对比 · Visual & social metrics', value: 4 }
+          ]
         }
       ]
     };
 
-    chart.setOption(option);
+    // d3 pack 转换
+    function buildPackedNodes() {
+      const w = nicheChart.getWidth();
+      const h = nicheChart.getHeight();
 
+      const boxSize = Math.min(w * 0.75, h * 0.9);
+      const centerX = w * 0.62;
+      const centerY = h * 0.52;
+
+      const root = d3.hierarchy(nicheTree).sum(d => d.value || 1);
+      d3.pack()
+        .size([boxSize, boxSize])
+        .padding(8)(root);
+
+      const nodes = [];
+      root.descendants().forEach(node => {
+        nodes.push({
+          name: node.data.name,
+          depth: node.depth,
+          type: node.data.type || 'leaf',
+          link: node.data.link || null,
+          x: node.x - boxSize / 2 + centerX,
+          y: node.y - boxSize / 2 + centerY,
+          r: node.r
+        });
+      });
+      return nodes;
+    }
+
+    function getNodeStyle(node) {
+      let fill, stroke, glow;
+      const depth = node.depth;
+      const t = node.type;
+
+      if (depth === 0) {
+        fill = new echarts.graphic.RadialGradient(0.5, 0.35, 1, [
+          { offset: 0,   color: '#38bdf8' },
+          { offset: 0.6, color: '#0ea5e9' },
+          { offset: 1,   color: '#0369a1' }
+        ]);
+        stroke = 'rgba(191,219,254,0.9)';
+        glow   = 'rgba(59,130,246,0.85)';
+      } else if (t === 'spatial') {
+        fill = new echarts.graphic.RadialGradient(0.5, 0.3, 1, [
+          { offset: 0,   color: '#4ade80' },
+          { offset: 0.7, color: '#22c55e' },
+          { offset: 1,   color: '#15803d' }
+        ]);
+        stroke = 'rgba(187,247,208,0.9)';
+        glow   = 'rgba(34,197,94,0.85)';
+      } else if (t === 'market') {
+        fill = new echarts.graphic.RadialGradient(0.5, 0.3, 1, [
+          { offset: 0,   color: '#fdba74' },
+          { offset: 0.7, color: '#fb923c' },
+          { offset: 1,   color: '#c2410c' }
+        ]);
+        stroke = 'rgba(254,215,170,0.9)';
+        glow   = 'rgba(249,115,22,0.85)';
+      } else if (t && t.indexOf('online') === 0) {
+        fill = new echarts.graphic.RadialGradient(0.5, 0.3, 1, [
+          { offset: 0,   color: '#7dd3fc' },
+          { offset: 0.7, color: '#38bdf8' },
+          { offset: 1,   color: '#0f766e' }
+        ]);
+        stroke = 'rgba(191,219,254,0.9)';
+        glow   = 'rgba(56,189,248,0.8)';
+      } else if (t && t.indexOf('offline') === 0) {
+        fill = new echarts.graphic.RadialGradient(0.5, 0.3, 1, [
+          { offset: 0,   color: '#bbf7d0' },
+          { offset: 0.7, color: '#4ade80' },
+          { offset: 1,   color: '#166534' }
+        ]);
+        stroke = 'rgba(220,252,231,0.9)';
+        glow   = 'rgba(34,197,94,0.75)';
+      } else {
+        fill   = 'rgba(15,23,42,0.9)';
+        stroke = 'rgba(148,163,184,0.6)';
+        glow   = 'rgba(15,23,42,0.9)';
+      }
+
+      const baseOpacity = depth === 0 ? 0.98 : depth === 1 ? 0.93 : 0.88;
+
+      return {
+        fill: fill,
+        stroke: stroke,
+        glow: glow,
+        opacity: baseOpacity
+      };
+    }
+
+    function renderNiche(nodes) {
+      const option = {
+        backgroundColor: 'transparent',
+        tooltip: {
+          trigger: 'item',
+          backgroundColor: 'rgba(15,23,42,0.95)',
+          borderColor: 'rgba(148,163,184,0.6)',
+          borderWidth: 1,
+          padding: 10,
+          textStyle: {
+            fontFamily: 'Barlow, system-ui, -apple-system, BlinkMacSystemFont',
+            fontSize: 11,
+            color: '#e5e7eb'
+          },
+          formatter: function (params) {
+            const d = params.data;
+            return (
+              '<div style="font-weight:600;font-size:12px;margin-bottom:2px;">'
+                + d.name +
+              '</div>' +
+              (d.type === 'spatial'
+                ? '<div style="color:#bbf7d0;">空间生态位 · 渠道 / 触点</div>'
+                : d.type === 'market'
+                ? '<div style="color:#fed7aa;">市场生态位 · 竞品 / 定价 / 包型</div>'
+                : ''
+              ) +
+              (d.link
+                ? '<div style="margin-top:4px;color:#93c5fd;">点击可进入下一级页面</div>'
+                : ''
+              )
+            );
+          }
+        },
+        hoverLayerThreshold: Infinity,
+        series: [
+          {
+            type: 'custom',
+            coordinateSystem: 'none',
+            data: nodes,
+            emphasis: {
+              focus: 'self',
+              blurScope: 'global'
+            },
+            blur: {
+              itemStyle: {
+                opacity: 0.15
+              }
+            },
+            renderItem: function (params, api) {
+              const node = params.data;
+              const styleCfg = getNodeStyle(node);
+              const isLeaf = node.depth > 1 && node.r < 45;
+
+              return {
+                type: 'group',
+                children: [
+                  {
+                    type: 'circle',
+                    shape: {
+                      cx: node.x,
+                      cy: node.y,
+                      r: node.r
+                    },
+                    style: {
+                      fill: styleCfg.fill,
+                      stroke: styleCfg.stroke,
+                      lineWidth: node.depth === 0 ? 3 : 1.5,
+                      shadowBlur: node.depth === 0 ? 80 : 35,
+                      shadowColor: styleCfg.glow,
+                      opacity: styleCfg.opacity
+                    }
+                  },
+                  {
+                    type: 'text',
+                    style: {
+                      text: isLeaf
+                        ? node.name.split('·')[0]
+                        : node.name,
+                      x: node.x,
+                      y: node.y,
+                      fontFamily: 'Barlow Condensed, system-ui',
+                      fontSize:
+                        node.depth === 0
+                          ? Math.max(node.r / 4, 22)
+                          : node.depth === 1
+                          ? Math.max(node.r / 4.2, 16)
+                          : Math.max(node.r / 4.4, 11),
+                      textAlign: 'center',
+                      textVerticalAlign: 'middle',
+                      lineHeight: 1.2,
+                      fill: '#f9fafb'
+                    }
+                  }
+                ]
+              };
+            }
+          }
+        ]
+      };
+
+      nicheChart.setOption(option);
+    }
+
+    // 初次渲染
+    var packedNodes = buildPackedNodes();
+    renderNiche(packedNodes);
+
+    // 点击带 link 的节点跳转
+    nicheChart.on('click', function (params) {
+      if (params.data && params.data.link) {
+        window.location.href = params.data.link;
+      }
+    });
+
+    // 自适应
     window.addEventListener('resize', function () {
-      chart.resize();
+      nicheChart.resize();
+      packedNodes = buildPackedNodes();
+      nicheChart.setOption({
+        series: [{ data: packedNodes }]
+      });
     });
   </script>
-
 </body>
 </html>
