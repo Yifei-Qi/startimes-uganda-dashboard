@@ -5,44 +5,53 @@
   <title>Niche · Ecological Niche · StarTimes Uganda</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <!-- 字体引入 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
   <style>
+    /* --- 全局变量 --- */
     :root {
       --bg-dark: #050816;
       --glass-bg: rgba(15, 23, 42, 0.88);
       --glass-border: rgba(148, 163, 184, 0.4);
       --glass-shadow: 0 18px 60px rgba(0, 0, 0, 0.85);
+
       --text-main: #f9fafb;
       --text-muted: #94a3b8;
 
-      --c-root: #38bdf8;
-      --c-spatial: #22c55e;
-      --c-market: #fb923c;
+      /* 统一主色为和 Spatial 页面一致的蓝色 */
+      --c-root:   #38bdf8;  /* Accent / Core */
+      --c-spatial:#10b981;  /* Spatial Niche */
+      --c-market: #a855f7;  /* Market Niche（紫） */
 
-      --font-din: 'Barlow', sans-serif;
+      --font-din:  'Barlow', sans-serif;
       --font-cond: 'Barlow Condensed', sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
+    html, body {
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+
     body {
       font-family: var(--font-din);
       color: var(--text-main);
-      background: radial-gradient(circle at 20% 0%, #0b1020 0%, #050816 60%, #020617 100%);
-      height: 100vh;
-      width: 100vw;
-      overflow: hidden;
+      background: var(--bg-dark);
+      background-image:
+        radial-gradient(circle at 50% 50%, #0f172a 0%, #020617 100%);
       position: relative;
     }
 
-    /* 顶部栏 */
+    /* --- 顶部导航栏 --- */
     .top-bar {
       position: fixed;
-      inset: 0 0 auto 0;
+      top: 0; left: 0; right: 0;
       height: 72px;
       padding: 0 40px;
       display: flex;
@@ -58,18 +67,16 @@
       display: flex;
       flex-direction: column;
     }
-
     .brand-path {
       font-family: var(--font-cond);
       font-size: 11px;
-      letter-spacing: 1.6px;
+      letter-spacing: 1.5px;
       text-transform: uppercase;
-      color: #38bdf8;
+      color: var(--c-root);
       opacity: 0.95;
       margin-bottom: 4px;
       font-weight: 600;
     }
-
     .brand-title {
       font-family: var(--font-cond);
       font-size: 18px;
@@ -112,7 +119,7 @@
       border: 1px solid rgba(255,255,255,0.35);
       backdrop-filter: blur(14px);
       box-shadow: 0 6px 20px rgba(0,0,0,0.5);
-      transition: all .25s ease;
+      transition: all 0.25s ease;
     }
     .back-btn:hover {
       background: var(--c-root);
@@ -122,7 +129,7 @@
       transform: translateY(-2px);
     }
 
-    /* 图表容器：强制铺满 */
+    /* --- 图表容器 --- */
     #niche-chart {
       position: absolute;
       inset: 0;
@@ -131,75 +138,63 @@
       z-index: 1;
     }
 
-    /* 前景文案层 */
+    /* --- UI 层 --- */
     .panel-layer {
       position: absolute;
       inset: 0;
-      padding: 72px 40px 40px;
+      padding: 40px;
       z-index: 10;
       pointer-events: none;
     }
 
-    .hero-block {
+    /* 左上 Hero 区域 */
+    .hero-text {
       position: absolute;
       top: 110px;
-      left: 40px;
+      left: 50px;
       max-width: 440px;
       pointer-events: auto;
-      text-shadow: 0 14px 40px rgba(0,0,0,0.9);
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
     }
-
-    .hero-tag {
+    .hero-label {
       font-family: var(--font-cond);
       font-size: 12px;
       font-weight: 700;
-      color: #38bdf8;
+      color: var(--c-root);
+      margin-bottom: 12px;
       letter-spacing: 1.5px;
       text-transform: uppercase;
-      margin-bottom: 10px;
     }
-
-    .hero-title-lines {
-      margin-bottom: 20px;
-    }
-    .hero-title-main {
+    .hero-title {
       font-family: var(--font-cond);
       font-size: 52px;
       font-weight: 700;
       line-height: 0.9;
-      letter-spacing: -0.5px;
+      margin-bottom: 24px;
       text-transform: uppercase;
-      background: linear-gradient(180deg,#f9fafb 0%,#9ca3af 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      letter-spacing: -1px;
+      color: #f9fafb;
     }
-    .hero-title-sub {
-      font-family: var(--font-cond);
-      font-size: 32px;
-      font-weight: 600;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      color: rgba(148,163,184,0.9);
-    }
-
     .hero-desc {
       font-size: 14px;
-      line-height: 1.7;
+      line-height: 1.6;
+      font-weight: 300;
       color: var(--text-muted);
-      padding-left: 18px;
-      border-left: 3px solid rgba(148,163,184,0.6);
-      margin-bottom: 24px;
+      border-left: 3px solid rgba(148,163,184,0.5);
+      padding-left: 20px;
+      margin-bottom: 32px;
+    }
+    .hero-desc strong {
+      color: #e5e7eb;
+      font-weight: 500;
     }
 
-    .hero-desc strong { color:#e5e7eb; font-weight:600; }
-
-    .hero-buttons {
+    /* 快捷导航按钮 */
+    .nav-chips {
       display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
+      gap: 12px;
     }
-
-    .hero-chip {
+    .nav-chip {
       display: inline-flex;
       align-items: center;
       gap: 8px;
@@ -213,121 +208,98 @@
       background: rgba(15,23,42,0.9);
       color: #e5e7eb;
       text-decoration: none;
-      box-shadow: 0 8px 22px rgba(0,0,0,0.5);
       transition: all .25s ease;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 8px 22px rgba(0,0,0,0.6);
     }
     .chip-dot {
-      width: 8px; height: 8px; border-radius: 100%;
-      background: #6b7280;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
     }
-    .hero-chip.spatial .chip-dot { background: var(--c-spatial); }
-    .hero-chip.market .chip-dot { background: var(--c-market); }
-
-    .hero-chip:hover{
+    .nav-chip.spatial .chip-dot {
+      background: var(--c-spatial);
+      box-shadow: 0 0 6px var(--c-spatial);
+    }
+    .nav-chip.market .chip-dot {
+      background: var(--c-market);
+      box-shadow: 0 0 6px var(--c-market);
+    }
+    .nav-chip:hover {
       border-color: #f9fafb;
-      transform: translateY(-1px);
-      box-shadow: 0 10px 26px rgba(15,23,42,0.9);
+      background: rgba(15,23,42,0.95);
+      transform: translateY(-2px);
     }
 
-    .hint-from-universe {
-      position: absolute;
-      left: 40px;
-      bottom: 34px;
-      font-family: var(--font-cond);
-      font-size: 11px;
-      letter-spacing: 1.6px;
-      text-transform: uppercase;
-      color: rgba(148,163,184,0.9);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      pointer-events: none;
-    }
-    .hint-from-universe::before{
-      content: '';
-      width: 120px;
-      height: 1px;
-      background: linear-gradient(90deg,rgba(148,163,184,0.4),transparent);
-    }
-
+    /* 右下 详情面板 */
     .glass-card {
       position: absolute;
-      top: 110px;
-      right: 40px;
-      width: 340px;
-      padding: 26px 26px 22px;
+      bottom: 50px;
+      right: 50px;
+      width: 320px;
+      padding: 28px;
       border-radius: 32px;
       background: var(--glass-bg);
       border: 1px solid var(--glass-border);
-      box-shadow: var(--glass-shadow);
       backdrop-filter: blur(30px);
       -webkit-backdrop-filter: blur(30px);
+      box-shadow: var(--glass-shadow);
       pointer-events: auto;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+    .glass-card.active {
+      opacity: 1;
+      transform: translateY(0);
     }
 
-    .card-section {
+    .card-header {
       font-family: var(--font-cond);
       font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 1.4px;
+      font-weight: 700;
       color: rgba(148,163,184,0.9);
-      margin-bottom: 6px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
       display: flex;
       justify-content: space-between;
-      align-items: center;
-    }
-    .card-pill {
-      padding: 2px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.6);
-      font-size: 10px;
-      letter-spacing: 1.2px;
     }
     .card-title {
       font-family: var(--font-cond);
       font-size: 26px;
       font-weight: 600;
+      color: #f9fafb;
       margin-bottom: 12px;
+      line-height: 1.1;
     }
     .card-body {
       font-size: 13px;
-      line-height: 1.7;
-      color: rgba(226,232,240,0.9);
-      margin-bottom: 16px;
-    }
-    .card-body strong { color: #f9fafb; }
-
-    .card-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 10px;
-    }
-    .tag-pill {
-      font-family: var(--font-cond);
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      padding: 3px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.7);
-      color: rgba(226,232,240,0.9);
-    }
-
-    .card-foot-hint {
-      font-size: 12px;
-      color: rgba(148,163,184,0.9);
       line-height: 1.6;
+      color: rgba(226,232,240,0.9);
+    }
+    .card-hint {
+      margin-top: 16px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: rgba(148,163,184,0.8);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .dot-status {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--c-root);
     }
 
-    @media (max-width: 900px){
-      .top-bar { padding: 0 18px; height: 64px; }
-      .panel-layer { padding: 64px 18px 18px; }
-      .hero-block { top: 82px; left: 18px; max-width: none; }
-      .hero-title-main { font-size: 40px; }
-      .hero-title-sub { font-size: 26px; }
-      .glass-card { position: fixed; left: 18px; right: 18px; top: auto; bottom: 18px; width: auto; }
-      .hint-from-universe { display: none; }
+    @media (max-width: 900px) {
+      .top-bar { padding: 0 20px; height: 64px; }
+      .hero-text { top: 90px; left: 24px; right: 24px; max-width: none; }
+      .hero-title { font-size: 40px; }
+      .glass-card { left: 20px; right: 20px; bottom: 20px; width: auto; }
+      .breadcrumb { display: none; }
     }
   </style>
 </head>
@@ -338,82 +310,57 @@
       <div class="brand-path">STARTIMES / UGANDA / NICHE</div>
       <div class="brand-title">Ecological Niche</div>
     </div>
-
-    <div class="breadcrumb">
-      <span>Data Space</span><span class="crumb-sep">/</span>
-      <span>Niche</span><span class="crumb-sep">/</span>
-      <span class="crumb-active">Ecological Niche</span>
-    </div>
-
     <a class="back-btn" href="../index.html">Back to Universe</a>
+  </div>
+
+  <div class="breadcrumb">
+    <span>Data Space</span><span class="crumb-sep">/</span>
+    <span>Niche</span><span class="crumb-sep">/</span>
+    <span class="crumb-active">Ecological Niche</span>
   </div>
 
   <div id="niche-chart"></div>
 
   <div class="panel-layer">
-    <section class="hero-block">
-      <div class="hero-tag">NICHE · UGANDA</div>
-      <div class="hero-title-lines">
-        <div class="hero-title-main">生态位</div>
-        <div class="hero-title-sub">NICHE</div>
-      </div>
+    <div class="hero-text">
+      <div class="hero-label">ECOSYSTEM OVERVIEW</div>
+      <div class="hero-title">Ecological<br>Niche Map</div>
       <div class="hero-desc">
-        「生态位」回答的问题是：StarTimes 在乌干达本地媒体与娱乐生态里的
-        <strong>位置问题</strong>。本页拆成两条主线：<strong>空间生态位</strong> 关注渠道 / 触点与媒体场景的分布；
-        <strong>市场生态位</strong> 关注竞争格局、套餐价格与打包方式。中心蓝色节点代表 Niche，
-        绿色细胞为 <strong>Spatial Niche</strong>，橙色细胞为 <strong>Market Niche</strong>。
-        可从图中主要节点理解结构，再进入下一级页面。
+        「生态位」界定了 StarTimes 在乌干达本地媒体生态中的<strong>核心坐标</strong>。
+        <br><br>
+        图谱分为两大星域：
+        <strong style="color:var(--c-spatial)">Spatial Niche</strong>（空间生态位）关注物理渠道与触点分布；
+        <strong style="color:var(--c-market)">Market Niche</strong>（市场生态位）关注竞争格局与产品包型。
+        <br>
+        <span style="font-size:12px;opacity:0.6;margin-top:12px;display:block;">
+          * 鼠标悬停查看详情，点击节点进入下级页面。
+        </span>
       </div>
-      <div class="hero-buttons">
-        <a href="./spatial.html" class="hero-chip spatial">
-          <span class="chip-dot"></span>
-          <span>Spatial Niche · 渠道 &amp; 触点</span>
+      <div class="nav-chips">
+        <a href="./spatial.html" class="nav-chip spatial">
+          <span class="chip-dot"></span><span>Spatial Niche</span>
         </a>
-        <a href="./market.html" class="hero-chip market">
-          <span class="chip-dot"></span>
-          <span>Market Niche · 竞品 &amp; 包型</span>
+        <a href="./market.html" class="nav-chip market">
+          <span class="chip-dot"></span><span>Market Niche</span>
         </a>
       </div>
-    </section>
-
-    <div class="hint-from-universe">
-      <span>FROM UNIVERSE → NICHE MAP</span>
     </div>
 
-    <aside class="glass-card">
-      <div class="card-section">
-        <span>Niche · Overview</span>
-        <span class="card-pill">Core Node</span>
+    <!-- 动态详情面板 -->
+    <div class="glass-card" id="detail-card">
+      <div class="card-header">
+        <span id="p-role">NODE TYPE</span>
+        <span id="p-tag" style="color:var(--c-root)">DETAILS</span>
       </div>
-      <div class="card-title">生态位 · Niche</div>
-      <div class="card-body">
-        核心节点：统一思考 StarTimes 在乌干达的「<strong>位置问题</strong>」。
-        向下拆分为 <strong>空间生态位</strong>（渠道 / 触点 / 媒体场景）与
-        <strong>市场生态位</strong>（竞品 / 价格 / 打包方式）。两条主线共同决定品牌在本地娱乐生态中的
-        生存空间与增长机会。
+      <div class="card-title" id="p-name">Node Name</div>
+      <div class="card-body" id="p-desc">
+        Description content goes here.
       </div>
-
-      <div class="card-section" style="margin-top:2px;margin-bottom:6px;">
-        <span>Positioning</span>
+      <div class="card-hint">
+        <span class="dot-status" id="p-status-dot"></span>
+        <span id="p-status-text">Active Node</span>
       </div>
-      <div class="card-tags">
-        <span class="tag-pill" style="border-color:rgba(34,197,94,0.7);color:#bbf7d0;">
-          Spatial Niche · 渠道 / 触点
-        </span>
-        <span class="tag-pill" style="border-color:rgba(249,115,22,0.7);color:#fed7aa;">
-          Market Niche · 竞品 / 定价 / 包型
-        </span>
-      </div>
-
-      <div class="card-section" style="margin-top:4px;margin-bottom:4px;">
-        <span>Hint</span>
-      </div>
-      <div class="card-foot-hint">
-        蓝色为核心节点 <strong>Niche</strong>；绿色细胞为 <strong>Spatial Niche</strong> 相关类目；
-        橙色细胞为 <strong>Market Niche</strong> 相关类目。当前版本仅作为结构示意，
-        详细渠道与指标在下一级页面中展开。
-      </div>
-    </aside>
+    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
@@ -421,233 +368,135 @@
     var chartDom = document.getElementById('niche-chart');
     var nicheChart = echarts.init(chartDom);
 
-    // 节点数据
+    // --- 数据定义 ---
     const nodes = [
-      // 根节点
       {
         id: 'niche-root',
-        name: '生态位 · Niche',
+        name: 'Niche',
         role: 'root',
-        fx: 0,
-        fy: 0,
-        fr: 1.0
+        desc: '生态位核心节点。定义了我们在市场中的生存空间与竞争优势。',
+        fx: 0, fy: 0, fr: 1.0,
+        depth: 0
       },
-      // 两个一级细胞
       {
         id: 'spatial-main',
-        name: '空间生态位\nSpatial niche',
+        name: 'Spatial\nNiche',
         role: 'spatial-main',
         link: 'spatial.html',
-        fx: -0.34,
-        fy: 0.04,
-        fr: 0.62
+        desc: '空间生态位：涵盖所有物理和数字接触点，包括营业厅、代理商及线上流量入口。',
+        fx: -0.34, fy: 0.04, fr: 0.62,
+        depth: 1
       },
       {
         id: 'market-main',
-        name: '市场生态位\nMarket niche',
+        name: 'Market\nNiche',
         role: 'market-main',
         link: 'market.html',
-        fx: 0.34,
-        fy: 0.08,
-        fr: 0.58
+        desc: '市场生态位：分析市场份额、竞争对手策略、产品定价及套餐组合。',
+        fx: 0.34, fy: 0.08, fr: 0.58,
+        depth: 1
       },
-      // Spatial 下的小细胞
-      {
-        id: 'spatial-offline-visual',
-        name: '线下视觉\nOffline visual',
-        role: 'spatial-sub',
-        fx: -0.60,
-        fy: 0.32,
-        fr: 0.20
-      },
-      {
-        id: 'spatial-offline-audio',
-        name: '线下听觉\nOffline audio',
-        role: 'spatial-sub',
-        fx: -0.40,
-        fy: 0.45,
-        fr: 0.18
-      },
-      {
-        id: 'spatial-online-visual',
-        name: '线上视觉\nOnline visual',
-        role: 'spatial-sub',
-        fx: -0.23,
-        fy: -0.10,
-        fr: 0.18
-      },
-      {
-        id: 'spatial-online-audio',
-        name: '线上听觉\nOnline audio',
-        role: 'spatial-sub',
-        fx: -0.48,
-        fy: -0.25,
-        fr: 0.18
-      },
-      {
-        id: 'spatial-av',
-        name: '视听融合触点\nVisual + audio',
-        role: 'spatial-sub',
-        fx: -0.12,
-        fy: 0.20,
-        fr: 0.18
-      },
-      // Market 下的小细胞
-      {
-        id: 'market-share',
-        name: '2.2.1\n市场占有率',
-        role: 'market-sub',
-        fx: 0.18,
-        fy: -0.22,
-        fr: 0.18
-      },
-      {
-        id: 'market-swot',
-        name: '2.2.2\nSWOT 分析',
-        role: 'market-sub',
-        fx: 0.52,
-        fy: -0.18,
-        fr: 0.18
-      },
-      {
-        id: 'market-product',
-        name: '2.2.3\n产品类型 / 价格',
-        role: 'market-sub',
-        fx: 0.15,
-        fy: 0.33,
-        fr: 0.18
-      },
-      {
-        id: 'market-package',
-        name: '2.2.4\n频道 & 节目包',
-        role: 'market-sub',
-        fx: 0.48,
-        fy: 0.34,
-        fr: 0.18
-      },
-      {
-        id: 'market-best-offer',
-        name: '2.2.5\n最具竞争力产品',
-        role: 'market-sub',
-        fx: 0.30,
-        fy: 0.56,
-        fr: 0.18
-      },
-      {
-        id: 'market-channel-compare',
-        name: '2.2.6\n渠道对比',
-        role: 'market-sub',
-        fx: 0.66,
-        fy: 0.10,
-        fr: 0.18
-      }
+      // Spatial Sub
+      { id: 's-1', name: 'Offline\nVisual',  role: 'spatial-sub', desc: '线下视觉触点：海报、墙体广告、单页等。',           fx: -0.60, fy: 0.32, fr: 0.20, depth: 2 },
+      { id: 's-2', name: 'Offline\nAudio',   role: 'spatial-sub', desc: '线下听觉触点：广播广告、路演活动。',               fx: -0.40, fy: 0.45, fr: 0.18, depth: 2 },
+      { id: 's-3', name: 'Online\nVisual',   role: 'spatial-sub', desc: '线上视觉：社媒图文、App Banner。',                    fx: -0.23, fy: -0.10, fr: 0.18, depth: 2 },
+      { id: 's-4', name: 'Online\nAudio',    role: 'spatial-sub', desc: '线上听觉：流媒体音频广告。',                           fx: -0.48, fy: -0.25, fr: 0.18, depth: 2 },
+      { id: 's-5', name: 'Visual+\nAudio',   role: 'spatial-sub', desc: '视听融合：电视广告、视频号内容。',                     fx: -0.12, fy: 0.20, fr: 0.18, depth: 2 },
+      // Market Sub
+      { id: 'm-1', name: 'Market\nShare',    role: 'market-sub', desc: '市场占有率分析：DTT/DTH 不同区域占比。',                 fx: 0.18, fy: -0.22, fr: 0.18, depth: 2 },
+      { id: 'm-2', name: 'SWOT',             role: 'market-sub', desc: '优势、劣势、机会与威胁分析。',                           fx: 0.52, fy: -0.18, fr: 0.18, depth: 2 },
+      { id: 'm-3', name: 'Product\nPrice',   role: 'market-sub', desc: '硬件产品线及其定价策略。',                               fx: 0.15, fy: 0.33, fr: 0.18, depth: 2 },
+      { id: 'm-4', name: 'Packages',         role: 'market-sub', desc: '节目内容包及频道组合策略。',                             fx: 0.48, fy: 0.34, fr: 0.18, depth: 2 },
+      { id: 'm-5', name: 'Best\nOffer',      role: 'market-sub', desc: '当前最具竞争力的促销组合。',                             fx: 0.30, fy: 0.56, fr: 0.18, depth: 2 },
+      { id: 'm-6', name: 'Channel\nCompare', role: 'market-sub', desc: '分渠道销售表现对比。',                                   fx: 0.66, fy: 0.10, fr: 0.18, depth: 2 }
     ];
 
-    function getNodeStyle(role) {
-      let colorStops = [];
-      let stroke, shadow, opacity, lineWidth;
+    // 星星层
+    const stars = [];
+    for (let i = 0; i < 150; i++) {
+      stars.push([Math.random() * 100, Math.random() * 100, Math.random()]);
+    }
 
-      if (role === 'root') {
-        colorStops = [
-          { offset: 0, color: '#38bdf8' },
-          { offset: 0.6, color: '#0ea5e9' },
-          { offset: 1, color: '#0369a1' }
-        ];
-        stroke = 'rgba(191,219,254,0.95)';
-        shadow = 'rgba(59,130,246,0.95)';
-        opacity = 0.98;
-        lineWidth = 3;
-      } else if (role === 'spatial-main' || role === 'spatial-sub') {
-        colorStops = [
-          { offset: 0, color: '#4ade80' },
-          { offset: 0.7, color: '#22c55e' },
-          { offset: 1, color: '#15803d' }
-        ];
-        stroke = 'rgba(187,247,208,0.95)';
-        shadow = 'rgba(34,197,94,0.9)';
-        opacity = role === 'spatial-main' ? 0.95 : 0.92;
-        lineWidth = role === 'spatial-main' ? 2 : 1.2;
-      } else if (role === 'market-main' || role === 'market-sub') {
-        colorStops = [
-          { offset: 0, color: '#fdba74' },
-          { offset: 0.7, color: '#fb923c' },
-          { offset: 1, color: '#c2410c' }
-        ];
-        stroke = 'rgba(254,215,170,0.95)';
-        shadow = 'rgba(249,115,22,0.9)';
-        opacity = role === 'market-main' ? 0.95 : 0.92;
-        lineWidth = role === 'market-main' ? 2 : 1.2;
-      } else {
-        // Fallback
-        colorStops = [{offset:0, color:'#333'}, {offset:1, color:'#000'}];
-        stroke = '#666';
-        shadow = '#000';
-        opacity = 0.9;
-        lineWidth = 1;
-      }
-
-      // 使用对象配置替代 new echarts.graphic.RadialGradient，更稳定
-      const fill = {
-        type: 'radial',
-        x: 0.5,
-        y: 0.35,
-        r: 1,
-        colorStops: colorStops,
-        global: false
+    function getNodeStyle(node) {
+      const colors = {
+        root:    varRoot = getComputedStyle(document.documentElement).getPropertyValue('--c-root') || '#38bdf8',
+        spatial: '#10b981',
+        market:  '#a855f7'
       };
 
-      return { fill, stroke, shadow, opacity, lineWidth };
+      let baseColor;
+      if (node.role === 'root') baseColor = colors.root;
+      else if (node.role.includes('spatial')) baseColor = colors.spatial;
+      else if (node.role.includes('market')) baseColor = colors.market;
+      else baseColor = '#1e293b';
+
+      let opacity = 0.9;
+      if (node.depth === 0) opacity = 0.2;
+      else if (node.depth === 1) opacity = 0.6;
+      else opacity = 0.85;
+
+      return { baseColor, opacity };
     }
 
     function renderItem(params, api) {
-      const node = params.data; // data 中就是 node 对象
+      const node = nodes[params.dataIndex];
       if (!node) return;
 
       const w = api.getWidth();
       const h = api.getHeight();
+      const minSide = Math.min(w, h);
+      const baseR = minSide * 0.38;
 
-      // 避免初始化时宽高为0导致的计算错误
-      if (w === 0 || h === 0) return;
+      const cx0 = w * 0.55;
+      const cy0 = h * 0.55;
+      const isMobile = w < 800;
+      const finalCx0 = isMobile ? w * 0.5 : cx0;
+      const finalCy0 = isMobile ? h * 0.6 : cy0;
 
-      const baseR = Math.min(w, h) * 0.38;
-      const cx0 = w * 0.62; // 中心略偏右
-      const cy0 = h * 0.54;
+      const cx = finalCx0 + node.fx * baseR;
+      const cy = finalCy0 + node.fy * baseR;
+      const r  = baseR * node.fr * (isMobile ? 0.85 : 1);
 
-      const cx = cx0 + node.fx * baseR;
-      const cy = cy0 + node.fy * baseR;
-      const r = baseR * node.fr;
-
-      const style = getNodeStyle(node.role);
+      const style = getNodeStyle(node);
 
       let fontSize;
-      if (node.role === 'root') {
-        fontSize = Math.max(r / 4, 22);
-      } else if (node.role === 'spatial-main' || node.role === 'market-main') {
-        fontSize = Math.max(r / 4.2, 16);
-      } else {
-        fontSize = Math.max(r / 4.5, 11);
-      }
+      if (node.role === 'root') fontSize = r / 3.5;
+      else if (node.role.includes('main')) fontSize = r / 4;
+      else fontSize = r / 4.5;
+      fontSize = Math.max(fontSize, 10);
 
       return {
         type: 'group',
         children: [
           {
             type: 'circle',
-            shape: { cx: cx, cy: cy, r: r },
+            shape: { cx, cy, r },
             style: {
-              fill: style.fill,
-              stroke: style.stroke,
-              lineWidth: style.lineWidth,
-              shadowBlur: node.role === 'root' ? 90 : 40,
-              shadowColor: style.shadow,
-              opacity: style.opacity
+              fill: style.baseColor,
+              fillOpacity: style.opacity * 0.5,
+              stroke: style.baseColor,
+              lineWidth: 1.5,
+              shadowBlur: 0,
+              shadowColor: 'transparent'
             },
             emphasis: {
               style: {
-                shadowBlur: 110,
-                opacity: 1
+                fillOpacity: 0.8,
+                lineWidth: 3,
+                shadowBlur: 28,
+                shadowColor: style.baseColor
               }
             }
+          },
+          {
+            type: 'circle',
+            shape: { cx, cy, r: r * 0.92 },
+            style: {
+              fill: 'none',
+              stroke: 'rgba(255,255,255,0.12)',
+              lineWidth: 1
+            },
+            silent: true
           },
           {
             type: 'text',
@@ -655,12 +504,15 @@
               text: node.name,
               x: cx,
               y: cy,
-              fontFamily: 'Barlow Condensed, system-ui',
-              fontSize: fontSize,
+              fontFamily: 'Barlow Condensed, sans-serif',
+              fontWeight: 600,
+              fontSize,
               textAlign: 'center',
               textVerticalAlign: 'middle',
-              lineHeight: 16,
-              fill: '#f9fafb'
+              lineHeight: fontSize * 1.1,
+              fill: '#f9fafb',
+              shadowBlur: 2,
+              shadowColor: 'rgba(0,0,0,0.85)'
             }
           }
         ]
@@ -669,50 +521,33 @@
 
     const option = {
       backgroundColor: 'transparent',
-      hoverLayerThreshold: Infinity,
-      tooltip: {
-        trigger: 'item',
-        backgroundColor: 'rgba(15,23,42,0.96)',
-        borderColor: 'rgba(148,163,184,0.6)',
-        borderWidth: 1,
-        padding: 10,
-        textStyle: {
-          fontFamily: 'Barlow, system-ui',
-          fontSize: 11,
-          color: '#e5e7eb'
-        },
-        formatter: function (params) {
-          const d = params.data;
-          if (!d) return '';
-          let line2 = '';
-          if (d.role === 'spatial-main') line2 = '空间生态位 · 渠道 / 触点';
-          else if (d.role === 'market-main') line2 = '市场生态位 · 竞品 / 定价 / 包型';
-          else if (d.role === 'spatial-sub') line2 = 'Spatial Niche 细分渠道';
-          else if (d.role === 'market-sub') line2 = 'Market Niche 细分分析维度';
-
-          return (
-            '<div style="font-weight:600;font-size:12px;margin-bottom:3px;">' +
-            d.name.replace('\n', ' · ') +
-            '</div>' +
-            (line2 ? '<div style="color:#9ca3af;">' + line2 + '</div>' : '') +
-            (d.link ? '<div style="margin-top:4px;color:#93c5fd;">点击进入下一级页面</div>' : '')
-          );
-        }
-      },
+      tooltip: { show: false },
+      xAxis: { show: false, min: 0, max: 100 },
+      yAxis: { show: false, min: 0, max: 100 },
       series: [
+        {
+          type: 'scatter',
+          coordinateSystem: 'cartesian2d',
+          data: stars,
+          symbolSize: val => val[2] * 3,
+          itemStyle: { color: '#e5e7eb', opacity: 0.4 },
+          silent: true,
+          z: 0
+        },
         {
           type: 'custom',
           coordinateSystem: 'none',
           data: nodes,
-          renderItem: renderItem,
+          renderItem,
+          animationEasing: 'elasticOut',
+          animationDelay: idx => idx * 50,
+          z: 2,
           emphasis: {
             focus: 'self',
-            blurScope: 'global'
+            blurScope: 'series'
           },
           blur: {
-            itemStyle: {
-              opacity: 0.18
-            }
+            itemStyle: { opacity: 0.1 }
           }
         }
       ]
@@ -720,14 +555,59 @@
 
     nicheChart.setOption(option);
 
-    // 点击事件
-    nicheChart.on('click', function (params) {
-      if (params && params.data && params.data.link) {
-        window.location.href = params.data.link;
+    // --- 交互逻辑 ---
+    const detailCard = document.getElementById('detail-card');
+    const els = {
+      role: document.getElementById('p-role'),
+      name: document.getElementById('p-name'),
+      desc: document.getElementById('p-desc'),
+      statusDot: document.getElementById('p-status-dot'),
+      statusText: document.getElementById('p-status-text')
+    };
+
+    nicheChart.on('mouseover', { seriesIndex: 1 }, function (params) {
+      const node = nodes[params.dataIndex];
+      if (!node) return;
+
+      els.name.innerText = node.name.replace('\n', ' ');
+      els.desc.innerText = node.desc || 'No description available.';
+
+      let roleText = 'SUB NODE';
+      let color = '#94a3b8';
+
+      if (node.role === 'root') {
+        roleText = 'CORE NODE';
+        color = getComputedStyle(document.documentElement).getPropertyValue('--c-root') || '#38bdf8';
+      } else if (node.role.includes('spatial')) {
+        roleText = 'SPATIAL';
+        color = '#10b981';
+      } else if (node.role.includes('market')) {
+        roleText = 'MARKET';
+        color = '#a855f7';
+      }
+
+      els.role.innerText = roleText;
+      els.role.style.color = color;
+      els.statusDot.style.background = color;
+      els.statusText.innerText = node.link ? 'Click to Navigate' : 'Data Node';
+
+      detailCard.classList.add('active');
+    });
+
+    nicheChart.getZr().on('click', function (e) {
+      if (!e.target) {
+        detailCard.classList.remove('active');
+        nicheChart.dispatchAction({ type: 'downplay' });
       }
     });
 
-    // 窗口自适应
+    nicheChart.on('click', { seriesIndex: 1 }, function (params) {
+      const node = nodes[params.dataIndex];
+      if (node && node.link) {
+        window.location.href = node.link;
+      }
+    });
+
     window.addEventListener('resize', function () {
       nicheChart.resize();
     });
