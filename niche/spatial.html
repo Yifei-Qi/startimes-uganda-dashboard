@@ -30,7 +30,7 @@
       overflow: hidden;
     }
 
-    /* 顶部导航（与其它页面统一） */
+    /* 顶部导航 */
     .top-bar {
       position: fixed;
       inset: 0 0 auto 0;
@@ -274,278 +274,263 @@
     </div>
   </div>
 
-<!-- 只需要 echarts，本页不用 d3 -->
-<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
-<script>
-  // 容器 ID —— 按你的实际情况改
-  var chartDom = document.getElementById('spatial-chart');
-  var chart = echarts.init(chartDom);
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  <script>
+    // 注意：这里的 ID 必须和上面的 div 一致 —— 'touch-chart'
+    var chartDom = document.getElementById('touch-chart');
+    var chart = echarts.init(chartDom);
 
-  // 数据：每个触点一个点
-  var touchpoints = [
-    // 线下视觉：Offline · Visual（绿色）
-    { name: '户外大牌\nOutdoor billboard',     cat: 'offline-visual',   x: -0.75, y: -0.6 },
-    { name: '灯杆广告\nLight pole banners',    cat: 'offline-visual',   x: -0.6,  y: -0.55 },
-    { name: '营业厅 / 代理商\nFlyers & posters', cat: 'offline-visual', x: -0.55, y: -0.7 },
-    { name: '纸媒 & 网媒\nPrint & online media', cat: 'offline-visual', x: -0.4,  y: -0.5 },
+    var touchpoints = [
+      { name: '户外大牌\nOutdoor billboard',     cat: 'offline-visual',   x: -0.75, y: -0.6 },
+      { name: '灯杆广告\nLight pole banners',    cat: 'offline-visual',   x: -0.6,  y: -0.55 },
+      { name: '营业厅 / 代理商\nFlyers & posters', cat: 'offline-visual', x: -0.55, y: -0.7 },
+      { name: '纸媒 & 网媒\nPrint & online media', cat: 'offline-visual', x: -0.4,  y: -0.5 },
 
-    // 线下视觉 + 听觉：Offline · Visual + Audio（橙色）
-    { name: '路演\nRoadshow',                 cat: 'offline-av',       x: -0.15, y:  0.02 },
-    { name: '发布会\nPress conference',       cat: 'offline-av',       x: -0.03, y:  0.02 },
+      { name: '路演\nRoadshow',                 cat: 'offline-av',       x: -0.15, y:  0.02 },
+      { name: '发布会\nPress conference',       cat: 'offline-av',       x: -0.03, y:  0.02 },
 
-    // 线下听觉：Offline · Audio（紫色）
-    { name: '广播节目\nRadio spots',          cat: 'offline-audio',    x: -0.25, y:  0.55 },
-    { name: '呼叫中心\nCall center / IVR',    cat: 'offline-audio',    x: -0.1,  y:  0.65 },
+      { name: '广播节目\nRadio spots',          cat: 'offline-audio',    x: -0.25, y:  0.55 },
+      { name: '呼叫中心\nCall center / IVR',    cat: 'offline-audio',    x: -0.1,  y:  0.65 },
 
-    // 线上视觉：Online · Visual（蓝色）
-    { name: 'EPG 广告\nOpening / zapping / volume bar', cat: 'online-visual', x: 0.55, y: -0.45 },
-    { name: 'OTT 开屏广告\nApp splash',       cat: 'online-visual',    x: 0.7,  y: -0.35 },
-    { name: 'Mini banner\n小尺寸横幅',         cat: 'online-visual',    x: 0.8,  y: -0.25 },
+      { name: 'EPG 广告\nOpening / zapping / volume bar', cat: 'online-visual', x: 0.55, y: -0.45 },
+      { name: 'OTT 开屏广告\nApp splash',       cat: 'online-visual',    x: 0.7,  y: -0.35 },
+      { name: 'Mini banner\n小尺寸横幅',         cat: 'online-visual',    x: 0.8,  y: -0.25 },
 
-    // 线上视觉 + 听觉：Online · Visual + Audio（粉红）
-    { name: 'TVC\nPromo spots',               cat: 'online-av',        x: 0.35, y:  0.02 },
-    { name: '社媒\nSocial / Facebook / X',     cat: 'online-av',        x: 0.55, y:  0.02 },
-    { name: 'WhatsApp 群发\nBroadcast list',   cat: 'online-av',        x: 0.8,  y:  0.02 }
-  ];
+      { name: 'TVC\nPromo spots',               cat: 'online-av',        x: 0.35, y:  0.02 },
+      { name: '社媒\nSocial / Facebook / X',     cat: 'online-av',        x: 0.55, y:  0.02 },
+      { name: 'WhatsApp 群发\nBroadcast list',   cat: 'online-av',        x: 0.8,  y:  0.02 }
+    ];
 
-  var catStyle = {
-    'offline-visual': {
-      color: '#22c55e',
-      group: '线下视觉 · Offline visual'
-    },
-    'offline-av': {
-      color: '#f97316',
-      group: '线下视觉 + 听觉 · Offline visual + audio'
-    },
-    'offline-audio': {
-      color: '#a855f7',
-      group: '线下听觉 · Offline audio'
-    },
-    'online-visual': {
-      color: '#38bdf8',
-      group: '线上视觉 · Online visual'
-    },
-    'online-av': {
-      color: '#fb7185',
-      group: '线上视觉 + 听觉 · Online visual + audio'
-    }
-  };
-
-  var scatterData = touchpoints.map(function (tp) {
-    return {
-      value: [tp.x, tp.y],
-      name: tp.name,
-      category: tp.cat,
-      itemStyle: { color: catStyle[tp.cat].color }
+    var catStyle = {
+      'offline-visual': {
+        color: '#22c55e',
+        group: '线下视觉 · Offline visual'
+      },
+      'offline-av': {
+        color: '#f97316',
+        group: '线下视觉 + 听觉 · Offline visual + audio'
+      },
+      'offline-audio': {
+        color: '#a855f7',
+        group: '线下听觉 · Offline audio'
+      },
+      'online-visual': {
+        color: '#38bdf8',
+        group: '线上视觉 · Online visual'
+      },
+      'online-av': {
+        color: '#fb7185',
+        group: '线上视觉 + 听觉 · Online visual + audio'
+      }
     };
-  });
 
-  var option = {
-    backgroundColor: 'transparent',
-    grid: {
-      left: '40%',   // 图表整体靠右，避免遮挡左侧文案
-      right: '6%',
-      top: '16%',
-      bottom: '20%'
-    },
-    xAxis: {
-      type: 'value',
-      min: -1,
-      max: 1,
-      splitLine: { show: false },
-      axisLine: { show: false },
-      axisTick: { show: false },
-      axisLabel: { show: false }
-    },
-    yAxis: {
-      type: 'value',
-      min: -1,
-      max: 1,
-      splitLine: { show: false },
-      axisLine: { show: false },
-      axisTick: { show: false },
-      axisLabel: { show: false }
-    },
-    tooltip: {
-      trigger: 'item',
-      backgroundColor: 'rgba(15,23,42,0.96)',
-      borderColor: 'rgba(148,163,184,0.7)',
-      borderWidth: 1,
-      padding: 10,
-      textStyle: {
-        fontFamily: 'Barlow, -apple-system, BlinkMacSystemFont, system-ui',
-        fontSize: 11,
-        color: '#e5e7eb'
+    var scatterData = touchpoints.map(function (tp) {
+      return {
+        value: [tp.x, tp.y],
+        name: tp.name,
+        category: tp.cat,
+        itemStyle: { color: catStyle[tp.cat].color }
+      };
+    });
+
+    var option = {
+      backgroundColor: 'transparent',
+      grid: {
+        left: '40%',
+        right: '6%',
+        top: '16%',
+        bottom: '20%'
       },
-      formatter: function (params) {
-        var d = params.data;
-        var meta = catStyle[d.category] || {};
-        var x = d.value[0];
-        var y = d.value[1];
-
-        var pos = [];
-        pos.push(x < 0 ? 'Offline' : 'Online');
-        if (y > 0.2) pos.push('Audio');
-        else if (y < -0.2) pos.push('Visual');
-        else pos.push('Audio + Visual');
-
-        return (
-          '<div style="font-weight:600;font-size:12px;margin-bottom:4px;">' +
-            d.name.replace('\\n', ' · ') +
-          '</div>' +
-          (meta.group
-            ? '<div style="color:#a5b4fc;">' + meta.group + '</div>'
-            : ''
-          ) +
-          '<div style="color:#9ca3af;margin-top:4px;">象限：' + pos.join(' · ') + '</div>'
-        );
-      }
-    },
-    series: [
-      // 坐标轴 + 箭头 + 四象限文字
-      {
-        type: 'custom',
-        coordinateSystem: 'cartesian2d',
-        data: [0],
-        silent: true,
-        zlevel: 1,
-        renderItem: function (params, api) {
-          var xLeft  = api.coord([-1, 0]);
-          var xRight = api.coord([ 1, 0]);
-          var yBottom= api.coord([ 0,-1]);
-          var yTop   = api.coord([ 0, 1]);
-          var arrow = 10;
-
-          return {
-            type: 'group',
-            children: [
-              // 横轴
-              {
-                type: 'line',
-                shape: { x1: xLeft[0], y1: xLeft[1], x2: xRight[0], y2: xRight[1] },
-                style: { stroke: 'rgba(148,163,184,0.9)', lineWidth: 1.3 }
-              },
-              // 纵轴
-              {
-                type: 'line',
-                shape: { x1: yBottom[0], y1: yBottom[1], x2: yTop[0], y2: yTop[1] },
-                style: { stroke: 'rgba(148,163,184,0.9)', lineWidth: 1.3 }
-              },
-              // 横轴箭头（Online 端）
-              {
-                type: 'polygon',
-                shape: {
-                  points: [
-                    [xRight[0], xRight[1]],
-                    [xRight[0] - arrow, xRight[1] - arrow * 0.5],
-                    [xRight[0] - arrow, xRight[1] + arrow * 0.5]
-                  ]
-                },
-                style: { fill: 'rgba(148,163,184,0.9)' }
-              },
-              // 纵轴箭头（Audio 端）
-              {
-                type: 'polygon',
-                shape: {
-                  points: [
-                    [yTop[0], yTop[1]],
-                    [yTop[0] - arrow * 0.5, yTop[1] + arrow],
-                    [yTop[0] + arrow * 0.5, yTop[1] + arrow]
-                  ]
-                },
-                style: { fill: 'rgba(148,163,184,0.9)' }
-              },
-              // 轴端文字 —— 全部水平排版
-              {
-                type: 'text',
-                style: {
-                  text: 'OFFLINE',
-                  x: xLeft[0] - 6,
-                  y: xLeft[1] + 18,
-                  textAlign: 'right',
-                  textVerticalAlign: 'middle',
-                  fontFamily: 'Barlow Condensed',
-                  fontSize: 11,
-                  letterSpacing: 1,
-                  fill: 'rgba(148,163,184,0.9)'
-                }
-              },
-              {
-                type: 'text',
-                style: {
-                  text: 'ONLINE',
-                  x: xRight[0] + 6,
-                  y: xRight[1] + 18,
-                  textAlign: 'left',
-                  textVerticalAlign: 'middle',
-                  fontFamily: 'Barlow Condensed',
-                  fontSize: 11,
-                  letterSpacing: 1,
-                  fill: 'rgba(148,163,184,0.9)'
-                }
-              },
-              {
-                type: 'text',
-                style: {
-                  text: 'VISUAL',
-                  x: yBottom[0] - 6,
-                  y: yBottom[1] + 18,
-                  textAlign: 'right',
-                  textVerticalAlign: 'middle',
-                  fontFamily: 'Barlow Condensed',
-                  fontSize: 11,
-                  letterSpacing: 1,
-                  fill: 'rgba(148,163,184,0.9)'
-                }
-              },
-              {
-                type: 'text',
-                style: {
-                  text: 'AUDIO',
-                  x: yTop[0] - 6,
-                  y: yTop[1] - 18,
-                  textAlign: 'right',
-                  textVerticalAlign: 'middle',
-                  fontFamily: 'Barlow Condensed',
-                  fontSize: 11,
-                  letterSpacing: 1,
-                  fill: 'rgba(148,163,184,0.9)'
-                }
-              }
-            ]
-          };
-        }
+      xAxis: {
+        type: 'value',
+        min: -1,
+        max: 1,
+        splitLine: { show: false },
+        axisLine: { show: false },
+        axisTick: { show: false },
+        axisLabel: { show: false }
       },
-      // 触点散点 —— 样式沿用你上一版的小圆点 + 标签
-      {
-        type: 'scatter',
-        data: scatterData,
-        symbolSize: 14,
-        zlevel: 2,
-        label: {
-          show: true,
-          position: 'right',
-          formatter: '{b}',
-          color: '#e5e7eb',
-          fontFamily: 'Barlow, -apple-system, system-ui',
-          fontSize: 11
+      yAxis: {
+        type: 'value',
+        min: -1,
+        max: 1,
+        splitLine: { show: false },
+        axisLine: { show: false },
+        axisTick: { show: false },
+        axisLabel: { show: false }
+      },
+      tooltip: {
+        trigger: 'item',
+        backgroundColor: 'rgba(15,23,42,0.96)',
+        borderColor: 'rgba(148,163,184,0.7)',
+        borderWidth: 1,
+        padding: 10,
+        textStyle: {
+          fontFamily: 'Barlow, -apple-system, BlinkMacSystemFont, system-ui',
+          fontSize: 11,
+          color: '#e5e7eb'
         },
-        itemStyle: {
-          borderWidth: 0,
-          shadowBlur: 10,
-          shadowColor: 'rgba(15,23,42,0.9)'
+        formatter: function (params) {
+          var d = params.data;
+          var meta = catStyle[d.category] || {};
+          var x = d.value[0];
+          var y = d.value[1];
+
+          var pos = [];
+          pos.push(x < 0 ? 'Offline' : 'Online');
+          if (y > 0.2) pos.push('Audio');
+          else if (y < -0.2) pos.push('Visual');
+          else pos.push('Audio + Visual');
+
+          return (
+            '<div style="font-weight:600;font-size:12px;margin-bottom:4px;">' +
+              d.name.replace('\\n', ' · ') +
+            '</div>' +
+            (meta.group
+              ? '<div style="color:#a5b4fc;">' + meta.group + '</div>'
+              : ''
+            ) +
+            '<div style="color:#9ca3af;margin-top:4px;">象限：' + pos.join(' · ') + '</div>'
+          );
         }
-      }
-    ]
-  };
+      },
+      series: [
+        {
+          type: 'custom',
+          coordinateSystem: 'cartesian2d',
+          data: [0],
+          silent: true,
+          zlevel: 1,
+          renderItem: function (params, api) {
+            var xLeft  = api.coord([-1, 0]);
+            var xRight = api.coord([ 1, 0]);
+            var yBottom= api.coord([ 0,-1]);
+            var yTop   = api.coord([ 0, 1]);
+            var arrow = 10;
 
-  chart.setOption(option);
+            return {
+              type: 'group',
+              children: [
+                {
+                  type: 'line',
+                  shape: { x1: xLeft[0], y1: xLeft[1], x2: xRight[0], y2: xRight[1] },
+                  style: { stroke: 'rgba(148,163,184,0.9)', lineWidth: 1.3 }
+                },
+                {
+                  type: 'line',
+                  shape: { x1: yBottom[0], y1: yBottom[1], x2: yTop[0], y2: yTop[1] },
+                  style: { stroke: 'rgba(148,163,184,0.9)', lineWidth: 1.3 }
+                },
+                {
+                  type: 'polygon',
+                  shape: {
+                    points: [
+                      [xRight[0], xRight[1]],
+                      [xRight[0] - arrow, xRight[1] - arrow * 0.5],
+                      [xRight[0] - arrow, xRight[1] + arrow * 0.5]
+                    ]
+                  },
+                  style: { fill: 'rgba(148,163,184,0.9)' }
+                },
+                {
+                  type: 'polygon',
+                  shape: {
+                    points: [
+                      [yTop[0], yTop[1]],
+                      [yTop[0] - arrow * 0.5, yTop[1] + arrow],
+                      [yTop[0] + arrow * 0.5, yTop[1] + arrow]
+                    ]
+                  },
+                  style: { fill: 'rgba(148,163,184,0.9)' }
+                },
+                {
+                  type: 'text',
+                  style: {
+                    text: 'OFFLINE',
+                    x: xLeft[0] - 6,
+                    y: xLeft[1] + 18,
+                    textAlign: 'right',
+                    textVerticalAlign: 'middle',
+                    fontFamily: 'Barlow Condensed',
+                    fontSize: 11,
+                    letterSpacing: 1,
+                    fill: 'rgba(148,163,184,0.9)'
+                  }
+                },
+                {
+                  type: 'text',
+                  style: {
+                    text: 'ONLINE',
+                    x: xRight[0] + 6,
+                    y: xRight[1] + 18,
+                    textAlign: 'left',
+                    textVerticalAlign: 'middle',
+                    fontFamily: 'Barlow Condensed',
+                    fontSize: 11,
+                    letterSpacing: 1,
+                    fill: 'rgba(148,163,184,0.9)'
+                  }
+                },
+                {
+                  type: 'text',
+                  style: {
+                    text: 'VISUAL',
+                    x: yBottom[0] - 6,
+                    y: yBottom[1] + 18,
+                    textAlign: 'right',
+                    textVerticalAlign: 'middle',
+                    fontFamily: 'Barlow Condensed',
+                    fontSize: 11,
+                    letterSpacing: 1,
+                    fill: 'rgba(148,163,184,0.9)'
+                  }
+                },
+                {
+                  type: 'text',
+                  style: {
+                    text: 'AUDIO',
+                    x: yTop[0] - 6,
+                    y: yTop[1] - 18,
+                    textAlign: 'right',
+                    textVerticalAlign: 'middle',
+                    fontFamily: 'Barlow Condensed',
+                    fontSize: 11,
+                    letterSpacing: 1,
+                    fill: 'rgba(148,163,184,0.9)'
+                  }
+                }
+              ]
+            };
+          }
+        },
+        {
+          type: 'scatter',
+          data: scatterData,
+          symbolSize: 14,
+          zlevel: 2,
+          label: {
+            show: true,
+            position: 'right',
+            formatter: '{b}',
+            color: '#e5e7eb',
+            fontFamily: 'Barlow, -apple-system, system-ui',
+            fontSize: 11
+          },
+          itemStyle: {
+            borderWidth: 0,
+            shadowBlur: 10,
+            shadowColor: 'rgba(15,23,42,0.9)'
+          }
+        }
+      ]
+    };
 
-  // 只做自适应，不做缩放/拖拽
-  window.addEventListener('resize', function () {
-    chart.resize();
-  });
-</script>
+    chart.setOption(option);
+
+    window.addEventListener('resize', function () {
+      chart.resize();
+    });
+  </script>
 
 </body>
 </html>
